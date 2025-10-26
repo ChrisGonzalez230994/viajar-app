@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { FormGroup, FormControl, Validator } from '@angular/forms';
+
 
 @Component({
   selector: 'app-registro',
@@ -8,4 +10,5 @@ import { Component } from '@angular/core';
 })
 export class Registro {
 
+  
 }
