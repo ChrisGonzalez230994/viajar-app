@@ -1,0 +1,339 @@
+{
+  "info": {
+    "_postman_id": "viajar-app-api-collection",
+    "name": "Viajar App API",
+    "description": "Colección de endpoints para la API de Viajar App",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@viajar.com\",\n  \"password\": \"admin123\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/auth/login",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "auth", "login"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Destinos",
+      "item": [
+        {
+          "name": "Listar Destinos",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/api/destinos?page=1&limit=10",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "destinos"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "10" },
+                { "key": "search", "value": "", "disabled": true },
+                { "key": "ciudad", "value": "", "disabled": true },
+                { "key": "pais", "value": "", "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Obtener Destino por ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/api/destinos/:id",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "destinos", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "DESTINO_ID"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Destinos Destacados",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/api/destinos/destacados/top?limit=5",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "destinos", "destacados", "top"],
+              "query": [
+                { "key": "limit", "value": "5" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Crear Destino (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "token",
+                "value": "{{jwt_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Nuevo Destino\",\n  \"ciudad\": \"Ciudad\",\n  \"pais\": \"País\",\n  \"descripcion\": \"Descripción del destino\",\n  \"precio\": 100,\n  \"ubicacion\": {\n    \"latitud\": -34.6037,\n    \"longitud\": -58.3816,\n    \"direccion\": \"Dirección completa\"\n  },\n  \"actividades\": [\"Actividad 1\", \"Actividad 2\"],\n  \"capacidadMaxima\": 20\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/destinos",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "destinos"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reservas",
+      "item": [
+        {
+          "name": "Mis Reservas",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "token",
+                "value": "{{jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:3000/api/reservas/mis-reservas",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "reservas", "mis-reservas"]
+            }
+          }
+        },
+        {
+          "name": "Crear Reserva",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "token",
+                "value": "{{jwt_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"destinoId\": \"DESTINO_ID\",\n  \"fechaInicio\": \"2025-12-01\",\n  \"fechaFin\": \"2025-12-05\",\n  \"numeroPersonas\": 2,\n  \"notas\": \"Notas opcionales\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/reservas",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "reservas"]
+            }
+          }
+        },
+        {
+          "name": "Verificar Disponibilidad",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/api/reservas/disponibilidad/:destinoId?fechaInicio=2025-12-01&fechaFin=2025-12-05",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "reservas", "disponibilidad", ":destinoId"],
+              "query": [
+                { "key": "fechaInicio", "value": "2025-12-01" },
+                { "key": "fechaFin", "value": "2025-12-05" }
+              ],
+              "variable": [
+                {
+                  "key": "destinoId",
+                  "value": "DESTINO_ID"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Actualizar Estado Reserva",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "token",
+                "value": "{{jwt_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estado\": \"confirmada\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/reservas/:id/estado",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "reservas", ":id", "estado"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "RESERVA_ID"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reseñas",
+      "item": [
+        {
+          "name": "Obtener Reseñas de Destino",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "http://localhost:3000/api/reseñas/destino/:destinoId",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "reseñas", "destino", ":destinoId"],
+              "variable": [
+                {
+                  "key": "destinoId",
+                  "value": "DESTINO_ID"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Mis Reseñas",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "token",
+                "value": "{{jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:3000/api/reseñas/mis-reseñas",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "reseñas", "mis-reseñas"]
+            }
+          }
+        },
+        {
+          "name": "Crear Reseña",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "token",
+                "value": "{{jwt_token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"destinoId\": \"DESTINO_ID\",\n  \"calificacion\": 5,\n  \"comentario\": \"Excelente experiencia, totalmente recomendado!\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:3000/api/reseñas",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "reseñas"]
+            }
+          }
+        },
+        {
+          "name": "Dar Like a Reseña",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "token",
+                "value": "{{jwt_token}}"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:3000/api/reseñas/:id/like",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "3000",
+              "path": ["api", "reseñas", ":id", "like"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "RESEÑA_ID"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "jwt_token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "base_url",
+      "value": "http://localhost:3000",
+      "type": "string"
+    }
+  ]
+}
