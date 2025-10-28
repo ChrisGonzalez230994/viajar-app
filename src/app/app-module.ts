@@ -8,6 +8,7 @@ import { Resena } from './components/resena/resena';
 import { Registro } from './components/registro/registro';
 import { Home } from './components/pages/home/home';
 import { Navbar } from './components/navbar/navbar';
+import { Pruba } from './components/pruba/pruba';
 
 @NgModule({
   declarations: [
@@ -16,7 +17,8 @@ import { Navbar } from './components/navbar/navbar';
     Resena,
     Registro,
     Home,
-    Navbar
+    Navbar,
+    Pruba
   ],
   imports: [
     BrowserModule,
