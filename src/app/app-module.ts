@@ -7,6 +7,7 @@ import { Login } from './components/login/login';
 import { Registro } from './components/registro/registro';
 import { Home } from './components/pages/home/home';
 import { Navbar } from './components/navbar/navbar';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -18,8 +19,9 @@ import { Navbar } from './components/navbar/navbar';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
-  ],
+    AppRoutingModule,
+    ReactiveFormsModule
+],
   providers: [
     provideBrowserGlobalErrorListeners()
   ],

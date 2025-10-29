@@ -1,1 +1,19 @@
-<p>login works!</p>
+<div class="login-container  fade-right">
+    <h2>Iniciar Sesión</h2>
+    <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+      <div>
+        <label for="username">Nombre de Usuario:</label>
+        <input id="username" formControlName="username" required>
+      </div>
+      <div>
+        <label for="password">Contraseña:</label>
+        <input id="password" type="password" formControlName="password" required>
+      </div>
+      <button type="submit" [disabled]="loginForm.invalid">Iniciar Sesión</button>
+    </form>
+    <p>
+      ¿No tienes una cuenta? 
+      <a (click)="goToRegister()" class="btn btn-link">Crear cuenta</a>
+    </p>
+    <p *ngIf="loginFailed">Usuario no registrado. ¿Deseas <a (click)="goToRegister()">crear una cuenta</a>?</p>
+  </div>
