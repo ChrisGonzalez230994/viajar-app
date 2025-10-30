@@ -8,6 +8,7 @@ import { Registro } from './components/registro/registro';
 import { Home } from './components/pages/home/home';
 import { Navbar } from './components/navbar/navbar';
 import { ReactiveFormsModule } from '@angular/forms';
+import { LandingPage } from './components/landing-page/landing-page';
 
 @NgModule({
   declarations: [
@@ -16,6 +17,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     Registro,
     Home,
     Navbar,
+    LandingPage,
   ],
   imports: [
     BrowserModule,
