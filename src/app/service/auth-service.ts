@@ -13,12 +13,9 @@ export class AuthService {
   private apiUrl = 'http://localhost:3000/usuarios';
   private userKey = 'user';
   private timeoutId: any;
-  private inactivityTime = 60000; // 1 minuto = 60.000 ms
+  private inactivityTime = 60000;
   
-
-  constructor(private http: HttpClient,private router: Router, private ngZone: NgZone) { 
-    
-  }
+  constructor(private http: HttpClient, private router: Router, private ngZone: NgZone) {}
 
 
 
@@ -31,21 +28,26 @@ export class AuthService {
 
     login(username: string, password: string): Observable<Usuario | null> {
       return new Observable((observer) => {
-        this.http.get<Usuario[]>(`${this.apiUrl}?username=${username}&password=${password}`).subscribe((usuarios) => {
-          const usuario = usuarios[0];
-          if (usuario) {
-            //this.usuarioLogueado = usuario;
-            localStorage.setItem('user', JSON.stringify(usuario));
-            this.autenticado.next(true);
-            this.actualizarCantidadReservas();
-            console.log("Usuario logueado:", usuario);
-            observer.next(usuario);
-            this.setupInactivityListener();
-          } else {
-            this.autenticado.next(false);
-            observer.next(null);  
+        this.http.get<Usuario[]>(`${this.apiUrl}?username=${encodeURIComponent(username)}`).subscribe({
+          next: (usuarios) => {
+            const usuario = usuarios.find(u => u.password === password);
+            if (usuario) {
+              localStorage.setItem('user', JSON.stringify(usuario));
+              this.autenticado.next(true);
+              this.actualizarCantidadReservas();
+              console.log("Usuario logueado:", usuario);
+              observer.next(usuario);
+              this.setupInactivityListener();
+            } else {
+              this.autenticado.next(false);
+              observer.next(null);
+            }
+            observer.complete();
+          },
+          error: (error) => {
+            console.error('Error en login:', error);
+            observer.error(error);
           }
-          observer.complete();
         });
       });
     }
@@ -97,18 +99,7 @@ export class AuthService {
 
 
 
-/*
-    private setupInactivityListener() {
-      const events = ['mousemove', 'keydown', 'scroll', 'click'];
-    
-      this.ngZone.runOutsideAngular(() => {
-        events.forEach(event => {
-          window.addEventListener(event, () => this.resetTimer());
-        });
-      });
-    
-      this.resetTimer(); // inicializa el temporizador
-    }*/
+
     
     private resetTimer() {
       clearTimeout(this.timeoutId);
@@ -133,9 +124,9 @@ export class AuthService {
     
     localStorage.removeItem('user');
     this.autenticado.next(false);
-    this.clearUserName(); // limpia el nombre del observable
+    this.clearUserName();
     this.reservasSubject.next(0);
-    this.removeInactivityListeners(); // 🧼 limpia los eventos y el timeout
+    this.removeInactivityListeners();
     console.log("Usuario deslogueado");
     this.router.navigate(['/login']);
   }
@@ -183,7 +174,6 @@ export class AuthService {
       return throwError(() => new Error('INVALID_DATA'));
     }
 
-    // Verificar si existe el username
     const urlUsername = `${this.apiUrl}?username=${encodeURIComponent(usuario.username)}`;
     const urlEmail = `${this.apiUrl}?email=${encodeURIComponent(usuario.email)}`;
 
@@ -192,24 +182,29 @@ export class AuthService {
         if (usuariosPorNombre.length > 0) {
           return throwError(() => new Error('USERNAME_TAKEN'));
         }
-        // Si el username está libre, verificar email
         return this.http.get<Usuario[]>(urlEmail);
       }),
       switchMap(usuariosPorEmail => {
         if (usuariosPorEmail.length > 0) {
           return throwError(() => new Error('EMAIL_TAKEN'));
         }
-        // Si ambos están libres, crear el usuario
-        usuario.idUsuario = Date.now();
-        usuario.rol = 'usuario';
-        usuario.reservas = [];
+        const nuevoUsuario: Partial<Usuario> = {
+          ...usuario,
+          id: Math.random().toString(36).substr(2, 4),
+          idUsuario: Date.now(),
+          rol: 'usuario',
+          reservas: []
+        };
         
-        return this.http.post<Usuario>(this.apiUrl, usuario);
+        return this.http.post<Usuario>(this.apiUrl, nuevoUsuario);
       }),
       tap(nuevoUsuario => {
         console.log('Usuario registrado exitosamente:', nuevoUsuario);
       }),
       catchError(error => {
+        if (error.status === 404) {
+          console.error('Error 404: Verifica que el servidor json-server esté corriendo');
+        }
         console.error('Error en registro:', error);
         return throwError(() => error);
       })

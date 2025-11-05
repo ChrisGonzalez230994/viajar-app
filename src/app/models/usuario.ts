@@ -1,12 +1,13 @@
 export interface Usuario {
-    idUsuario : number;
+    id?: string;
+    idUsuario: number;
     username: string;
-    contraseña: string;
+    password: string;
     nombre: string;
     apellido: string;
     email: string;
     nacionalidad: string;
-    fechaNacimiento: Date;
+    fechaNacimiento: string | Date;
     rol: string;
     reservas?: any[];
 }
