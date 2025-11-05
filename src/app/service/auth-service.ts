@@ -1,6 +1,8 @@
 import { Injectable , NgZone} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, throwError } from 'rxjs';
+import { switchMap, catchError } from 'rxjs/operators';
+import { tap } from 'rxjs/operators';
 import { Usuario } from '../models/usuario';  
 import { Router } from '@angular/router';
 
@@ -174,6 +176,44 @@ export class AuthService {
       this.setUserName(usuario.nombre);
       this.setupInactivityListener(); 
     }
+  }
+
+  registro(usuario: Partial<Usuario>): Observable<Usuario> {
+    if (!usuario.username || !usuario.email) {
+      return throwError(() => new Error('INVALID_DATA'));
+    }
+
+    // Verificar si existe el username
+    const urlUsername = `${this.apiUrl}?username=${encodeURIComponent(usuario.username)}`;
+    const urlEmail = `${this.apiUrl}?email=${encodeURIComponent(usuario.email)}`;
+
+    return this.http.get<Usuario[]>(urlUsername).pipe(
+      switchMap(usuariosPorNombre => {
+        if (usuariosPorNombre.length > 0) {
+          return throwError(() => new Error('USERNAME_TAKEN'));
+        }
+        // Si el username está libre, verificar email
+        return this.http.get<Usuario[]>(urlEmail);
+      }),
+      switchMap(usuariosPorEmail => {
+        if (usuariosPorEmail.length > 0) {
+          return throwError(() => new Error('EMAIL_TAKEN'));
+        }
+        // Si ambos están libres, crear el usuario
+        usuario.idUsuario = Date.now();
+        usuario.rol = 'usuario';
+        usuario.reservas = [];
+        
+        return this.http.post<Usuario>(this.apiUrl, usuario);
+      }),
+      tap(nuevoUsuario => {
+        console.log('Usuario registrado exitosamente:', nuevoUsuario);
+      }),
+      catchError(error => {
+        console.error('Error en registro:', error);
+        return throwError(() => error);
+      })
+    );
   }
 
 }

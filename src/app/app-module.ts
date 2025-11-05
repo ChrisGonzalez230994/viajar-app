@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { HttpClientModule } from '@angular/common/http';
 
 import { AppRoutingModule } from './app-routing-module';
 import { App } from './app';
@@ -16,13 +17,15 @@ import { LandingComponent } from './components/landing-page/landing-page';
     Login,
     Registro,
     Home,
-    Navbar
+    
   ],
   imports: [
     BrowserModule,
+    HttpClientModule,
     AppRoutingModule,
     ReactiveFormsModule,
-    LandingComponent
+    LandingComponent,
+    Navbar
   ],
   providers: [],
   bootstrap: [App]

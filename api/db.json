@@ -1,0 +1,29 @@
+{
+  "usuarios": [
+    {
+      "idUsuario": 1,
+      "username": "admin",
+      "password": "admin123",
+      "nombre": "Administrador",
+      "apellido": "Sistema",
+      "email": "admin@viajar.com",
+      "nacionalidad": "Argentina",
+      "fechaNacimiento": "1990-01-01",
+      "rol": "admin",
+      "reservas": []
+    },
+    {
+      "id": "76e8",
+      "username": "Chris230994",
+      "password": "Blackfire230994",
+      "nombre": "Christian",
+      "apellido": "Gonzalez",
+      "email": "chrisgonzalez@gmail.com",
+      "nacionalidad": "Argentina",
+      "fechaNacimiento": "1994-09-23",
+      "idUsuario": 1762304553691,
+      "rol": "usuario",
+      "reservas": []
+    }
+  ]
+}

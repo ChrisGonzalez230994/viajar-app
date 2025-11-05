@@ -1,8 +1,21 @@
 <nav class="navbar">
+  <div class="logo">
+  <img src="/assets/VIAJAR-APP.png" alt="ViaJAR APP" class="logo-img" />
+  </div>
   <ul class="nav-links">
-    <li><a href="#">Inicio</a></li>
-    <li><a href="../login/login.html">Login</a></li>
-    <li><a href="#">Proyectos</a></li>
-    <li><a href="#">Contacto</a></li>
+    <li><a routerLink="/">Inicio</a></li>
+    <li><a routerLink="/destinos">Destinos</a></li>
+    <li><a routerLink="/nosotros">Nosotros</a></li>
+    <li><a routerLink="/contacto">Contacto</a></li>
   </ul>
+  <div class="auth-actions">
+    <ng-container *ngIf="isAuthenticated; else loggedOut">
+      <span class="welcome">Hola, {{ userName }}</span>
+      <button class="btn small" (click)="logout()">Cerrar sesión</button>
+    </ng-container>
+    <ng-template #loggedOut>
+      <button class="btn" (click)="goToLogin()">Iniciar sesión</button>
+      <button class="btn secondary" (click)="goToRegister()">Registrarse</button>
+    </ng-template>
+  </div>
 </nav>
