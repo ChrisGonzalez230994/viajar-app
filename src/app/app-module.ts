@@ -1,4 +1,4 @@
-import { NgModule, provideBrowserGlobalErrorListeners } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing-module';
@@ -8,7 +8,7 @@ import { Registro } from './components/registro/registro';
 import { Home } from './components/pages/home/home';
 import { Navbar } from './components/navbar/navbar';
 import { ReactiveFormsModule } from '@angular/forms';
-import { LandingPage } from './components/landing-page/landing-page';
+import { LandingComponent } from './components/landing-page/landing-page';
 
 @NgModule({
   declarations: [
@@ -16,17 +16,15 @@ import { LandingPage } from './components/landing-page/landing-page';
     Login,
     Registro,
     Home,
-    Navbar,
-    LandingPage,
+    Navbar
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    ReactiveFormsModule
-],
-  providers: [
-    provideBrowserGlobalErrorListeners()
+    ReactiveFormsModule,
+    LandingComponent
   ],
+  providers: [],
   bootstrap: [App]
 })
 export class AppModule { }
