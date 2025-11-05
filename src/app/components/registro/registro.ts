@@ -13,6 +13,8 @@ export class Registro implements OnInit {
   registroForm: FormGroup;
   registroError: boolean = false;
   errorMessage: string = '';
+  showPassword: boolean = false;
+  showConfirmPassword: boolean = false;
 
   private passwordPattern = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
   maxDate: string = new Date().toISOString().split('T')[0];
@@ -26,8 +28,6 @@ export class Registro implements OnInit {
       const fechaNacimiento = new Date(control.value);
       const hoy = new Date();
       const edad = hoy.getFullYear() - fechaNacimiento.getFullYear();
-      
-      // Ajustar si aún no ha llegado el cumpleaños este año
       const mes = hoy.getMonth() - fechaNacimiento.getMonth();
       if (mes < 0 || (mes === 0 && hoy.getDate() < fechaNacimiento.getDate())) {
         const edadAjustada = edad - 1;
@@ -103,8 +103,6 @@ export class Registro implements OnInit {
             default:
               this.errorMessage = 'Error al registrar el usuario. Por favor, intente nuevamente.';
           }
-          
-          // Marcar el campo específico como inválido si ya existe
           if (error.message === 'USERNAME_TAKEN') {
             this.registroForm.get('username')?.setErrors({ 'usernameTaken': true });
           } else if (error.message === 'EMAIL_TAKEN') {
@@ -115,8 +113,6 @@ export class Registro implements OnInit {
     } else {
       this.registroError = true;
       this.errorMessage = 'Por favor, complete todos los campos correctamente.';
-      
-      // Marcar todos los campos inválidos
       Object.keys(this.registroForm.controls).forEach(key => {
         const control = this.registroForm.get(key);
         if (control?.invalid) {

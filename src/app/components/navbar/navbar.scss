@@ -1,11 +1,8 @@
-/* --- ESTILOS GENERALES --- */
 body {
   margin: 0;
   font-family: 'Poppins', sans-serif;
   background-color: #f4f4f4;
 }
-
-/* --- NAVBAR --- */
 .navbar {
   display: flex;
   justify-content: space-between;
@@ -17,7 +14,6 @@ body {
   z-index: 1000;
 }
 
-/* --- LOGO --- */
 .navbar .logo {
   display: flex;
   align-items: center;
@@ -34,11 +30,9 @@ body {
   }
 
   .logo-text {
-    display: none; /* Ocultar el texto del logo, mostrar solo la imagen */
+    display: none;
   }
 }
-
-/* --- LINKS --- */
 .nav-links {
   list-style: none;
   display: flex;
@@ -54,7 +48,6 @@ body {
   transition: color 0.3s ease;
 }
 
-/* --- EFECTO HOVER CON LÍNEA DEBAJO --- */
 .nav-links li a::after {
   content: '';
   position: absolute;
@@ -74,7 +67,6 @@ body {
   width: 100%;
 }
 
-/* --- RESPONSIVE (para móviles) --- */
 @media (max-width: 768px) {
   .navbar {
     flex-direction: column;
