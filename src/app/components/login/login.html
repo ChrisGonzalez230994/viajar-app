@@ -1,6 +1,6 @@
 <div class="login-container  fade-right">
-    <h2>Iniciar Sesión</h2>
     <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
+      <h2>Iniciar Sesión</h2>
       <div>
         <label for="username">Nombre de Usuario:</label>
         <input id="username" formControlName="username" required>
@@ -15,5 +15,5 @@
       ¿No tienes una cuenta? 
       <a (click)="goToRegister()" class="btn btn-link">Crear cuenta</a>
     </p>
-    <p *ngIf="loginFailed">Usuario no registrado. ¿Deseas <a (click)="goToRegister()">crear una cuenta</a>?</p>
+    <p *ngIf="loginFailed" class="error-message">Usuario no registrado. ¿Deseas <a (click)="goToRegister()">crear una cuenta</a>?</p>
   </div>

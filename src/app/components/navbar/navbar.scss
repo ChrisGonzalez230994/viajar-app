@@ -94,3 +94,57 @@ body {
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
 }
+
+/* --- AUTH ACTIONS: hacer que los botones parezcan enlaces de nav-links --- */
+.auth-actions {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.auth-actions .welcome {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* Convertir botones en apariencia de enlace (coincide con .nav-links a) */
+.auth-actions .btn {
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  padding: 0;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  position: relative;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.auth-actions .btn::after {
+  content: '';
+  position: absolute;
+  width: 0%;
+  height: 2px;
+  background-color: #00bcd4;
+  left: 0;
+  bottom: -5px;
+  transition: width 0.3s ease;
+}
+
+.auth-actions .btn:hover {
+  color: #00bcd4;
+}
+
+.auth-actions .btn:hover::after {
+  width: 100%;
+}
+
+/* Si hay variantes 'secondary' o 'small', las mantenemos visualmente coherentes */
+.auth-actions .btn.secondary {
+  color: #ffffff; /* mantener igual que enlaces */
+}
+
+.auth-actions .btn.small {
+  font-size: 0.95rem;
+}
