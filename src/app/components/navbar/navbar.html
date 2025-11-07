@@ -1,6 +1,6 @@
-<nav class="navbar">
+<nav class="navbar" [class.scrolled]="isScrolled">
   <div class="logo">
-  <img src="/assets/VIAJAR-APP.png" alt="ViaJAR APP" class="logo-img" />
+    <img src="/assets/VIAJAR-APP.png" alt="ViaJAR APP" class="logo-img" />
   </div>
   <ul class="nav-links">
     <li><a routerLink="/">Inicio</a></li>
@@ -11,11 +11,13 @@
   <div class="auth-actions">
     <ng-container *ngIf="isAuthenticated; else loggedOut">
       <span class="welcome">Hola, {{ userName }}</span>
-      <button class="btn small" (click)="logout()">Cerrar sesión</button>
+      <button ubButton variant="ghost" size="sm" (click)="logout()">Cerrar sesión</button>
     </ng-container>
     <ng-template #loggedOut>
-      <button class="btn" (click)="goToLogin()">Iniciar sesión</button>
-      <button class="btn secondary" (click)="goToRegister()">Registrarse</button>
+      <button ubButton size="default" (click)="goToLogin()">Iniciar sesión</button>
+      <button ubButton variant="outline" size="default" (click)="goToRegister()">
+        Registrarse
+      </button>
     </ng-template>
   </div>
 </nav>

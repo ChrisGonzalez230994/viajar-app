@@ -1,102 +1,245 @@
-body {
-  margin: 0;
-  font-family: 'Poppins', sans-serif;
-  background-color: #f4f4f4;
-}
+/* Navbar - Transparente por defecto */
 .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #ffbd55;
-  padding: 15px 40px;
-  position: sticky;
+  padding: 1.2rem 3rem;
+  background: transparent;
+  backdrop-filter: none;
+  position: fixed;
   top: 0;
-  z-index: 1000;
+  left: 0;
+  right: 0;
+  width: 100%;
+  box-shadow: none;
+  z-index: 100;
+  transition: all 0.6s ease;
+  border-bottom: 2px solid transparent;
 }
 
-.navbar .logo {
+/* Navbar al hacer scroll - Fondo sólido */
+.navbar.scrolled {
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(20px);
+  box-shadow: 0 4px 20px rgba(255, 122, 24, 0.15);
+  border-bottom: 2px solid var(--sun-200);
+}
+
+.navbar.scrolled:hover {
+  box-shadow: 0 6px 25px rgba(255, 122, 24, 0.2);
+}
+
+.logo {
   display: flex;
   align-items: center;
-  color: #ffffff;
-  font-size: 1.5rem;
-  font-weight: bold;
-  letter-spacing: 1px;
-
-  .logo-img {
-    height: 50px;
-    width: auto;
-    margin-right: 12px;
-    display: block;
-  }
-
-  .logo-text {
-    display: none;
-  }
+  transition: transform 0.3s ease;
 }
+
+.logo:hover {
+  transform: scale(1.05);
+}
+
+.logo-img {
+  height: 45px;
+  width: auto;
+  filter: drop-shadow(0 2px 8px rgba(255, 122, 24, 0.3));
+  transition: filter 0.3s ease;
+}
+
+.navbar.scrolled .logo-img {
+  filter: drop-shadow(0 2px 8px rgba(255, 122, 24, 0.2));
+}
+
 .nav-links {
   list-style: none;
   display: flex;
-  gap: 30px;
+  gap: 2.5rem;
+  align-items: center;
   margin: 0;
+  padding: 0;
 }
 
 .nav-links li a {
   text-decoration: none;
-  color: #ffffff;
-  font-size: 1rem;
+  color: white;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
   position: relative;
-  transition: color 0.3s ease;
+  padding: 0.5rem 0;
+  font-family: 'DM Sans', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+/* Links en modo scroll - texto oscuro */
+.navbar.scrolled .nav-links li a {
+  color: var(--sun-900);
+  text-shadow: none;
 }
 
 .nav-links li a::after {
   content: '';
   position: absolute;
-  width: 0%;
-  height: 2px;
-  background-color: #00bcd4;
+  bottom: 0;
   left: 0;
-  bottom: -5px;
+  width: 0;
+  height: 3px;
+  background: linear-gradient(90deg, white, rgba(255, 255, 255, 0.8));
   transition: width 0.3s ease;
+  border-radius: 2px;
+}
+
+.navbar.scrolled .nav-links li a::after {
+  background: linear-gradient(90deg, var(--sun-500), var(--sun-600));
 }
 
 .nav-links li a:hover {
-  color: #00bcd4;
+  color: var(--sun-100);
+}
+
+.navbar.scrolled .nav-links li a:hover {
+  color: var(--sun-600);
 }
 
 .nav-links li a:hover::after {
   width: 100%;
 }
 
+.auth-actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.welcome {
+  color: white;
+  font-weight: 600;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.navbar.scrolled .welcome {
+  color: var(--sun-900);
+  text-shadow: none;
+}
+
+/* Botones shadcn-ng - Estado transparente (navbar inicial) */
+.auth-actions button[ubButton] {
+  font-family: 'DM Sans', sans-serif !important;
+  font-weight: 700 !important;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-radius: 10px !important;
+  transition: all 0.3s ease !important;
+  padding: 0.7rem 1.75rem !important;
+  font-size: 0.9rem !important;
+  white-space: nowrap;
+}
+
+/* Botón primario (Iniciar sesión) - Transparente */
+.auth-actions button[ubButton]:not([variant='outline']):not([variant='ghost']) {
+  background: rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+  border: 2px solid rgba(255, 255, 255, 0.4) !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2) !important;
+}
+
+.navbar.scrolled .auth-actions button[ubButton]:not([variant='outline']):not([variant='ghost']) {
+  background: linear-gradient(135deg, var(--sun-500), var(--sun-600)) !important;
+  color: white !important;
+  border: none !important;
+  box-shadow: 0 4px 15px rgba(255, 122, 24, 0.3) !important;
+}
+
+.auth-actions button[ubButton]:not([variant='outline']):not([variant='ghost']):hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.3) !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25) !important;
+}
+
+.navbar.scrolled
+  .auth-actions
+  button[ubButton]:not([variant='outline']):not([variant='ghost']):hover {
+  box-shadow: 0 6px 20px rgba(255, 122, 24, 0.4) !important;
+  background: linear-gradient(135deg, var(--sun-600), var(--sun-700)) !important;
+}
+
+/* Botón outline (Registrarse) - Transparente con borde */
+.auth-actions button[ubButton][variant='outline'] {
+  background: transparent !important;
+  color: white !important;
+  border: 2px solid rgba(255, 255, 255, 0.6) !important;
+}
+
+.navbar.scrolled .auth-actions button[ubButton][variant='outline'] {
+  background: white !important;
+  color: var(--sun-600) !important;
+  border: 2px solid var(--sun-500) !important;
+}
+
+.auth-actions button[ubButton][variant='outline']:hover {
+  background: rgba(255, 255, 255, 0.2) !important;
+  border-color: white !important;
+  transform: translateY(-2px);
+}
+
+.navbar.scrolled .auth-actions button[ubButton][variant='outline']:hover {
+  background: var(--sun-50) !important;
+  border-color: var(--sun-600) !important;
+  transform: translateY(-2px);
+}
+
+/* Botón ghost (Cerrar sesión) - Más pequeño */
+.auth-actions button[ubButton][variant='ghost'] {
+  padding: 0.6rem 1.5rem !important;
+  font-size: 0.85rem !important;
+  background: rgba(255, 255, 255, 0.15) !important;
+  color: white !important;
+}
+
+.navbar.scrolled .auth-actions button[ubButton][variant='ghost'] {
+  background: var(--sun-100) !important;
+  color: var(--sun-700) !important;
+}
+
+.auth-actions button[ubButton][variant='ghost']:hover {
+  background: rgba(255, 255, 255, 0.25) !important;
+  transform: translateY(-2px);
+}
+
+.navbar.scrolled .auth-actions button[ubButton][variant='ghost']:hover {
+  background: var(--sun-200) !important;
+}
+
+/* Responsive */
 @media (max-width: 768px) {
   .navbar {
     flex-direction: column;
     align-items: flex-start;
+    padding: 1rem 2rem;
   }
 
   .nav-links {
     flex-direction: column;
     width: 100%;
-    gap: 15px;
-    margin-top: 10px;
+    gap: 1rem;
+    margin-top: 1rem;
   }
 
   .nav-links li a {
-    padding: 10px 0;
+    padding: 0.75rem 0;
     width: 100%;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
-}
 
-/* --- AUTH ACTIONS: hacer que los botones parezcan enlaces de nav-links --- */
-.auth-actions {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-}
-
-.auth-actions .welcome {
-  color: #ffffff;
-  font-weight: 600;
+  .auth-actions {
+    margin-top: 1rem;
+    width: 100%;
+    justify-content: flex-start;
+  }
 }
 
 /* Convertir botones en apariencia de enlace (coincide con .nav-links a) */

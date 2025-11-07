@@ -1,0 +1,171 @@
+.destination-card {
+  background: linear-gradient(135deg, rgba(255, 241, 224, 0.9) 0%, rgba(255, 216, 168, 0.7) 100%);
+  backdrop-filter: blur(5px);
+  border: 3px solid var(--sun-700);
+  border-radius: 20px !important;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 15px rgba(255, 122, 24, 0.15);
+  height: 360px;
+  position: relative;
+  cursor: pointer;
+}
+
+.destination-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, var(--sun-300) 0%, var(--sun-400) 100%);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  z-index: 0;
+  border-radius: 18px;
+}
+
+.destination-card:hover::before {
+  opacity: 1;
+}
+
+.destination-card:hover {
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 15px 40px rgba(255, 122, 24, 0.3);
+}
+
+.destination-card-content {
+  padding: 2rem !important;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  height: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+.destination-title {
+  font-family: 'Timmana', sans-serif;
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: var(--sun-900);
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: color 0.3s ease;
+  text-align: left;
+}
+
+.destination-card:hover .destination-title {
+  color: white;
+}
+
+.destination-description {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1rem;
+  color: var(--sun-700);
+  line-height: 1.7;
+  margin: 0;
+  flex: 1;
+  transition: color 0.3s ease;
+  text-align: left;
+  padding: 0 0.5rem 0 0;
+}
+
+.destination-card:hover .destination-description {
+  color: white;
+}
+
+.destination-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1.5rem;
+  margin-top: auto;
+  position: relative;
+}
+
+/* Icono en esquina inferior izquierda */
+.destination-icon {
+  position: absolute;
+  bottom: -1rem;
+  left: -1rem;
+  width: 110px;
+  height: 110px;
+  object-fit: contain;
+  transition: all 0.3s ease;
+
+  z-index: 10;
+}
+
+.destination-card:hover .destination-icon {
+  transform: scale(1.2) rotate(5deg);
+}
+
+.destination-cta {
+  background: linear-gradient(135deg, var(--sun-500), var(--sun-600)) !important;
+  color: white !important;
+  border: none !important;
+  box-shadow: 0 4px 15px rgba(255, 122, 24, 0.3) !important;
+  font-weight: 700 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  font-family: 'DM Sans', sans-serif !important;
+  border-radius: 12px !important;
+  padding: 0.75rem 1rem !important;
+  font-size: 0.85rem !important;
+  transition: all 0.3s ease !important;
+  max-width: 140px;
+}
+
+.destination-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(255, 122, 24, 0.4) !important;
+  background: linear-gradient(135deg, var(--sun-600), var(--sun-700)) !important;
+}
+
+.destination-card:hover .destination-cta {
+  background: white !important;
+  color: var(--sun-600) !important;
+  box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3) !important;
+}
+
+.destination-card:hover .destination-cta:hover {
+  background: var(--sun-50) !important;
+  color: var(--sun-700) !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .destination-card {
+    height: 340px;
+  }
+
+  .destination-card-content {
+    padding: 1.75rem !important;
+    gap: 1.25rem;
+  }
+
+  .destination-title {
+    font-size: 2rem;
+  }
+
+  .destination-description {
+    font-size: 0.95rem;
+  }
+
+  .destination-icon {
+    width: 55px;
+    height: 55px;
+  }
+
+  .destination-icon svg {
+    width: 32px;
+    height: 32px;
+  }
+
+  .destination-cta {
+    padding: 0.75rem 2rem !important;
+    font-size: 0.85rem !important;
+  }
+}

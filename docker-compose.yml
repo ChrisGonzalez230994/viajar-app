@@ -1,18 +1,20 @@
-backend:
-  container_name: viajarapp-api
-  build:
-    context: ./api
-    dockerfile: Dockerfile
-  restart: always
-  env_file:
-    - ./api/.env
-  ports:
-    - 4050:3001 # Puerto para el backend API
-  environment:
-    - TZ=America/Argentina/Buenos_Aires
-    - NODE_ENV=production
-  networks:
-    - proyectos-network
+version: '3.8'
+services:
+  backend:
+    container_name: viajarapp-api
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    restart: always
+    env_file:
+      - ./api/.env
+    ports:
+      - 4050:3001 # Puerto para el backend API
+    environment:
+      - TZ=America/Argentina/Buenos_Aires
+      - NODE_ENV=production
+    networks:
+      - proyectos-network
 networks:
   proyectos-network:
     external: true

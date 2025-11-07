@@ -1,0 +1,20 @@
+<div ubCard class="destination-card">
+  <div ubCardContent class="destination-card-content">
+    <!-- Título del destino -->
+    <h3 class="destination-title">{{ displayTitle }}</h3>
+
+    <!-- Descripción -->
+    <p class="destination-description">{{ description }}</p>
+
+    <!-- Contenedor inferior con botón -->
+    <div class="destination-footer">
+      <!-- Call to Action -->
+      <button ubButton size="sm" class="destination-cta" (click)="onExplore()">
+        {{ ctaText }}
+      </button>
+    </div>
+
+    <!-- Icono temático en esquina inferior izquierda -->
+    <img [src]="cardConfig.iconPath" [alt]="type + ' icon'" class="destination-icon" />
+  </div>
+</div>

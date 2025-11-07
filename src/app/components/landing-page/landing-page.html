@@ -1,27 +1,290 @@
 <div class="parallax-bg"></div>
 
 <header id="inicio" class="hero-section fade-in">
-  <h1>Descubrí el mundo con <span>ViaJAR APP</span></h1>
-  <p>Tu puerta de entrada a experiencias únicas y destinos inolvidables.</p>
-  <a href="#destinos" class="btn">Explorar</a>
+  <!-- Texto de fondo fragmentado en 3 líneas con baja opacidad (izquierda) -->
+  <div class="hero-background-text" aria-hidden="true">
+    <div class="bg-text-line bg-text-expe">EXPE</div>
+    <div class="bg-text-line bg-text-rien">RIEN</div>
+    <div class="bg-text-line bg-text-cia">CIA</div>
+  </div>
+
+  <!-- Imagen de la pareja (posición absoluta, independiente) -->
+  <div class="hero-image">
+    <img src="/assets/ParejaPng.png" alt="Pareja viajando" />
+  </div>
+
+  <!-- Layout de contenido -->
+  <div class="hero-layout">
+    <!-- Contenido principal -->
+    <div class="hero-content">
+      <h1 class="hero-main-title">ViaJAR</h1>
+      <p class="hero-subtitle">
+        Descubrí el mundo con <span class="brand-highlight">ViaJAR APP</span>
+      </p>
+    </div>
+  </div>
+
+  <!-- Card de búsqueda en la parte inferior -->
+  <div class="search-card-wrapper">
+    <div ubCard class="search-card-container">
+      <div ubCardContent class="search-card-inner">
+        <div class="search-grid">
+          <!-- Campo de búsqueda de destino -->
+          <div class="search-field">
+            <label for="destination" class="search-label">Destino</label>
+            <input
+              ubInput
+              [type]="'text'"
+              id="destination"
+              placeholder="¿A dónde querés ir?"
+              [(ngModel)]="searchDestination"
+            />
+          </div>
+
+          <!-- Fecha de inicio -->
+          <div class="search-field">
+            <label for="checkin" class="search-label">Check-in</label>
+            <input ubInput [type]="'date'" id="checkin" [(ngModel)]="checkInDate" />
+          </div>
+
+          <!-- Fecha de fin -->
+          <div class="search-field">
+            <label for="checkout" class="search-label">Check-out</label>
+            <input ubInput [type]="'date'" id="checkout" [(ngModel)]="checkOutDate" />
+          </div>
+
+          <!-- Botón de búsqueda -->
+          <div class="search-button-container">
+            <button ubButton size="lg" (click)="onSearch()">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.35-4.35"></path>
+              </svg>
+              Buscar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </header>
 
 <section id="destinos" class="section destinos fade-in">
   <h2>Destinos destacados</h2>
   <div class="cards">
-    <div class="card">Montañas</div>
-    <div class="card">Playas</div>
-    <div class="card">Ciudades</div>
-    <div class="card">Selvas</div>
+    <app-destination-card
+      type="montañas"
+      title="Montañas"
+      description="Descubrí paisajes impresionantes y aire puro en las alturas"
+      ctaText="Explorar"
+    ></app-destination-card>
+
+    <app-destination-card
+      type="playas"
+      title="Playas"
+      description="Relajate en las costas más hermosas del mundo"
+      ctaText="Explorar"
+    ></app-destination-card>
+
+    <app-destination-card
+      type="ciudades"
+      title="Ciudades"
+      description="Viví la cultura y energía de las grandes metrópolis"
+      ctaText="Explorar"
+    ></app-destination-card>
+
+    <app-destination-card
+      type="selvas"
+      title="Selvas"
+      description="Aventurate en la naturaleza más salvaje y exótica"
+      ctaText="Explorar"
+    ></app-destination-card>
   </div>
 </section>
 
 <section id="nosotros" class="section nosotros fade-in">
-  <h2>Sobre nosotros</h2>
-  <p>
-    En <strong>ViaJAR APP</strong> creemos que cada viaje es una historia. Nuestra misión es inspirarte y ayudarte
-    a planificar tu próxima aventura con facilidad, seguridad y emoción.
-  </p>
+  <div class="nosotros-container">
+    <div class="nosotros-left">
+      <div class="nosotros-image">
+        <img src="/assets/sunset-beach.jpg" alt="Viajeros en la playa" />
+      </div>
+      <div class="nosotros-left-content">
+        <h3 class="nosotros-left-title">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+            <circle cx="9" cy="7" r="4" />
+            <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
+            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+          </svg>
+          ¿Quiénes Somos?
+        </h3>
+        <p class="nosotros-left-subtitle">
+          Estudiantes de la Tecnicatura en Programación de la UTN
+        </p>
+        <p class="nosotros-description">
+          En 2023, tres estudiantes de Programación vivimos la frustración de organizar viajes y
+          comparar precios con planillas excel desactualizadas y grupos caóticos. De esa experiencia
+          nació
+          <strong>ViaJAR</strong>: nuestro proyecto de tesis para simplificar la planificación de
+          viajes y que dediques más tiempo a disfrutar y menos a organizar.
+        </p>
+      </div>
+    </div>
+    <div class="nosotros-content">
+      <h2>Por qué hicimos esta aplicacion?</h2>
+      <p class="nosotros-intro">
+        Nacimos de la necesidad real de simplificar los viajes sin depender de múltiples plataformas
+        complejas. Como makers y estudiantes, creemos en construir herramientas que mejoran la
+        experiencia del viajero. Cada funcionalidad de ViaJAR es diseñada y desarrollada pensando en
+        usuarios reales, con componentes de calidad que perduran.
+      </p>
+
+      <h3>Nuestros Objetivos</h3>
+      <ul class="nosotros-list">
+        <li>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path
+              d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"
+            />
+            <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+            <line x1="12" y1="22.08" x2="12" y2="12" />
+          </svg>
+          <div>
+            <strong>Centralizar Información</strong>
+            <span
+              >Reunir destinos, reservas, itinerarios y recomendaciones en un solo lugar accesible
+              desde cualquier dispositivo.</span
+            >
+          </div>
+        </li>
+
+        <li>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <line x1="12" y1="1" x2="12" y2="23" />
+            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+          </svg>
+          <div>
+            <strong>Ahorrar Tiempo y Dinero</strong>
+            <span
+              >Ofrecer comparación de precios, alertas de ofertas y sugerencias personalizadas para
+              optimizar el presupuesto del viaje.</span
+            >
+          </div>
+        </li>
+        <li>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+            <polyline points="22 4 12 14.01 9 11.01" />
+          </svg>
+          <div>
+            <strong>Reducir el Estrés</strong>
+            <span
+              >Eliminar la incertidumbre de la planificación con recordatorios automáticos,
+              confirmaciones de reservas y actualizaciones instantáneas.</span
+            >
+          </div>
+        </li>
+        <li>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polygon
+              points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+            />
+          </svg>
+          <div>
+            <strong>Inspirar Aventuras</strong>
+            <span
+              >Descubrir nuevos destinos a través de reseñas auténticas de otros viajeros y
+              recomendaciones basadas en preferencias personales.</span
+            >
+          </div>
+        </li>
+        <li>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7 10 12 15 17 10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>
+          <div>
+            <strong>Experiencia Transparente</strong>
+            <span
+              >Precios claros, sin costos ocultos. Lo que ves es lo que obtienes, con total
+              transparencia en cada transacción.</span
+            >
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
 </section>
 
 <section id="contacto" class="section contacto fade-in">
@@ -33,5 +296,4 @@
 <footer>
   <p>© 2025 ViaJAR APP — Todos los derechos reservados.</p>
   <button id="scrollTopBtn" (click)="scrollToTop()" title="Volver arriba">↑</button>
-
 </footer>
