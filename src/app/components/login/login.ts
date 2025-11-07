@@ -25,7 +25,7 @@ export class Login implements OnInit {
     
   ) {
     this.loginForm = this.fb.group({
-      username: ['', [Validators.required]],
+      email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required]]
     });
   }
@@ -42,12 +42,12 @@ export class Login implements OnInit {
     }
   }
   onLogin() {
-    const username = this.loginForm.get('username')?.value;
+    const email = this.loginForm.get('email')?.value;
     const password = this.loginForm.get('password')?.value;
     const rutaDestino = localStorage.getItem('rutaPostLogin') || '/';
     
     
-    this.authService.login(username, password).subscribe(
+    this.authService.login(email, password).subscribe(
       (usuario: Usuario | null) => {
         if (usuario) {
           console.log('Login exitoso:', usuario);

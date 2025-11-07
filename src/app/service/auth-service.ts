@@ -10,7 +10,8 @@ import { Router } from '@angular/router';
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:3000/usuarios';
+  // Base URL de la API Express (endpoints: /api/auth/login, /api/auth/register)
+  private apiUrl = 'http://localhost:3000/api/auth';
   private userKey = 'user';
   private timeoutId: any;
   private inactivityTime = 60000;
@@ -26,17 +27,29 @@ export class AuthService {
   public reservas$ = this.reservasSubject.asObservable();
   public userName$ = this.userNameSource.asObservable();
 
-    login(username: string, password: string): Observable<Usuario | null> {
+    // Login usando el endpoint POST /api/auth/login
+    // El backend devuelve { status: 'success', token, userData } o { status: 'error', ... }
+    login(email: string, password: string): Observable<Usuario | null> {
       return new Observable((observer) => {
-        this.http.get<Usuario[]>(`${this.apiUrl}?username=${encodeURIComponent(username)}`).subscribe({
-          next: (usuarios) => {
-            const usuario = usuarios.find(u => u.password === password);
-            if (usuario) {
-              localStorage.setItem('user', JSON.stringify(usuario));
+        this.http.post<any>(`${this.apiUrl}/login`, { email, password }).subscribe({
+          next: (res) => {
+            if (res && res.status === 'success') {
+              const userData = res.userData || res.user || {};
+
+              // Normalizar campos esperados por la app (nombre, email, idUsuario, reservas...)
+              const usuarioAlmacenado: any = {
+                nombre: userData.name || userData.nombre || userData.username || '',
+                email: userData.email,
+                idUsuario: userData.idUsuario || userData.id || userData._id || Date.now(),
+                reservas: userData.reservas || []
+              };
+
+              localStorage.setItem('user', JSON.stringify(usuarioAlmacenado));
               this.autenticado.next(true);
+              this.setUserName(usuarioAlmacenado.nombre);
               this.actualizarCantidadReservas();
-              console.log("Usuario logueado:", usuario);
-              observer.next(usuario);
+              console.log('Usuario logueado:', usuarioAlmacenado);
+              observer.next(usuarioAlmacenado as Usuario);
               this.setupInactivityListener();
             } else {
               this.autenticado.next(false);
@@ -169,42 +182,35 @@ export class AuthService {
     }
   }
 
-  registro(usuario: Partial<Usuario>): Observable<Usuario> {
-    if (!usuario.username || !usuario.email) {
+  // Registro usando POST /api/auth/register
+  // Mapea los campos del formulario a lo que espera el backend (name, email, password)
+  registro(usuario: Partial<Usuario>): Observable<any> {
+    const nombre = (usuario.nombre || usuario.username || '').trim();
+    const email = usuario.email;
+    const password = (usuario.password as any) || (usuario as any).contraseña || '';
+
+    if (!nombre || !email || !password) {
       return throwError(() => new Error('INVALID_DATA'));
     }
 
-    const urlUsername = `${this.apiUrl}?username=${encodeURIComponent(usuario.username)}`;
-    const urlEmail = `${this.apiUrl}?email=${encodeURIComponent(usuario.email)}`;
+    const payload = { name: nombre, email: email, password: password };
 
-    return this.http.get<Usuario[]>(urlUsername).pipe(
-      switchMap(usuariosPorNombre => {
-        if (usuariosPorNombre.length > 0) {
-          return throwError(() => new Error('USERNAME_TAKEN'));
+    return this.http.post<any>(`${this.apiUrl}/register`, payload).pipe(
+      tap((res) => {
+        if (res && res.status === 'success') {
+          console.log('Registro exitoso (backend):', res);
+        } else {
+          console.warn('Registro: respuesta inesperada', res);
         }
-        return this.http.get<Usuario[]>(urlEmail);
       }),
-      switchMap(usuariosPorEmail => {
-        if (usuariosPorEmail.length > 0) {
-          return throwError(() => new Error('EMAIL_TAKEN'));
+      switchMap((res) => {
+        if (res && res.status === 'success') {
+          // Devolver el payload como confirmación (la app redirige al login)
+          return new Observable((obs) => { obs.next(payload); obs.complete(); });
         }
-        const nuevoUsuario: Partial<Usuario> = {
-          ...usuario,
-          id: Math.random().toString(36).substr(2, 4),
-          idUsuario: Date.now(),
-          rol: 'usuario',
-          reservas: []
-        };
-        
-        return this.http.post<Usuario>(this.apiUrl, nuevoUsuario);
+        return throwError(() => new Error('REGISTRATION_FAILED'));
       }),
-      tap(nuevoUsuario => {
-        console.log('Usuario registrado exitosamente:', nuevoUsuario);
-      }),
-      catchError(error => {
-        if (error.status === 404) {
-          console.error('Error 404: Verifica que el servidor json-server esté corriendo');
-        }
+      catchError((error) => {
         console.error('Error en registro:', error);
         return throwError(() => error);
       })
