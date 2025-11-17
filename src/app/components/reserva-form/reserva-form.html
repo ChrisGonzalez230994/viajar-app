@@ -1,0 +1,17 @@
+<h2>Reservar paquete {{ idPaquete }}</h2>
+
+<form [formGroup]="form" (ngSubmit)="crearReserva()">
+  <label>Nombre</label>
+  <input formControlName="nombre">
+
+  <label>DNI</label>
+  <input formControlName="dni">
+
+  <label>Fecha</label>
+  <input type="date" formControlName="fecha">
+
+  <label>Personas</label>
+  <input type="number" formControlName="cantidadPersonas">
+
+  <button type="submit">Reservar</button>
+</form>

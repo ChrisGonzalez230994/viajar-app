@@ -10,6 +10,8 @@ import { Home } from './components/pages/home/home';
 import { Navbar } from './components/navbar/navbar';
 import { ReactiveFormsModule } from '@angular/forms';
 import { LandingComponent } from './components/landing-page/landing-page';
+import { PaqueteDetalleComponent } from './components/paquete-detalle-component/paquete-detalle-component';
+import { ReservaForm } from './components/reserva-form/reserva-form';
 
 @NgModule({
   declarations: [
@@ -17,6 +19,8 @@ import { LandingComponent } from './components/landing-page/landing-page';
     Login,
     Registro,
     Home,
+    PaqueteDetalleComponent,
+    ReservaForm,
     
   ],
   imports: [
