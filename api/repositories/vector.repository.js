@@ -1,5 +1,20 @@
 const qdrantConnection = require('../config/qdrant');
 const embeddingService = require('../services/embedding.service');
+const crypto = require('crypto');
+
+/**
+ * Convierte MongoDB ObjectId a UUID v5 compatible con Qdrant
+ */
+function objectIdToUuid(objectId) {
+  const objectIdStr = objectId.toString();
+  // Usar namespace DNS para generar UUID v5 consistente
+  const namespace = '6ba7b810-9dad-11d1-80b4-00c04fd430c8';
+  return crypto
+    .createHash('md5')
+    .update(namespace + objectIdStr)
+    .digest('hex')
+    .replace(/(.{8})(.{4})(.{4})(.{4})(.{12})/, '$1-$2-$3-$4-$5');
+}
 
 /**
  * Repositorio Vectorial para búsquedas semánticas
@@ -48,7 +63,7 @@ class VectorRepository {
         wait: true,
         points: [
           {
-            id: destino._id.toString(),
+            id: objectIdToUuid(destino._id),
             vector: embedding,
             payload: payload,
           },
@@ -84,7 +99,7 @@ class VectorRepository {
 
       // Preparar puntos para Qdrant
       const points = destinos.map((destino, index) => ({
-        id: destino._id.toString(),
+        id: objectIdToUuid(destino._id),
         vector: embeddings[index],
         payload: {
           destinoId: destino._id.toString(),
@@ -116,6 +131,12 @@ class VectorRepository {
       return true;
     } catch (error) {
       console.error('❌ Error indexando destinos batch:', error.message);
+      if (error.response) {
+        console.error('Response data:', error.response.data);
+      }
+      if (error.data) {
+        console.error('Error data:', error.data);
+      }
       throw error;
     }
   }
