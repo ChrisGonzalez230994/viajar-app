@@ -28,15 +28,14 @@ export class AuthService {
   public userName$ = this.userNameSource.asObservable();
 
     // Login usando el endpoint POST /api/auth/login
-    // El backend devuelve { status: 'success', token, userData } o { status: 'error', ... }
+    // Si la API Express no responde se intenta un fallback a json-server (/usuarios)
     login(email: string, password: string): Observable<Usuario | null> {
       return new Observable((observer) => {
+        // Intento principal: API Express
         this.http.post<any>(`${this.apiUrl}/login`, { email, password }).subscribe({
           next: (res) => {
             if (res && res.status === 'success') {
               const userData = res.userData || res.user || {};
-
-              // Normalizar campos esperados por la app (nombre, email, idUsuario, reservas...)
               const usuarioAlmacenado: any = {
                 nombre: userData.name || userData.nombre || userData.username || '',
                 email: userData.email,
@@ -48,7 +47,7 @@ export class AuthService {
               this.autenticado.next(true);
               this.setUserName(usuarioAlmacenado.nombre);
               this.actualizarCantidadReservas();
-              console.log('Usuario logueado:', usuarioAlmacenado);
+              console.log('Usuario logueado (api):', usuarioAlmacenado);
               observer.next(usuarioAlmacenado as Usuario);
               this.setupInactivityListener();
             } else {
@@ -57,9 +56,63 @@ export class AuthService {
             }
             observer.complete();
           },
-          error: (error) => {
-            console.error('Error en login:', error);
-            observer.error(error);
+          error: (err) => {
+            console.warn('Login /api/auth failed, intentando fallback json-server:', err && err.status);
+            // Fallback json-server: probar por email y password
+            const e = encodeURIComponent(email || '');
+            const p = encodeURIComponent(password || '');
+            this.http.get<any[]>(`http://localhost:3000/usuarios?email=${e}&password=${p}`).subscribe({
+              next: (res2) => {
+                const usuario = res2 && res2[0];
+                if (usuario) {
+                  const usuarioAlmacenado: any = {
+                    nombre: usuario.nombre || usuario.name || usuario.username || '',
+                    email: usuario.email,
+                    idUsuario: usuario.idUsuario || usuario.id || Date.now(),
+                    reservas: usuario.reservas || []
+                  };
+                  localStorage.setItem('user', JSON.stringify(usuarioAlmacenado));
+                  this.autenticado.next(true);
+                  this.setUserName(usuarioAlmacenado.nombre);
+                  this.actualizarCantidadReservas();
+                  console.log('Usuario logueado (json-server email):', usuarioAlmacenado);
+                  observer.next(usuarioAlmacenado as Usuario);
+                } else {
+                  // Probar por username
+                  this.http.get<any[]>(`http://localhost:3000/usuarios?username=${e}&password=${p}`).subscribe({
+                    next: (res3) => {
+                      const usuario2 = res3 && res3[0];
+                      if (usuario2) {
+                        const usuarioAlmacenado: any = {
+                          nombre: usuario2.nombre || usuario2.name || usuario2.username || '',
+                          email: usuario2.email,
+                          idUsuario: usuario2.idUsuario || usuario2.id || Date.now(),
+                          reservas: usuario2.reservas || []
+                        };
+                        localStorage.setItem('user', JSON.stringify(usuarioAlmacenado));
+                        this.autenticado.next(true);
+                        this.setUserName(usuarioAlmacenado.nombre);
+                        this.actualizarCantidadReservas();
+                        console.log('Usuario logueado (json-server username):', usuarioAlmacenado);
+                        observer.next(usuarioAlmacenado as Usuario);
+                      } else {
+                        this.autenticado.next(false);
+                        observer.next(null);
+                      }
+                      observer.complete();
+                    },
+                    error: (err3) => {
+                      console.error('Error fallback json-server (username):', err3);
+                      observer.error(err3);
+                    }
+                  });
+                }
+              },
+              error: (err2) => {
+                console.error('Error fallback json-server (email):', err2);
+                observer.error(err2);
+              }
+            });
           }
         });
       });
@@ -211,8 +264,28 @@ export class AuthService {
         return throwError(() => new Error('REGISTRATION_FAILED'));
       }),
       catchError((error) => {
-        console.error('Error en registro:', error);
-        return throwError(() => error);
+        console.warn('Error en registro con /api/auth, intentando fallback json-server:', error && error.status);
+        const fallbackUsuario: any = {
+          username: nombre.replace(/\s+/g, '').toLowerCase() || email,
+          password: password,
+          nombre: nombre,
+          apellido: (usuario as any).apellido || '',
+          email: email,
+          nacionalidad: (usuario as any).nacionalidad || '',
+          fechaNacimiento: (usuario as any).fechaNacimiento || '',
+          idUsuario: Date.now(),
+          rol: 'usuario',
+          reservas: []
+        };
+
+        return this.http.post<any>('http://localhost:3000/usuarios', fallbackUsuario).pipe(
+          tap((res2) => console.log('Registro fallback json-server:', res2)),
+          switchMap((res2) => new Observable((obs) => { obs.next(res2); obs.complete(); })),
+          catchError((err2) => {
+            console.error('Error en fallback registro json-server:', err2);
+            return throwError(() => err2);
+          })
+        );
       })
     );
   }
