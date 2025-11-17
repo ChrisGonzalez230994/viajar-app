@@ -1,20 +1,20 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { Login } from './components/login/login';
-import { Home } from './components/pages/home/home';
 import { LandingComponent } from './components/landing-page/landing-page';
 import { Registro } from './components/registro/registro';
+import { ListaDestinos } from './components/lista-destinos/lista-destinos';
 
 const routes: Routes = [
   { path: '', component: LandingComponent },
   { path: 'login', component: Login },
   { path: 'registro', component: Registro },
-  { path: 'home', component: Home },
-  { path: '**', redirectTo: '', pathMatch: 'full' } // ruta por defecto si no se especifica ninguna
+  { path: 'destinos', component: ListaDestinos },
+  { path: '**', redirectTo: '', pathMatch: 'full' }, // ruta por defecto si no se especifica ninguna
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

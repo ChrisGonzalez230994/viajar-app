@@ -370,6 +370,42 @@ class VectorRepository {
       throw error;
     }
   }
+
+  /**
+   * Recrear la colección (eliminar y crear nueva)
+   * Útil para limpiar el índice completamente
+   */
+  async recreateCollection() {
+    try {
+      await this.qdrant.initialize();
+
+      const client = this.qdrant.getClient();
+      const collectionName = this.qdrant.getCollectionName();
+
+      // Intentar eliminar la colección existente
+      try {
+        await client.deleteCollection(collectionName);
+        console.log(`✓ Colección "${collectionName}" eliminada`);
+      } catch (error) {
+        // Si no existe, continuar
+        console.log(`⚠️ Colección "${collectionName}" no existía`);
+      }
+
+      // Crear nueva colección
+      await client.createCollection(collectionName, {
+        vectors: {
+          size: 1536, // OpenAI embeddings dimension
+          distance: 'Cosine',
+        },
+      });
+
+      console.log(`✓ Colección "${collectionName}" creada exitosamente`);
+      return true;
+    } catch (error) {
+      console.error('❌ Error recreando colección:', error.message);
+      throw error;
+    }
+  }
 }
 
 module.exports = new VectorRepository();

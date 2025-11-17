@@ -24,42 +24,63 @@
     </div>
   </div>
 
-  <!-- Card de búsqueda en la parte inferior -->
+  <!-- Card de búsqueda inteligente -->
   <div class="search-card-wrapper">
     <div ubCard class="search-card-container">
       <div ubCardContent class="search-card-inner">
-        <div class="search-grid">
-          <!-- Campo de búsqueda de destino -->
-          <div class="search-field">
-            <label for="destination" class="search-label">Destino</label>
+        <div class="search-main">
+          <div class="search-input-wrapper">
             <input
               ubInput
-              [type]="'text'"
-              id="destination"
-              placeholder="¿A dónde querés ir?"
-              [(ngModel)]="searchDestination"
+              type="text"
+              [(ngModel)]="searchQuery"
+              (keyup.enter)="onSearch()"
+              placeholder="¿Qué tipo de viaje buscas? Ej: 'aventura en la selva', 'romántico con playa'..."
+              class="search-input-main"
             />
           </div>
+          <button
+            ubButton
+            size="lg"
+            (click)="onSearch()"
+            [disabled]="isSearching || !searchQuery.trim()"
+            class="search-btn-main"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="m21 21-4.35-4.35"></path>
+            </svg>
+            {{ isSearching ? 'Buscando...' : 'Buscar' }}
+          </button>
+        </div>
 
-          <!-- Fecha de inicio -->
-          <div class="search-field">
-            <label for="checkin" class="search-label">Check-in</label>
-            <input ubInput [type]="'date'" id="checkin" [(ngModel)]="checkInDate" />
-          </div>
+        <div ubSeparator class="search-separator"></div>
 
-          <!-- Fecha de fin -->
-          <div class="search-field">
-            <label for="checkout" class="search-label">Check-out</label>
-            <input ubInput [type]="'date'" id="checkout" [(ngModel)]="checkOutDate" />
-          </div>
-
-          <!-- Botón de búsqueda -->
-          <div class="search-button-container">
-            <button ubButton size="lg" (click)="onSearch()">
+        <div class="search-filters">
+          <div class="filter-group">
+            <label ubLabel class="filter-label">Tipo de viaje</label>
+            <div class="select-wrapper">
+              <select [(ngModel)]="selectedTipoViaje" class="filter-select-small">
+                <option value="">Todos los tipos</option>
+                <option *ngFor="let tipo of tiposViaje" [value]="tipo.tipo">
+                  {{ tipo.tipo | titlecase }}
+                </option>
+              </select>
               <svg
+                class="select-icon"
                 xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
+                width="16"
+                height="16"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -67,17 +88,102 @@
                 stroke-linecap="round"
                 stroke-linejoin="round"
               >
-                <circle cx="11" cy="11" r="8"></circle>
-                <path d="m21 21-4.35-4.35"></path>
+                <path d="m6 9 6 6 6-6" />
               </svg>
-              Buscar
-            </button>
+            </div>
           </div>
+
+          <div class="filter-group">
+            <label ubLabel class="filter-label">Precio máximo</label>
+            <input
+              ubInput
+              type="number"
+              [(ngModel)]="precioMax"
+              placeholder="Ej: 1000"
+              class="filter-input-small"
+            />
+          </div>
+
+          <button
+            ubButton
+            variant="outline"
+            (click)="limpiarFiltros()"
+            *ngIf="searchQuery || selectedTipoViaje || precioMax"
+            class="clear-button-small"
+          >
+            ✕ Limpiar filtros
+          </button>
         </div>
+
+        <div *ngIf="searchError" class="search-error-small">⚠️ {{ searchError }}</div>
       </div>
     </div>
   </div>
 </header>
+
+<!-- Resultados de Búsqueda (Acordeón) -->
+<section *ngIf="showResults && searchResults.length > 0" class="results-accordion-landing">
+  <div class="accordion-container">
+    <div class="accordion-header">
+      <h2 class="accordion-title">🎯 Resultados encontrados ({{ searchResults.length }})</h2>
+      <button ubButton variant="ghost" (click)="showResults = false" class="close-accordion">
+        ✕
+      </button>
+    </div>
+
+    <div ubSeparator class="accordion-separator"></div>
+
+    <div class="results-preview">
+      <div
+        ubCard
+        *ngFor="let result of searchResults.slice(0, 3)"
+        class="result-card-mini"
+        (click)="verDetalle(result.destinoId)"
+      >
+        <div
+          class="card-bg-image"
+          [style.background-image]="
+            result.imagenPrincipal ? 'url(' + result.imagenPrincipal + ')' : 'none'
+          "
+        ></div>
+
+        <div class="card-header-mini">
+          <h3 class="card-title-mini">{{ result.nombre }}</h3>
+          <span
+            ubBadge
+            class="relevance-badge-mini"
+            [ngClass]="getRelevanceClass(result.relevance)"
+          >
+            {{ result.relevance }}% match
+          </span>
+        </div>
+
+        <div class="card-body-mini">
+          <p class="card-location-mini">📍 {{ result.ciudad }}, {{ result.pais }}</p>
+
+          <div class="card-details-mini">
+            <span class="card-price-mini">{{ formatPrice(result.precio) }}</span>
+            <span class="card-rating-mini" *ngIf="result.calificacionPromedio > 0">
+              ⭐ {{ result.calificacionPromedio.toFixed(1) }}
+            </span>
+          </div>
+
+          <div class="card-tags-mini">
+            <span ubBadge variant="outline" *ngFor="let tipo of result.tipoViaje" class="tag-mini">
+              {{ tipo }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="view-more-container">
+      <button ubButton size="lg" (click)="verTodosLosResultados()" class="view-more-button-landing">
+        Ver todos los resultados ({{ searchResults.length }}) →
+      </button>
+    </div>
+  </div>
+</section>
 
 <section id="destinos" class="section destinos fade-in">
   <h2>Destinos destacados</h2>
