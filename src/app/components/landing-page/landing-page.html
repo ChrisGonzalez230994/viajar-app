@@ -26,12 +26,12 @@
 
   <!-- Card de búsqueda inteligente -->
   <div class="search-card-wrapper">
-    <div ubCard class="search-card-container">
-      <div ubCardContent class="search-card-inner">
+    <div z-card class="search-card-container">
+      <div class="search-card-inner">
         <div class="search-main">
           <div class="search-input-wrapper">
             <input
-              ubInput
+              z-input
               type="text"
               [(ngModel)]="searchQuery"
               (keyup.enter)="onSearch()"
@@ -40,8 +40,8 @@
             />
           </div>
           <button
-            ubButton
-            size="lg"
+            z-button
+            zSize="lg"
             (click)="onSearch()"
             [disabled]="isSearching || !searchQuery.trim()"
             class="search-btn-main"
@@ -64,39 +64,27 @@
           </button>
         </div>
 
-        <div ubSeparator class="search-separator"></div>
+        <div class="search-separator"></div>
 
         <div class="search-filters">
           <div class="filter-group">
-            <label ubLabel class="filter-label">Tipo de viaje</label>
-            <div class="select-wrapper">
-              <select [(ngModel)]="selectedTipoViaje" class="filter-select-small">
-                <option value="">Todos los tipos</option>
-                <option *ngFor="let tipo of tiposViaje" [value]="tipo.tipo">
-                  {{ tipo.tipo | titlecase }}
-                </option>
-              </select>
-              <svg
-                class="select-icon"
-                xmlns="http://www.w3.org/2000/svg"
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path d="m6 9 6 6 6-6" />
-              </svg>
-            </div>
+            <label class="filter-label">Tipo de viaje</label>
+            <z-select
+              [(ngModel)]="selectedTipoViaje"
+              zPlaceholder="Todos los tipos"
+              class="filter-select-small"
+            >
+              <z-select-item zValue="">Todos los tipos</z-select-item>
+              <z-select-item *ngFor="let tipo of tiposViaje" [zValue]="tipo.id">
+                {{ tipo.nombre }}
+              </z-select-item>
+            </z-select>
           </div>
 
           <div class="filter-group">
-            <label ubLabel class="filter-label">Precio máximo</label>
+            <label class="filter-label">Precio máximo</label>
             <input
-              ubInput
+              z-input
               type="number"
               [(ngModel)]="precioMax"
               placeholder="Ej: 1000"
@@ -105,8 +93,8 @@
           </div>
 
           <button
-            ubButton
-            variant="outline"
+            z-button
+            zType="outline"
             (click)="limpiarFiltros()"
             *ngIf="searchQuery || selectedTipoViaje || precioMax"
             class="clear-button-small"
@@ -126,16 +114,16 @@
   <div class="accordion-container">
     <div class="accordion-header">
       <h2 class="accordion-title">🎯 Resultados encontrados ({{ searchResults.length }})</h2>
-      <button ubButton variant="ghost" (click)="showResults = false" class="close-accordion">
+      <button z-button zType="ghost" (click)="showResults = false" class="close-accordion">
         ✕
       </button>
     </div>
 
-    <div ubSeparator class="accordion-separator"></div>
+    <div class="accordion-separator"></div>
 
     <div class="results-preview">
       <div
-        ubCard
+        z-card
         *ngFor="let result of searchResults.slice(0, 3)"
         class="result-card-mini"
         (click)="verDetalle(result.destinoId)"
@@ -150,7 +138,7 @@
         <div class="card-header-mini">
           <h3 class="card-title-mini">{{ result.nombre }}</h3>
           <span
-            ubBadge
+            z-badge
             class="relevance-badge-mini"
             [ngClass]="getRelevanceClass(result.relevance)"
           >
@@ -169,7 +157,7 @@
           </div>
 
           <div class="card-tags-mini">
-            <span ubBadge variant="outline" *ngFor="let tipo of result.tipoViaje" class="tag-mini">
+            <span z-badge zType="outline" *ngFor="let tipo of result.tipoViaje" class="tag-mini">
               {{ tipo }}
             </span>
           </div>
@@ -178,7 +166,12 @@
     </div>
 
     <div class="view-more-container">
-      <button ubButton size="lg" (click)="verTodosLosResultados()" class="view-more-button-landing">
+      <button
+        z-button
+        zSize="lg"
+        (click)="verTodosLosResultados()"
+        class="view-more-button-landing"
+      >
         Ver todos los resultados ({{ searchResults.length }}) →
       </button>
     </div>

@@ -25,7 +25,7 @@ export class ListaDestinos implements OnInit {
   calificacionMin: number | null = null;
 
   // Tipos de viaje
-  tiposViaje: Array<{ tipo: string; descripcion: string; keywords: string[] }> = [];
+  tiposViaje: Array<{ id: string; nombre: string; descripcion: string; keywords: string[] }> = [];
 
   // Sidebar
   isSidebarOpen: boolean = true;

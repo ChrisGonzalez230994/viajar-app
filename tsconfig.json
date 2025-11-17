@@ -5,7 +5,12 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": [
+        "src/*"
+      ],
+      "@shared/*": [
+        "src/app/shared/*"
+      ]
     },
     "strict": true,
     "noImplicitOverride": true,

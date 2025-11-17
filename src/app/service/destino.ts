@@ -22,7 +22,8 @@ interface DestinoConReseñas {
 }
 
 interface TipoViajeInfo {
-  tipo: string;
+  id: string;
+  nombre: string;
   descripcion: string;
   keywords: string[];
 }

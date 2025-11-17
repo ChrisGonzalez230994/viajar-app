@@ -7,13 +7,12 @@ import { AuthService } from '../../service/auth-service';
 import { DestinoService } from '../../service/destino';
 import { ResultadoBusqueda } from '../../models/busqueda';
 import { Destino } from '../../models/destino';
-import { UbButtonDirective } from '@/components/ui/button';
-import { UbCardDirective, UbCardContentDirective } from '@/components/ui/card';
-import { UbInputDirective } from '@/components/ui/input';
-import { UbLabelDirective } from '@/components/ui/label';
-import { UbSeparatorDirective } from '@/components/ui/separator';
-import { UbBadgeDirective } from '@/components/ui/badge';
-import { UbSelectDirective } from '@/components/ui/select';
+import { ZardButtonComponent } from '@shared/components/button/button.component';
+import { ZardCardComponent } from '@shared/components/card/card.component';
+import { ZardInputDirective } from '@shared/components/input/input.directive';
+import { ZardBadgeComponent } from '@shared/components/badge/badge.component';
+import { ZardSelectComponent } from '@shared/components/select/select.component';
+import { ZardSelectItemComponent } from '@shared/components/select/select-item.component';
 import { DestinationCard } from '../destination-card/destination-card';
 
 @Component({
@@ -23,14 +22,12 @@ import { DestinationCard } from '../destination-card/destination-card';
     CommonModule,
     RouterModule,
     FormsModule,
-    UbButtonDirective,
-    UbCardDirective,
-    UbCardContentDirective,
-    UbInputDirective,
-    UbLabelDirective,
-    UbSeparatorDirective,
-    UbBadgeDirective,
-    UbSelectDirective,
+    ZardButtonComponent,
+    ZardCardComponent,
+    ZardInputDirective,
+    ZardBadgeComponent,
+    ZardSelectComponent,
+    ZardSelectItemComponent,
     DestinationCard,
   ],
   templateUrl: './landing-page.html',
@@ -56,7 +53,7 @@ export class LandingComponent implements OnInit, OnDestroy {
   isLoadingDestacados: boolean = false;
 
   // Tipos de viaje
-  tiposViaje: Array<{ tipo: string; descripcion: string; keywords: string[] }> = [];
+  tiposViaje: Array<{ id: string; nombre: string; descripcion: string; keywords: string[] }> = [];
 
   private subs: Subscription[] = [];
 

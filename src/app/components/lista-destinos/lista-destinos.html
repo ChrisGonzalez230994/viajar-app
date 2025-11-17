@@ -33,8 +33,8 @@
           <label ubLabel class="filter-label">Tipo de viaje</label>
           <select [(ngModel)]="selectedTipoViaje" class="filter-select">
             <option value="">Todos</option>
-            <option *ngFor="let tipo of tiposViaje" [value]="tipo.tipo">
-              {{ tipo.tipo | titlecase }}
+            <option *ngFor="let tipo of tiposViaje" [value]="tipo.id">
+              {{ tipo.nombre }}
             </option>
           </select>
         </div>
