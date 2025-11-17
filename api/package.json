@@ -30,9 +30,6 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon api/index.js",
-    "qdrant:start": "docker-compose up -d",
-    "qdrant:stop": "docker-compose down",
-    "qdrant:logs": "docker-compose logs -f qdrant",
     "seed:vector": "node seeds/seedVectorDB.js",
     "seed:test": "node seeds/seedTestData.js"
   },
