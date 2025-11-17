@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@cubejs-client/core": "^0.33.12",
+    "@qdrant/js-client-rest": "^1.15.1",
     "axios": "^1.4.0",
     "bcrypt": "^5.1.0",
     "buffer": "^6.0.3",
@@ -21,13 +22,19 @@
     "morgan": "^1.10.0",
     "multer": "^2.0.2",
     "nodemailer": "^6.9.4",
+    "openai": "^6.9.0",
     "openssl": "^2.0.0",
     "web-vitals": "^2.1.4",
     "winston": "^3.8.2"
   },
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon api/index.js"
+    "dev": "nodemon api/index.js",
+    "qdrant:start": "docker-compose up -d",
+    "qdrant:stop": "docker-compose down",
+    "qdrant:logs": "docker-compose logs -f qdrant",
+    "seed:vector": "node seeds/seedVectorDB.js",
+    "seed:test": "node seeds/seedTestData.js"
   },
   "devDependencies": {
     "nodemon": "^3.0.1",

@@ -1,130 +1,101 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const { checkAuth, checkAdmin } = require("../middlewares/authentication.js");
+const { checkAuth, checkAdmin } = require('../middlewares/authentication.js');
 
-// Models import
-const Destino = require("../models/destino.js");
-const Reseña = require("../models/reseña.js");
+// Repository imports
+const destinoRepository = require('../repositories/destino.repository.js');
+const reseñaRepository = require('../repositories/reseña.repository.js');
+const vectorRepository = require('../repositories/vector.repository.js');
 
 //******************
 //**** DESTINOS ****
 //******************
 
 // GET - Obtener todos los destinos con filtros y búsqueda
-router.get("/", async (req, res) => {
+router.get('/', async (req, res) => {
   try {
-    const { 
-      search, 
-      ciudad, 
-      pais, 
-      precioMin, 
-      precioMax, 
+    const {
+      search,
+      ciudad,
+      pais,
+      precioMin,
+      precioMax,
       calificacionMin,
+      actividades,
       limit = 20,
       page = 1,
       sortBy = 'createdAt',
-      sortOrder = 'desc'
+      sortOrder = 'desc',
     } = req.query;
 
-    let query = { disponibilidad: true };
-
-    // Búsqueda por texto (nombre, ciudad, país, descripción)
-    if (search) {
-      query.$text = { $search: search };
-    }
-
-    // Filtros específicos
-    if (ciudad) {
-      query.ciudad = new RegExp(ciudad, 'i');
-    }
-
-    if (pais) {
-      query.pais = new RegExp(pais, 'i');
-    }
-
-    if (precioMin || precioMax) {
-      query.precio = {};
-      if (precioMin) query.precio.$gte = Number(precioMin);
-      if (precioMax) query.precio.$lte = Number(precioMax);
-    }
-
-    if (calificacionMin) {
-      query.calificacionPromedio = { $gte: Number(calificacionMin) };
-    }
-
-    // Ordenamiento
-    const sort = {};
-    sort[sortBy] = sortOrder === 'asc' ? 1 : -1;
-
-    // Paginación
-    const skip = (Number(page) - 1) * Number(limit);
-
-    const destinos = await Destino.find(query)
-      .sort(sort)
-      .limit(Number(limit))
-      .skip(skip);
-
-    const total = await Destino.countDocuments(query);
-
-    const response = {
-      status: "success",
-      data: destinos,
-      pagination: {
-        page: Number(page),
-        limit: Number(limit),
-        total,
-        totalPages: Math.ceil(total / Number(limit))
-      }
+    // Construir criterios de búsqueda
+    const criteria = {
+      search,
+      ciudad,
+      pais,
+      precioMin,
+      precioMax,
+      calificacionMin,
+      actividades: actividades ? actividades.split(',') : undefined,
     };
 
-    return res.status(200).json(response);
+    // Opciones de paginación y ordenamiento
+    const options = {
+      page: Number(page),
+      limit: Number(limit),
+      sortBy,
+      sortOrder,
+    };
+
+    const result = await destinoRepository.search(criteria, options);
+
+    return res.status(200).json({
+      status: 'success',
+      data: result.data,
+      pagination: result.pagination,
+    });
   } catch (error) {
-    console.error("Error obteniendo destinos:", error);
+    console.error('Error obteniendo destinos:', error);
     return res.status(500).json({
-      status: "error",
-      error: "Error al obtener los destinos"
+      status: 'error',
+      error: 'Error al obtener los destinos',
     });
   }
 });
 
 // GET - Obtener un destino por ID con sus reseñas
-router.get("/:id", async (req, res) => {
+router.get('/:id', async (req, res) => {
   try {
-    const destino = await Destino.findById(req.params.id);
+    const destino = await destinoRepository.findById(req.params.id);
 
     if (!destino) {
       return res.status(404).json({
-        status: "error",
-        error: "Destino no encontrado"
+        status: 'error',
+        error: 'Destino no encontrado',
       });
     }
 
     // Obtener las últimas reseñas del destino
-    const reseñas = await Reseña.find({ destino: req.params.id })
-      .populate('usuario', 'username nombre apellido')
-      .sort({ createdAt: -1 })
-      .limit(10);
+    const reseñasResult = await reseñaRepository.findRecentByDestination(req.params.id, 10);
 
-    const response = {
-      status: "success",
+    return res.status(200).json({
+      status: 'success',
       data: {
         ...destino.toObject(),
-        reseñas
-      }
-    };
-
-    return res.status(200).json(response);
+        reseñas: reseñasResult.data,
+      },
+    });
   } catch (error) {
-    console.error("Error obteniendo destino:", error);
+    console.error('Error obteniendo destino:', error);
     return res.status(500).json({
-      status: "error",
-      error: "Error al obtener el destino"
+      status: 'error',
+      error: 'Error al obtener el destino',
     });
   }
 });
 
 // POST - Crear un nuevo destino (solo admin)
-router.post("/", checkAuth, checkAdmin, async (req, res) => {
+router.post('/', checkAuth, checkAdmin, async (req, res) => {
   try {
     const {
       nombre,
@@ -136,18 +107,18 @@ router.post("/", checkAuth, checkAdmin, async (req, res) => {
       precio,
       ubicacion,
       actividades,
-      capacidadMaxima
+      capacidadMaxima,
     } = req.body;
 
     // Validaciones
     if (!nombre || !ciudad || !pais || !descripcion || !precio || !ubicacion) {
       return res.status(400).json({
-        status: "error",
-        error: "Faltan campos requeridos"
+        status: 'error',
+        error: 'Faltan campos requeridos',
       });
     }
 
-    const nuevoDestino = new Destino({
+    const destinoData = {
       nombre,
       ciudad,
       pais,
@@ -157,29 +128,32 @@ router.post("/", checkAuth, checkAdmin, async (req, res) => {
       precio,
       ubicacion,
       actividades: actividades || [],
-      capacidadMaxima
-    });
-
-    await nuevoDestino.save();
-
-    const response = {
-      status: "success",
-      message: "Destino creado exitosamente",
-      data: nuevoDestino
+      capacidadMaxima,
     };
 
-    return res.status(201).json(response);
+    const nuevoDestino = await destinoRepository.create(destinoData);
+
+    // Auto-indexar en Qdrant (async, no bloquea respuesta)
+    vectorRepository
+      .indexDestino(nuevoDestino)
+      .catch((err) => console.error('Error indexando destino:', err.message));
+
+    return res.status(201).json({
+      status: 'success',
+      message: 'Destino creado exitosamente',
+      data: nuevoDestino,
+    });
   } catch (error) {
-    console.error("Error creando destino:", error);
+    console.error('Error creando destino:', error);
     return res.status(500).json({
-      status: "error",
-      error: "Error al crear el destino"
+      status: 'error',
+      error: 'Error al crear el destino',
     });
   }
 });
 
 // PUT - Actualizar un destino (solo admin)
-router.put("/:id", checkAuth, checkAdmin, async (req, res) => {
+router.put('/:id', checkAuth, checkAdmin, async (req, res) => {
   try {
     const {
       nombre,
@@ -192,103 +166,102 @@ router.put("/:id", checkAuth, checkAdmin, async (req, res) => {
       ubicacion,
       actividades,
       disponibilidad,
-      capacidadMaxima
+      capacidadMaxima,
     } = req.body;
 
-    const destino = await Destino.findById(req.params.id);
+    const destino = await destinoRepository.findById(req.params.id);
 
     if (!destino) {
       return res.status(404).json({
-        status: "error",
-        error: "Destino no encontrado"
+        status: 'error',
+        error: 'Destino no encontrado',
       });
     }
 
-    // Actualizar campos
-    if (nombre !== undefined) destino.nombre = nombre;
-    if (ciudad !== undefined) destino.ciudad = ciudad;
-    if (pais !== undefined) destino.pais = pais;
-    if (descripcion !== undefined) destino.descripcion = descripcion;
-    if (imagenes !== undefined) destino.imagenes = imagenes;
-    if (imagenPrincipal !== undefined) destino.imagenPrincipal = imagenPrincipal;
-    if (precio !== undefined) destino.precio = precio;
-    if (ubicacion !== undefined) destino.ubicacion = ubicacion;
-    if (actividades !== undefined) destino.actividades = actividades;
-    if (disponibilidad !== undefined) destino.disponibilidad = disponibilidad;
-    if (capacidadMaxima !== undefined) destino.capacidadMaxima = capacidadMaxima;
+    // Preparar datos a actualizar
+    const updateData = {};
+    if (nombre !== undefined) updateData.nombre = nombre;
+    if (ciudad !== undefined) updateData.ciudad = ciudad;
+    if (pais !== undefined) updateData.pais = pais;
+    if (descripcion !== undefined) updateData.descripcion = descripcion;
+    if (imagenes !== undefined) updateData.imagenes = imagenes;
+    if (imagenPrincipal !== undefined) updateData.imagenPrincipal = imagenPrincipal;
+    if (precio !== undefined) updateData.precio = precio;
+    if (ubicacion !== undefined) updateData.ubicacion = ubicacion;
+    if (actividades !== undefined) updateData.actividades = actividades;
+    if (disponibilidad !== undefined) updateData.disponibilidad = disponibilidad;
+    if (capacidadMaxima !== undefined) updateData.capacidadMaxima = capacidadMaxima;
 
-    await destino.save();
+    const updatedDestino = await destinoRepository.update(req.params.id, updateData);
 
-    const response = {
-      status: "success",
-      message: "Destino actualizado exitosamente",
-      data: destino
-    };
+    // Actualizar en índice vectorial (async)
+    vectorRepository
+      .updateDestino(updatedDestino)
+      .catch((err) => console.error('Error actualizando índice:', err.message));
 
-    return res.status(200).json(response);
+    return res.status(200).json({
+      status: 'success',
+      message: 'Destino actualizado exitosamente',
+      data: updatedDestino,
+    });
   } catch (error) {
-    console.error("Error actualizando destino:", error);
+    console.error('Error actualizando destino:', error);
     return res.status(500).json({
-      status: "error",
-      error: "Error al actualizar el destino"
+      status: 'error',
+      error: 'Error al actualizar el destino',
     });
   }
 });
 
 // DELETE - Eliminar un destino (solo admin)
-router.delete("/:id", checkAuth, checkAdmin, async (req, res) => {
+router.delete('/:id', checkAuth, checkAdmin, async (req, res) => {
   try {
-    const destino = await Destino.findById(req.params.id);
+    const destino = await destinoRepository.findById(req.params.id);
 
     if (!destino) {
       return res.status(404).json({
-        status: "error",
-        error: "Destino no encontrado"
+        status: 'error',
+        error: 'Destino no encontrado',
       });
     }
 
     // En lugar de eliminar, desactivar
-    destino.disponibilidad = false;
-    await destino.save();
+    await destinoRepository.updateAvailability(req.params.id, false);
 
-    const response = {
-      status: "success",
-      message: "Destino desactivado exitosamente"
-    };
+    // Eliminar del índice vectorial (async)
+    vectorRepository
+      .deleteDestino(req.params.id)
+      .catch((err) => console.error('Error eliminando del índice:', err.message));
 
-    return res.status(200).json(response);
+    return res.status(200).json({
+      status: 'success',
+      message: 'Destino desactivado exitosamente',
+    });
   } catch (error) {
-    console.error("Error eliminando destino:", error);
+    console.error('Error eliminando destino:', error);
     return res.status(500).json({
-      status: "error",
-      error: "Error al eliminar el destino"
+      status: 'error',
+      error: 'Error al eliminar el destino',
     });
   }
 });
 
 // GET - Obtener destinos destacados (mejores calificados)
-router.get("/destacados/top", async (req, res) => {
+router.get('/destacados/top', async (req, res) => {
   try {
     const limit = req.query.limit || 10;
 
-    const destinos = await Destino.find({ 
-      disponibilidad: true,
-      totalReseñas: { $gte: 1 } 
-    })
-      .sort({ calificacionPromedio: -1, totalReseñas: -1 })
-      .limit(Number(limit));
+    const result = await destinoRepository.findPopular(Number(limit));
 
-    const response = {
-      status: "success",
-      data: destinos
-    };
-
-    return res.status(200).json(response);
+    return res.status(200).json({
+      status: 'success',
+      data: result.data,
+    });
   } catch (error) {
-    console.error("Error obteniendo destinos destacados:", error);
+    console.error('Error obteniendo destinos destacados:', error);
     return res.status(500).json({
-      status: "error",
-      error: "Error al obtener destinos destacados"
+      status: 'error',
+      error: 'Error al obtener destinos destacados',
     });
   }
 });
