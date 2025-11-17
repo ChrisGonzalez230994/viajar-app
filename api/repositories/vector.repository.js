@@ -1,5 +1,20 @@
 const qdrantConnection = require('../config/qdrant');
 const embeddingService = require('../services/embedding.service');
+const crypto = require('crypto');
+
+/**
+ * Convierte MongoDB ObjectId a UUID v5 compatible con Qdrant
+ */
+function objectIdToUuid(objectId) {
+  const objectIdStr = objectId.toString();
+  // Usar namespace DNS para generar UUID v5 consistente
+  const namespace = '6ba7b810-9dad-11d1-80b4-00c04fd430c8';
+  return crypto
+    .createHash('md5')
+    .update(namespace + objectIdStr)
+    .digest('hex')
+    .replace(/(.{8})(.{4})(.{4})(.{4})(.{12})/, '$1-$2-$3-$4-$5');
+}
 
 /**
  * Repositorio Vectorial para búsquedas semánticas
@@ -48,7 +63,7 @@ class VectorRepository {
         wait: true,
         points: [
           {
-            id: destino._id.toString(),
+            id: objectIdToUuid(destino._id),
             vector: embedding,
             payload: payload,
           },
@@ -84,7 +99,7 @@ class VectorRepository {
 
       // Preparar puntos para Qdrant
       const points = destinos.map((destino, index) => ({
-        id: destino._id.toString(),
+        id: objectIdToUuid(destino._id),
         vector: embeddings[index],
         payload: {
           destinoId: destino._id.toString(),
@@ -116,6 +131,12 @@ class VectorRepository {
       return true;
     } catch (error) {
       console.error('❌ Error indexando destinos batch:', error.message);
+      if (error.response) {
+        console.error('Response data:', error.response.data);
+      }
+      if (error.data) {
+        console.error('Error data:', error.data);
+      }
       throw error;
     }
   }
@@ -346,6 +367,42 @@ class VectorRepository {
       }));
     } catch (error) {
       console.error('❌ Error buscando destinos similares:', error.message);
+      throw error;
+    }
+  }
+
+  /**
+   * Recrear la colección (eliminar y crear nueva)
+   * Útil para limpiar el índice completamente
+   */
+  async recreateCollection() {
+    try {
+      await this.qdrant.initialize();
+
+      const client = this.qdrant.getClient();
+      const collectionName = this.qdrant.getCollectionName();
+
+      // Intentar eliminar la colección existente
+      try {
+        await client.deleteCollection(collectionName);
+        console.log(`✓ Colección "${collectionName}" eliminada`);
+      } catch (error) {
+        // Si no existe, continuar
+        console.log(`⚠️ Colección "${collectionName}" no existía`);
+      }
+
+      // Crear nueva colección
+      await client.createCollection(collectionName, {
+        vectors: {
+          size: 1536, // OpenAI embeddings dimension
+          distance: 'Cosine',
+        },
+      });
+
+      console.log(`✓ Colección "${collectionName}" creada exitosamente`);
+      return true;
+    } catch (error) {
+      console.error('❌ Error recreando colección:', error.message);
       throw error;
     }
   }

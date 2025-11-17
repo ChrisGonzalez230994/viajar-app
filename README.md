@@ -5,11 +5,14 @@ Aplicación web completa para la planificación y exploración de viajes, permit
 ## 🏗️ Arquitectura del Proyecto
 
 ### Frontend (Angular)
+
 - Framework: Angular 20.3.7
 - Componentes: Login, Registro, Home, Navbar
 - Modelos: Usuario, Destino, Reserva, Reseña
+- libreria de componentes: https://zardui.com/docs/installation/angular
 
 ### Backend (Express + MongoDB)
+
 - API RESTful con Express.js
 - Base de datos: MongoDB con Mongoose
 - Autenticación: JWT (JSON Web Tokens)
@@ -18,6 +21,7 @@ Aplicación web completa para la planificación y exploración de viajes, permit
 ## 📋 Características Principales
 
 ### Para Usuarios
+
 - ✅ Registro e inicio de sesión
 - ✅ Búsqueda y filtrado de destinos
 - ✅ Información detallada de destinos (descripción, ubicación, actividades, precios)
@@ -27,6 +31,7 @@ Aplicación web completa para la planificación y exploración de viajes, permit
 - ✅ Visualización de reseñas propias
 
 ### Para Administradores
+
 - ✅ Gestión completa de destinos (CRUD)
 - ✅ Confirmación y gestión de reservas
 - ✅ Control de usuarios
@@ -36,6 +41,7 @@ Aplicación web completa para la planificación y exploración de viajes, permit
 ## 🚀 Inicio Rápido
 
 ### Prerequisitos
+
 - Node.js (v14 o superior)
 - MongoDB (local o MongoDB Atlas)
 - npm o yarn
@@ -81,6 +87,7 @@ La aplicación estará disponible en `http://localhost:4200`
 ## 📚 Documentación
 
 ### API
+
 - **Documentación completa**: `/api/README.md`
 - **Estructura del proyecto**: `/api/ESTRUCTURA.md`
 - **Colección Postman**: `/api/postman-collection.json`
@@ -88,23 +95,27 @@ La aplicación estará disponible en `http://localhost:4200`
 ### Modelos de Datos
 
 **Usuario**
+
 - username, password, nombre, apellido, email
 - nacionalidad, fechaNacimiento
 - rol (admin/user)
 
 **Destino**
+
 - nombre, ciudad, país, descripción
 - imágenes, precio, ubicación (lat/lng)
 - actividades, disponibilidad
 - calificación promedio, total reseñas
 
 **Reserva**
+
 - usuario, destino
 - fechaInicio, fechaFin
 - estado (pendiente/confirmada/cancelada/completada)
 - numeroPersonas, precioTotal
 
 **Reseña**
+
 - usuario, destino
 - calificación (1-5), comentario
 - verificada, likes, reportada
@@ -112,10 +123,12 @@ La aplicación estará disponible en `http://localhost:4200`
 ## 🔌 Endpoints Principales de la API
 
 ### Autenticación
+
 - `POST /api/auth/login` - Iniciar sesión
 - `POST /api/auth/register` - Registrar usuario
 
 ### Destinos
+
 - `GET /api/destinos` - Listar destinos
 - `GET /api/destinos/:id` - Obtener destino específico
 - `POST /api/destinos` - Crear destino (admin)
@@ -123,12 +136,14 @@ La aplicación estará disponible en `http://localhost:4200`
 - `DELETE /api/destinos/:id` - Eliminar destino (admin)
 
 ### Reservas
+
 - `GET /api/reservas/mis-reservas` - Mis reservas
 - `POST /api/reservas` - Crear reserva
 - `PUT /api/reservas/:id/estado` - Actualizar estado
 - `GET /api/reservas/disponibilidad/:destinoId` - Verificar disponibilidad
 
 ### Reseñas
+
 - `GET /api/reseñas/destino/:destinoId` - Reseñas de un destino
 - `POST /api/reseñas` - Crear reseña
 - `PUT /api/reseñas/:id` - Actualizar reseña
@@ -138,21 +153,23 @@ La aplicación estará disponible en `http://localhost:4200`
 
 Después de ejecutar el seed de la base de datos:
 
-| Email | Password | Rol |
-|-------|----------|-----|
-| admin@viajar.com | admin123 | Administrador |
-| juan@example.com | user123 | Usuario |
-| maria@example.com | user123 | Usuario |
+| Email             | Password | Rol           |
+| ----------------- | -------- | ------------- |
+| admin@viajar.com  | admin123 | Administrador |
+| juan@example.com  | user123  | Usuario       |
+| maria@example.com | user123  | Usuario       |
 
 ## 🛠️ Tecnologías Utilizadas
 
 ### Frontend
+
 - Angular 20.3.7
 - TypeScript
 - SCSS
 - RxJS
 
 ### Backend
+
 - Node.js
 - Express.js
 - MongoDB + Mongoose
@@ -180,7 +197,7 @@ Después de ejecutar el seed de la base de datos:
 ✅ RF10: Comentarios y calificaciones  
 ✅ RF11: Visualización de reseñas  
 ✅ RF12: Admin gestiona destinos  
-✅ RF13: Actualización de información  
+✅ RF13: Actualización de información
 
 ## 🎯 Próximas Características
 
@@ -202,6 +219,7 @@ Proyecto educativo - 2025
 ChrisGonzalez230994
 LucasULS
 Xavier Galarreta
+
 ---
 
 ## Angular CLI (Referencia Original)

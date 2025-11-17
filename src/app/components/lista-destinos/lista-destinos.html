@@ -1,0 +1,191 @@
+<div class="lista-destinos-container">
+  <!-- Header -->
+  <div class="page-header">
+    <button ubButton (click)="volverAlHome()" class="back-button">← Volver al inicio</button>
+    <h1 class="page-title">Resultados de búsqueda</h1>
+    <button ubButton (click)="toggleSidebar()" class="toggle-sidebar-btn">
+      {{ isSidebarOpen ? '✕ Cerrar filtros' : '☰ Filtros' }}
+    </button>
+  </div>
+
+  <div class="content-wrapper">
+    <!-- Sidebar con filtros -->
+    <aside class="sidebar" [class.open]="isSidebarOpen">
+      <div class="sidebar-content">
+        <h2 class="sidebar-title">Filtros de búsqueda</h2>
+        <div ubSeparator class="my-4"></div>
+
+        <!-- Búsqueda -->
+        <div class="filter-group">
+          <label ubLabel class="filter-label">¿Qué buscas?</label>
+          <input
+            ubInput
+            type="text"
+            [(ngModel)]="searchQuery"
+            (keyup.enter)="buscarDestinos()"
+            placeholder="Ej: aventura en la selva"
+            class="filter-input"
+          />
+        </div>
+
+        <!-- Tipo de viaje -->
+        <div class="filter-group">
+          <label ubLabel class="filter-label">Tipo de viaje</label>
+          <select [(ngModel)]="selectedTipoViaje" class="filter-select">
+            <option value="">Todos</option>
+            <option *ngFor="let tipo of tiposViaje" [value]="tipo.id">
+              {{ tipo.nombre }}
+            </option>
+          </select>
+        </div>
+
+        <!-- Precio -->
+        <div class="filter-group">
+          <label ubLabel class="filter-label">Rango de precio</label>
+          <div class="price-inputs">
+            <input
+              ubInput
+              type="number"
+              [(ngModel)]="precioMin"
+              placeholder="Mín"
+              class="filter-input-small"
+            />
+            <span class="separator">-</span>
+            <input
+              ubInput
+              type="number"
+              [(ngModel)]="precioMax"
+              placeholder="Máx"
+              class="filter-input-small"
+            />
+          </div>
+        </div>
+
+        <!-- País -->
+        <div class="filter-group">
+          <label ubLabel class="filter-label">País</label>
+          <input
+            ubInput
+            type="text"
+            [(ngModel)]="selectedPais"
+            placeholder="Ej: Costa Rica"
+            class="filter-input"
+          />
+        </div>
+
+        <!-- Ciudad -->
+        <div class="filter-group">
+          <label ubLabel class="filter-label">Ciudad</label>
+          <input
+            ubInput
+            type="text"
+            [(ngModel)]="selectedCiudad"
+            placeholder="Ej: San José"
+            class="filter-input"
+          />
+        </div>
+
+        <!-- Calificación mínima -->
+        <div class="filter-group">
+          <label ubLabel class="filter-label">Calificación mínima</label>
+          <select [(ngModel)]="calificacionMin" class="filter-select">
+            <option [value]="null">Todas</option>
+            <option [value]="4">4+ estrellas</option>
+            <option [value]="4.5">4.5+ estrellas</option>
+          </select>
+        </div>
+
+        <!-- Botones -->
+        <div class="filter-actions">
+          <button ubButton (click)="aplicarFiltros()" class="apply-filters-btn">
+            Aplicar filtros
+          </button>
+          <button ubButton (click)="limpiarFiltros()" class="clear-filters-btn">Limpiar</button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Contenido principal -->
+    <main class="main-content">
+      <!-- Loading -->
+      <div *ngIf="isLoading" class="loading-state">
+        <div class="destinos-grid">
+          <div *ngFor="let i of [1, 2, 3, 4, 5, 6]" ubCard class="skeleton-card">
+            <div ubSkeleton class="skeleton-image"></div>
+            <div ubCardContent class="skeleton-content">
+              <div ubSkeleton class="skeleton-title"></div>
+              <div ubSkeleton class="skeleton-text"></div>
+              <div ubSkeleton class="skeleton-text-small"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Error -->
+      <div *ngIf="searchError && !isLoading" class="error-state">
+        <p>{{ searchError }}</p>
+      </div>
+
+      <!-- Resultados -->
+      <div *ngIf="!isLoading && !searchError && destinos.length > 0" class="results-container">
+        <div class="results-header">
+          <h3 class="results-count">{{ destinos.length }} destinos encontrados</h3>
+          <p class="search-query">"{{ searchQuery }}"</p>
+        </div>
+
+        <div class="destinos-grid">
+          <div
+            ubCard
+            *ngFor="let destino of destinos"
+            class="destino-card"
+            (click)="verDetalle(destino.destinoId)"
+          >
+            <!-- Relevancia badge -->
+            <span ubBadge class="relevance-badge" [ngClass]="getRelevanceClass(destino.relevance)">
+              {{ destino.relevance }}% match
+            </span>
+
+            <!-- Imagen -->
+            <div
+              class="card-image"
+              [style.background-image]="
+                destino.imagenPrincipal ? 'url(' + destino.imagenPrincipal + ')' : 'none'
+              "
+              [style.background-size]="'cover'"
+              [style.background-position]="'center'"
+            >
+              <div class="image-placeholder" *ngIf="!destino.imagenPrincipal">📍</div>
+            </div>
+
+            <!-- Contenido -->
+            <div ubCardContent class="card-content">
+              <h3 class="card-title">{{ destino.nombre }}</h3>
+              <p class="card-location">{{ destino.ciudad }}, {{ destino.pais }}</p>
+
+              <div class="card-details">
+                <span class="card-price">{{ formatPrice(destino.precio) }}</span>
+                <span class="card-rating" *ngIf="destino.calificacionPromedio > 0">
+                  ⭐ {{ destino.calificacionPromedio.toFixed(1) }}
+                </span>
+              </div>
+
+              <div class="card-tags">
+                <span ubBadge *ngFor="let tipo of destino.tipoViaje" class="tag">
+                  {{ tipo }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sin resultados -->
+      <div *ngIf="!isLoading && destinos.length === 0 && searchQuery" class="empty-state">
+        <div class="empty-icon">🔍</div>
+        <h3>No encontramos destinos</h3>
+        <p>Intenta ajustar los filtros o cambiar tu búsqueda</p>
+        <button ubButton (click)="limpiarFiltros()" class="retry-button">Limpiar filtros</button>
+      </div>
+    </main>
+  </div>
+</div>

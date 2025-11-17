@@ -6,10 +6,10 @@ import { AppRoutingModule } from './app-routing-module';
 import { App } from './app';
 import { Login } from './components/login/login';
 import { Registro } from './components/registro/registro';
-import { Home } from './components/pages/home/home';
 import { Navbar } from './components/navbar/navbar';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { LandingComponent } from './components/landing-page/landing-page';
+<<<<<<< HEAD
 import { PaqueteDetalleComponent } from './components/paquete-detalle-component/paquete-detalle-component';
 import { ReservaForm } from './components/reserva-form/reserva-form';
 
@@ -23,15 +23,42 @@ import { ReservaForm } from './components/reserva-form/reserva-form';
     ReservaForm,
     
   ],
+=======
+import { ListaDestinos } from './components/lista-destinos/lista-destinos';
+
+// Shadcn UI Components
+import { UbButtonDirective } from '@/components/ui/button';
+import { UbCardDirective, UbCardContentDirective } from '@/components/ui/card';
+import { UbInputDirective } from '@/components/ui/input';
+import { UbBadgeDirective } from '@/components/ui/badge';
+import { UbLabelDirective } from '@/components/ui/label';
+import { UbSeparatorDirective } from '@/components/ui/separator';
+import { UbSkeletonDirective } from '@/components/ui/skeleton';
+import { UbSelectDirective } from '@/components/ui/select';
+
+@NgModule({
+  declarations: [App, Login, Registro, ListaDestinos],
+>>>>>>> 053e9b49fe2ed289363e7a0112da62c20c5a9fca
   imports: [
     BrowserModule,
     HttpClientModule,
     AppRoutingModule,
     ReactiveFormsModule,
+    FormsModule,
     LandingComponent,
-    Navbar
+    Navbar,
+    // Shadcn UI Directives
+    UbButtonDirective,
+    UbCardDirective,
+    UbCardContentDirective,
+    UbInputDirective,
+    UbBadgeDirective,
+    UbLabelDirective,
+    UbSeparatorDirective,
+    UbSkeletonDirective,
+    UbSelectDirective,
   ],
   providers: [],
-  bootstrap: [App]
+  bootstrap: [App],
 })
-export class AppModule { }
+export class AppModule {}

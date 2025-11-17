@@ -1,19 +1,13 @@
 {
-  "$schema": "https://ui.adrianub.dev/schema.json",
-  "style": "new-york",
+  "style": "css",
+  "packageManager": "npm",
   "tailwind": {
-    "config": "",
     "css": "src/styles.css",
     "baseColor": "stone",
-    "cssVariables": true,
-    "prefix": ""
+    "cssVariables": true
   },
   "aliases": {
-    "components": "@/components",
-    "utils": "@/lib/utils",
-    "ui": "@/components/ui",
-    "lib": "@/lib",
-    "services": "@/services"
-  },
-  "iconLibrary": "lucide"
+    "components": "src/app/shared/components",
+    "utils": "src/app/shared/utils"
+  }
 }

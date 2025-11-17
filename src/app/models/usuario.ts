@@ -1,13 +1,23 @@
+export interface PendingEmailChange {
+  newEmail: string;
+  token: string;
+  requestedAt: Date;
+}
+
 export interface Usuario {
-    id?: string;
-    idUsuario: number;
-    username: string;
-    password: string;
-    nombre: string;
-    apellido: string;
-    email: string;
-    nacionalidad: string;
-    fechaNacimiento: string | Date;
-    rol: string;
-    reservas?: any[];
+  _id?: string;
+  username: string;
+  password?: string;
+  nombre: string;
+  apellido: string;
+  email: string;
+  nacionalidad?: string;
+  fechaNacimiento?: Date;
+  rol: 'admin' | 'user';
+  confirmed?: boolean;
+  phone?: string;
+  pendingEmailChange?: PendingEmailChange;
+  reservas?: string[]; // Array de IDs de reservas
+  createdAt?: Date;
+  updatedAt?: Date;
 }
