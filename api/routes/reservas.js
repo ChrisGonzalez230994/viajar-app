@@ -2,6 +2,10 @@ const express = require('express');
 const router = express.Router();
 const { checkAuth, checkAdmin } = require('../middlewares/authentication.js');
 
+// Model imports
+const Reserva = require('../models/reserva.js');
+const Destino = require('../models/destino.js');
+
 // Repository imports
 const reservaRepository = require('../repositories/reserva.repository.js');
 const destinoRepository = require('../repositories/destino.repository.js');

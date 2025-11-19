@@ -23,31 +23,48 @@
     color: var(--sun-900);
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
+}
 
-  .btn-volver {
-    padding: 10px 20px;
-    background: white;
-    border: 2px solid var(--sun-500);
-    border-radius: 8px;
-    color: var(--sun-700);
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
+.filtros-card {
+  max-width: 1400px;
+  margin: 0 auto 20px;
+}
 
-    &:hover {
-      background: var(--sun-500);
-      color: white;
-    }
+.filtros {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+
+  .filtro-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 200px;
   }
 }
 
-.reservas-content {
+.loading-container {
   max-width: 1400px;
   margin: 0 auto;
-  background: white;
-  padding: 30px;
-  border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+
+  .skeleton-line {
+    height: 20px;
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
+  .skeleton-line-short {
+    height: 20px;
+    width: 60%;
+  }
+}
+
+.reservas-table-card {
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 .reservas-table {
@@ -58,15 +75,15 @@
     border-collapse: collapse;
 
     thead {
-      background: var(--sun-100);
+      background: hsl(var(--muted));
 
       tr {
         th {
           padding: 15px;
           text-align: left;
           font-weight: 700;
-          color: var(--sun-900);
-          border-bottom: 2px solid var(--sun-500);
+          color: hsl(var(--foreground));
+          border-bottom: 2px solid hsl(var(--border));
         }
       }
     }
@@ -76,95 +93,101 @@
         transition: background 0.2s ease;
 
         &:hover {
-          background: var(--sun-50);
+          background: hsl(var(--muted) / 0.5);
         }
 
         td {
           padding: 15px;
-          border-bottom: 1px solid #e0e0e0;
-          color: #333;
+          border-bottom: 1px solid hsl(var(--border));
+          color: hsl(var(--foreground));
         }
       }
     }
   }
 }
 
-.estado-badge {
-  display: inline-block;
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  text-transform: capitalize;
-
-  &.estado-confirmada {
-    background: #d4edda;
-    color: #155724;
-  }
-
-  &.estado-pendiente {
-    background: #fff3cd;
-    color: #856404;
-  }
-
-  &.estado-cancelada {
-    background: #f8d7da;
-    color: #721c24;
-  }
-}
-
-.btn-action {
-  padding: 6px 12px;
-  border: none;
-  border-radius: 6px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  cursor: pointer;
-  margin-right: 8px;
-  transition: all 0.3s ease;
-
-  &.btn-edit {
-    background: #3498db;
-    color: white;
-
-    &:hover {
-      background: #2980b9;
-    }
-  }
-
-  &.btn-delete {
-    background: #e74c3c;
-    color: white;
-
-    &:hover {
-      background: #c0392b;
-    }
-  }
+.acciones {
+  display: flex;
+  gap: 8px;
 }
 
 .empty-state {
+  max-width: 1400px;
+  margin: 0 auto;
   text-align: center;
   padding: 60px 20px;
-  color: #666;
-  font-size: 1.2rem;
 
   p {
-    margin: 0;
+    font-size: 1.5rem;
+    color: var(--sun-700);
+    margin-bottom: 10px;
+  }
+
+  .empty-subtitle {
+    font-size: 1rem;
+    color: var(--sun-600);
   }
 }
 
+// Modal
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+}
+
+.modal-content {
+  max-width: 500px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    .info-text {
+      padding: 8px 12px;
+      background: hsl(var(--muted));
+      border-radius: 6px;
+      color: hsl(var(--foreground));
+      font-size: 0.95rem;
+    }
+
+    textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+  }
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+// Responsive
 @media (max-width: 768px) {
   .admin-header {
     flex-direction: column;
     gap: 15px;
-
-    h1 {
-      font-size: 1.5rem;
-    }
-  }
-
-  .reservas-content {
-    padding: 15px;
+    align-items: flex-start;
   }
 
   .reservas-table {
@@ -173,13 +196,12 @@
 
       thead th,
       tbody td {
-        padding: 10px 8px;
+        padding: 10px;
       }
     }
   }
 
-  .btn-action {
-    font-size: 0.75rem;
-    padding: 4px 8px;
+  .acciones {
+    flex-direction: column;
   }
 }
