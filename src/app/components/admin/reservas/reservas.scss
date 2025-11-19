@@ -1,0 +1,185 @@
+.admin-container {
+  min-height: 100vh;
+  background: linear-gradient(
+    180deg,
+    var(--sun-100) 0%,
+    var(--sun-200) 25%,
+    var(--sun-300) 50%,
+    var(--sun-400) 75%,
+    var(--sun-600) 100%
+  );
+  padding: 40px 20px;
+}
+
+.admin-header {
+  max-width: 1400px;
+  margin: 0 auto 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  h1 {
+    font-size: 2rem;
+    color: var(--sun-900);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .btn-volver {
+    padding: 10px 20px;
+    background: white;
+    border: 2px solid var(--sun-500);
+    border-radius: 8px;
+    color: var(--sun-700);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: var(--sun-500);
+      color: white;
+    }
+  }
+}
+
+.reservas-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  background: white;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.reservas-table {
+  overflow-x: auto;
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+
+    thead {
+      background: var(--sun-100);
+
+      tr {
+        th {
+          padding: 15px;
+          text-align: left;
+          font-weight: 700;
+          color: var(--sun-900);
+          border-bottom: 2px solid var(--sun-500);
+        }
+      }
+    }
+
+    tbody {
+      tr {
+        transition: background 0.2s ease;
+
+        &:hover {
+          background: var(--sun-50);
+        }
+
+        td {
+          padding: 15px;
+          border-bottom: 1px solid #e0e0e0;
+          color: #333;
+        }
+      }
+    }
+  }
+}
+
+.estado-badge {
+  display: inline-block;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: capitalize;
+
+  &.estado-confirmada {
+    background: #d4edda;
+    color: #155724;
+  }
+
+  &.estado-pendiente {
+    background: #fff3cd;
+    color: #856404;
+  }
+
+  &.estado-cancelada {
+    background: #f8d7da;
+    color: #721c24;
+  }
+}
+
+.btn-action {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-right: 8px;
+  transition: all 0.3s ease;
+
+  &.btn-edit {
+    background: #3498db;
+    color: white;
+
+    &:hover {
+      background: #2980b9;
+    }
+  }
+
+  &.btn-delete {
+    background: #e74c3c;
+    color: white;
+
+    &:hover {
+      background: #c0392b;
+    }
+  }
+}
+
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: #666;
+  font-size: 1.2rem;
+
+  p {
+    margin: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-header {
+    flex-direction: column;
+    gap: 15px;
+
+    h1 {
+      font-size: 1.5rem;
+    }
+  }
+
+  .reservas-content {
+    padding: 15px;
+  }
+
+  .reservas-table {
+    table {
+      font-size: 0.85rem;
+
+      thead th,
+      tbody td {
+        padding: 10px 8px;
+      }
+    }
+  }
+
+  .btn-action {
+    font-size: 0.75rem;
+    padding: 4px 8px;
+  }
+}

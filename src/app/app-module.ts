@@ -22,9 +22,14 @@ import { UbLabelDirective } from '@/components/ui/label';
 import { UbSeparatorDirective } from '@/components/ui/separator';
 import { UbSkeletonDirective } from '@/components/ui/skeleton';
 import { UbSelectDirective } from '@/components/ui/select';
+import { FormDestino } from './components/admin/form-destino/form-destino';
+import { Perfil } from './components/perfil/perfil';
+import { PanelAdmin } from './components/admin/panel-admin/panel-admin';
+import { Reservas } from './components/admin/reservas/reservas';
+import { Usuarios } from './components/admin/usuarios/usuarios';
 
 @NgModule({
-  declarations: [App, Login, Registro, ListaDestinos, PaqueteDetalleComponent, ReservaForm],
+  declarations: [App, Login, Registro, ListaDestinos, PaqueteDetalleComponent, ReservaForm, FormDestino, Perfil, PanelAdmin, Reservas, Usuarios],
   imports: [
     BrowserModule,
     HttpClientModule,

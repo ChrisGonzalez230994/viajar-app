@@ -1,0 +1,259 @@
+<div class="admin-container">
+  <div class="admin-header">
+    <h1>Gestión de Usuarios - Mini CRM</h1>
+    <button ubButton variant="outline" (click)="volverPanel()">← Volver al Panel</button>
+  </div>
+
+  <div ubCard class="usuarios-content">
+    <div ubCardContent class="p-6">
+      <!-- Filtros y Búsqueda -->
+      <div class="filtros-section">
+        <div class="search-box">
+          <input
+            ubInput
+            type="text"
+            [(ngModel)]="searchTerm"
+            (input)="buscarUsuarios()"
+            placeholder="🔍 Buscar por nombre, apellido o email..."
+          />
+        </div>
+
+        <div class="filtros-box">
+          <div class="filtro-group">
+            <label ubLabel>Rol:</label>
+            <select ubSelect [(ngModel)]="filtroRol" (change)="aplicarFiltros()">
+              <option value="todos">Todos</option>
+              <option value="admin">Administradores</option>
+              <option value="user">Usuarios</option>
+            </select>
+          </div>
+
+          <div class="filtro-group">
+            <label ubLabel>Estado:</label>
+            <select ubSelect [(ngModel)]="filtroEstado" (change)="aplicarFiltros()">
+              <option value="todos">Todos</option>
+              <option value="activo">Activos</option>
+              <option value="inactivo">Inactivos</option>
+            </select>
+          </div>
+
+          <div class="stats">
+            <span ubBadge variant="secondary">📊 Total: {{ usuariosFiltrados.length }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabla de Usuarios -->
+      <div class="usuarios-table">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre Completo</th>
+              <th>Email</th>
+              <th>Rol</th>
+              <th>Nacionalidad</th>
+              <th>Fecha Registro</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngIf="loading">
+              <td colspan="8" style="text-align: center; padding: 2rem">
+                <div ubSkeleton class="h-8 w-full"></div>
+              </td>
+            </tr>
+            <tr *ngFor="let usuario of usuariosFiltrados">
+              <td>{{ usuario._id.substring(0, 8) }}...</td>
+              <td class="nombre-completo">
+                <strong>{{ usuario.nombre }} {{ usuario.apellido }}</strong>
+              </td>
+              <td>{{ usuario.email }}</td>
+              <td>
+                <span ubBadge [variant]="usuario.rol === 'admin' ? 'default' : 'secondary'">
+                  {{ usuario.rol === 'admin' ? '👑 Admin' : '👤 Usuario' }}
+                </span>
+              </td>
+              <td>{{ usuario.nacionalidad || 'N/A' }}</td>
+              <td>{{ formatearFecha(usuario.createdAt) }}</td>
+              <td>
+                <span ubBadge [variant]="usuario.confirmed ? 'default' : 'destructive'">
+                  {{ usuario.confirmed ? 'activo' : 'inactivo' }}
+                </span>
+              </td>
+              <td class="acciones">
+                <button
+                  ubButton
+                  size="sm"
+                  variant="ghost"
+                  (click)="verDetalles(usuario)"
+                  title="Ver detalles"
+                >
+                  👁️
+                </button>
+                <button
+                  ubButton
+                  size="sm"
+                  variant="ghost"
+                  (click)="cambiarRol(usuario)"
+                  title="Cambiar rol"
+                >
+                  🔄
+                </button>
+                <button
+                  ubButton
+                  size="sm"
+                  variant="ghost"
+                  (click)="cambiarEstado(usuario)"
+                  title="Cambiar estado"
+                >
+                  {{ usuario.confirmed ? '🔴' : '🟢' }}
+                </button>
+                <button
+                  ubButton
+                  size="sm"
+                  variant="ghost"
+                  (click)="eliminarUsuario(usuario)"
+                  title="Eliminar"
+                >
+                  🗑️
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="empty-state" *ngIf="!loading && usuariosFiltrados.length === 0">
+        <p>👥 No se encontraron usuarios con los filtros aplicados</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de Confirmación de Eliminación -->
+<div class="modal-overlay" *ngIf="showDeleteModal" (click)="cerrarModalEliminar()">
+  <div ubCard class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>⚠️ Confirmar Eliminación</h2>
+      <button
+        ubButton
+        variant="ghost"
+        size="icon"
+        class="modal-close"
+        (click)="cerrarModalEliminar()"
+      >
+        ×
+      </button>
+    </div>
+    <div ubCardContent class="modal-body">
+      <p>¿Estás seguro de que deseas eliminar al usuario?</p>
+      <div ubCard class="usuario-info" *ngIf="usuarioSeleccionado">
+        <div ubCardContent class="p-4">
+          <p>
+            <strong>Nombre:</strong> {{ usuarioSeleccionado.nombre }}
+            {{ usuarioSeleccionado.apellido }}
+          </p>
+          <p><strong>Email:</strong> {{ usuarioSeleccionado.email }}</p>
+          <p>
+            <strong>Rol:</strong> <span ubBadge>{{ usuarioSeleccionado.rol }}</span>
+          </p>
+        </div>
+      </div>
+      <p class="warning-text">🚨 Esta acción no se puede deshacer</p>
+    </div>
+    <div class="modal-footer">
+      <button ubButton variant="outline" (click)="cerrarModalEliminar()">Cancelar</button>
+      <button ubButton variant="destructive" (click)="confirmarEliminacion()">
+        Eliminar Usuario
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de Detalles del Usuario -->
+<div class="modal-overlay" *ngIf="showDetailsModal" (click)="cerrarModalDetalles()">
+  <div ubCard class="modal-content modal-details" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2>👤 Detalles del Usuario</h2>
+      <button
+        ubButton
+        variant="ghost"
+        size="icon"
+        class="modal-close"
+        (click)="cerrarModalDetalles()"
+      >
+        ×
+      </button>
+    </div>
+    <div ubCardContent class="modal-body" *ngIf="usuarioSeleccionado">
+      <div class="detail-section">
+        <div class="detail-avatar">
+          <div class="avatar-circle">
+            {{ usuarioSeleccionado.nombre.charAt(0) }}{{ usuarioSeleccionado.apellido.charAt(0) }}
+          </div>
+        </div>
+
+        <div class="detail-grid">
+          <div class="detail-item">
+            <label ubLabel>Nombre Completo:</label>
+            <span>{{ usuarioSeleccionado.nombre }} {{ usuarioSeleccionado.apellido }}</span>
+          </div>
+
+          <div class="detail-item">
+            <label ubLabel>Email:</label>
+            <span>{{ usuarioSeleccionado.email }}</span>
+          </div>
+
+          <div class="detail-item" *ngIf="usuarioSeleccionado.username">
+            <label ubLabel>Username:</label>
+            <span>{{ usuarioSeleccionado.username }}</span>
+          </div>
+
+          <div class="detail-item">
+            <label ubLabel>Rol:</label>
+            <span ubBadge [variant]="usuarioSeleccionado.rol === 'admin' ? 'default' : 'secondary'">
+              {{ usuarioSeleccionado.rol === 'admin' ? '👑 Administrador' : '👤 Usuario' }}
+            </span>
+          </div>
+
+          <div class="detail-item">
+            <label ubLabel>Estado:</label>
+            <span ubBadge [variant]="usuarioSeleccionado.confirmed ? 'default' : 'destructive'">
+              {{ usuarioSeleccionado.confirmed ? 'Activo' : 'Inactivo' }}
+            </span>
+          </div>
+
+          <div class="detail-item" *ngIf="usuarioSeleccionado.nacionalidad">
+            <label ubLabel>Nacionalidad:</label>
+            <span>{{ usuarioSeleccionado.nacionalidad }}</span>
+          </div>
+
+          <div class="detail-item" *ngIf="usuarioSeleccionado.fechaNacimiento">
+            <label ubLabel>Fecha de Nacimiento:</label>
+            <span>{{ formatearFecha(usuarioSeleccionado.fechaNacimiento) }}</span>
+          </div>
+
+          <div class="detail-item" *ngIf="usuarioSeleccionado.phone">
+            <label ubLabel>Teléfono:</label>
+            <span>{{ usuarioSeleccionado.phone }}</span>
+          </div>
+
+          <div class="detail-item">
+            <label ubLabel>Fecha de Registro:</label>
+            <span>{{ formatearFecha(usuarioSeleccionado.createdAt) }}</span>
+          </div>
+
+          <div class="detail-item">
+            <label ubLabel>ID:</label>
+            <span class="id-code">{{ usuarioSeleccionado._id }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button ubButton variant="outline" (click)="cerrarModalDetalles()">Cerrar</button>
+    </div>
+  </div>
+</div>

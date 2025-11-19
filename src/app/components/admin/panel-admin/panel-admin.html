@@ -1,0 +1,40 @@
+<div class="admin-panel-container">
+  <div class="admin-panel-header">
+    <div class="header-content">
+      <h1>Panel de Administración</h1>
+      <p class="welcome-text" *ngIf="usuario">
+        Bienvenido, {{ usuario.nombre }} {{ usuario.apellido }}
+      </p>
+    </div>
+    <div class="header-actions">
+      <button class="btn-volver" (click)="volverInicio()">🏠 Ir al Inicio</button>
+      <button class="btn-logout" (click)="logout()">🚪 Cerrar Sesión</button>
+    </div>
+  </div>
+
+  <div class="admin-cards-grid">
+    <div
+      *ngFor="let card of adminCards"
+      class="admin-card"
+      [class]="'admin-card-' + card.color"
+      (click)="navigateTo(card.route)"
+    >
+      <div class="card-icon">{{ card.icon }}</div>
+      <div class="card-content">
+        <h3>{{ card.title }}</h3>
+        <p>{{ card.description }}</p>
+      </div>
+      <div class="card-arrow">→</div>
+    </div>
+  </div>
+
+  <div class="admin-stats">
+    <div class="stat-card">
+      <div class="stat-icon">📊</div>
+      <div class="stat-content">
+        <h4>Estadísticas del Sistema</h4>
+        <p>Accede a reportes y métricas generales</p>
+      </div>
+    </div>
+  </div>
+</div>

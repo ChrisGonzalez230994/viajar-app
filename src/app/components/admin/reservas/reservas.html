@@ -1,0 +1,46 @@
+<div class="admin-container">
+  <div class="admin-header">
+    <h1>Gestión de Reservas</h1>
+    <button class="btn-volver" (click)="volverPanel()">← Volver al Panel</button>
+  </div>
+
+  <div class="reservas-content">
+    <div class="reservas-table">
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Usuario</th>
+            <th>Destino</th>
+            <th>Fecha</th>
+            <th>Personas</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let reserva of reservas">
+            <td>{{ reserva.id }}</td>
+            <td>{{ reserva.usuario }}</td>
+            <td>{{ reserva.destino }}</td>
+            <td>{{ reserva.fecha }}</td>
+            <td>{{ reserva.personas }}</td>
+            <td>
+              <span class="estado-badge" [class]="'estado-' + reserva.estado">
+                {{ reserva.estado }}
+              </span>
+            </td>
+            <td>
+              <button class="btn-action btn-edit">Editar</button>
+              <button class="btn-action btn-delete">Eliminar</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="empty-state" *ngIf="reservas.length === 0">
+      <p>📅 No hay reservas registradas</p>
+    </div>
+  </div>
+</div>
