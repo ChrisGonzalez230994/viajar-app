@@ -746,6 +746,190 @@ router.delete('/cancel-email-change', checkAuth, async (req, res) => {
   }
 });
 
+// GET ALL USERS (admin only)
+router.get('/', checkAuth, async (req, res) => {
+  try {
+    // Verificar que el usuario sea admin
+    if (req.userData.rol !== 'admin') {
+      return res.status(403).json({
+        status: 'error',
+        code: 1,
+        message: 'No tienes permisos para realizar esta acción',
+      });
+    }
+
+    const users = await User.find().select('-password');
+
+    res.status(200).json({
+      status: 'success',
+      data: users,
+    });
+  } catch (error) {
+    console.error('Error getting users:', error);
+    res.status(500).json({
+      status: 'error',
+      code: 2,
+      message: 'Error interno del servidor',
+    });
+  }
+});
+
+// UPDATE USER ROLE (admin only)
+router.patch('/:id/rol', checkAuth, async (req, res) => {
+  try {
+    // Verificar que el usuario sea admin
+    if (req.userData.rol !== 'admin') {
+      return res.status(403).json({
+        status: 'error',
+        code: 1,
+        message: 'No tienes permisos para realizar esta acción',
+      });
+    }
+
+    const userId = req.params.id;
+    const { rol } = req.body;
+
+    // Validar que el rol sea válido
+    if (!['admin', 'user'].includes(rol)) {
+      return res.status(400).json({
+        status: 'error',
+        code: 2,
+        message: 'Rol inválido',
+      });
+    }
+
+    // No permitir que un admin se quite a sí mismo el rol de admin
+    if (userId === req.userData._id.toString() && rol === 'user') {
+      return res.status(400).json({
+        status: 'error',
+        code: 3,
+        message: 'No puedes cambiar tu propio rol de admin',
+      });
+    }
+
+    const user = await User.findByIdAndUpdate(userId, { rol }, { new: true }).select('-password');
+
+    if (!user) {
+      return res.status(404).json({
+        status: 'error',
+        code: 4,
+        message: 'Usuario no encontrado',
+      });
+    }
+
+    res.status(200).json({
+      status: 'success',
+      data: user,
+      message: `Rol actualizado a ${rol}`,
+    });
+  } catch (error) {
+    console.error('Error updating user role:', error);
+    res.status(500).json({
+      status: 'error',
+      code: 5,
+      message: 'Error interno del servidor',
+    });
+  }
+});
+
+// UPDATE USER STATUS (admin only)
+router.patch('/:id/estado', checkAuth, async (req, res) => {
+  try {
+    // Verificar que el usuario sea admin
+    if (req.userData.rol !== 'admin') {
+      return res.status(403).json({
+        status: 'error',
+        code: 1,
+        message: 'No tienes permisos para realizar esta acción',
+      });
+    }
+
+    const userId = req.params.id;
+    const { confirmed } = req.body;
+
+    // No permitir que un admin se desactive a sí mismo
+    if (userId === req.userData._id.toString() && confirmed === false) {
+      return res.status(400).json({
+        status: 'error',
+        code: 2,
+        message: 'No puedes desactivar tu propia cuenta',
+      });
+    }
+
+    const user = await User.findByIdAndUpdate(userId, { confirmed }, { new: true }).select(
+      '-password'
+    );
+
+    if (!user) {
+      return res.status(404).json({
+        status: 'error',
+        code: 3,
+        message: 'Usuario no encontrado',
+      });
+    }
+
+    res.status(200).json({
+      status: 'success',
+      data: user,
+      message: `Usuario ${confirmed ? 'activado' : 'desactivado'}`,
+    });
+  } catch (error) {
+    console.error('Error updating user status:', error);
+    res.status(500).json({
+      status: 'error',
+      code: 4,
+      message: 'Error interno del servidor',
+    });
+  }
+});
+
+// DELETE USER (admin only)
+router.delete('/:id', checkAuth, async (req, res) => {
+  try {
+    // Verificar que el usuario sea admin
+    if (req.userData.rol !== 'admin') {
+      return res.status(403).json({
+        status: 'error',
+        code: 1,
+        message: 'No tienes permisos para realizar esta acción',
+      });
+    }
+
+    const userId = req.params.id;
+
+    // No permitir que un admin se elimine a sí mismo
+    if (userId === req.userData._id.toString()) {
+      return res.status(400).json({
+        status: 'error',
+        code: 2,
+        message: 'No puedes eliminar tu propia cuenta',
+      });
+    }
+
+    const user = await User.findByIdAndDelete(userId);
+
+    if (!user) {
+      return res.status(404).json({
+        status: 'error',
+        code: 3,
+        message: 'Usuario no encontrado',
+      });
+    }
+
+    res.status(200).json({
+      status: 'success',
+      message: 'Usuario eliminado correctamente',
+    });
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    res.status(500).json({
+      status: 'error',
+      code: 4,
+      message: 'Error interno del servidor',
+    });
+  }
+});
+
 function makeid(length) {
   var result = '';
   var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
