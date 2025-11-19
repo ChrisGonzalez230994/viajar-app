@@ -20,6 +20,7 @@ export class App {
           '/login',
           '/registro',
           '/perfil',
+          '/checkout',
           '/admin/panel',
           '/admin/lista-destinos',
           '/admin/destinos',

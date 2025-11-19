@@ -1,4 +1,9 @@
 <div class="checkout-container">
+  <!-- Botón volver -->
+  <a *ngIf="destino" [routerLink]="['/paquete', destino._id]" class="back-button-checkout">
+    ← Volver
+  </a>
+
   <!-- Loading state -->
   <div *ngIf="isLoading" class="loading-overlay">
     <div ubSkeleton class="skeleton-large"></div>
@@ -186,40 +191,127 @@
                     formControlName="numeroPasajeros"
                     min="1"
                     (change)="onNumeroPasajerosChange()"
+                    [class.input-error]="
+                      checkoutForm.get('numeroPasajeros')?.invalid &&
+                      checkoutForm.get('numeroPasajeros')?.touched
+                    "
                   />
+                  <span
+                    class="error-message"
+                    *ngIf="
+                      checkoutForm.get('numeroPasajeros')?.invalid &&
+                      checkoutForm.get('numeroPasajeros')?.touched
+                    "
+                  >
+                    El número de pasajeros es requerido
+                  </span>
                 </div>
               </div>
 
               <div class="form-row">
                 <div class="form-group">
                   <label ubLabel>Fecha de inicio</label>
-                  <input ubInput type="date" formControlName="fechaInicio" />
+                  <input
+                    ubInput
+                    type="date"
+                    formControlName="fechaInicio"
+                    [class.input-error]="
+                      checkoutForm.get('fechaInicio')?.invalid &&
+                      checkoutForm.get('fechaInicio')?.touched
+                    "
+                  />
+                  <span
+                    class="error-message"
+                    *ngIf="
+                      checkoutForm.get('fechaInicio')?.invalid &&
+                      checkoutForm.get('fechaInicio')?.touched
+                    "
+                  >
+                    La fecha de inicio es requerida
+                  </span>
                 </div>
 
                 <div class="form-group">
                   <label ubLabel>Fecha de fin</label>
-                  <input ubInput type="date" formControlName="fechaFin" />
+                  <input
+                    ubInput
+                    type="date"
+                    formControlName="fechaFin"
+                    [class.input-error]="
+                      checkoutForm.get('fechaFin')?.invalid && checkoutForm.get('fechaFin')?.touched
+                    "
+                  />
+                  <span
+                    class="error-message"
+                    *ngIf="
+                      checkoutForm.get('fechaFin')?.invalid && checkoutForm.get('fechaFin')?.touched
+                    "
+                  >
+                    La fecha de fin es requerida
+                  </span>
                 </div>
               </div>
             </section>
 
             <!-- Selección de asientos -->
             <section class="form-section">
-              <h3 class="section-title">Selecciona tus asientos</h3>
-              <p class="section-subtitle">
-                Selecciona {{ checkoutForm.get('numeroPasajeros')?.value }} asiento(s)
-              </p>
-
-              <div class="asientos-grid">
-                <div
-                  *ngFor="let asiento of asientos"
-                  class="asiento"
-                  [class.disponible]="asiento.disponible"
-                  [class.ocupado]="!asiento.disponible"
-                  [class.seleccionado]="asiento.seleccionado"
-                  (click)="toggleAsiento(asiento)"
+              <div class="section-header">
+                <div>
+                  <h3 class="section-title">Selecciona tus asientos</h3>
+                  <p class="section-subtitle">
+                    Selecciona {{ checkoutForm.get('numeroPasajeros')?.value }} asiento(s)
+                  </p>
+                </div>
+                <span
+                  class="asientos-validation"
+                  *ngIf="
+                    asientosValidationAttempted &&
+                    asientosSeleccionados.length < checkoutForm.get('numeroPasajeros')?.value
+                  "
                 >
-                  {{ asiento.numero }}
+                  Falta seleccionar
+                  {{ checkoutForm.get('numeroPasajeros')?.value - asientosSeleccionados.length }}
+                  asiento(s)
+                </span>
+              </div>
+
+              <div class="asientos-container">
+                <!-- Planta Alta -->
+                <div class="asientos-planta">
+                  <h4 class="planta-title">🔺 Planta Alta</h4>
+                  <div class="asientos-grid">
+                    <ng-container *ngFor="let asiento of asientos; let i = index">
+                      <div
+                        class="asiento"
+                        [class.disponible]="asiento.disponible"
+                        [class.ocupado]="!asiento.disponible"
+                        [class.seleccionado]="asiento.seleccionado"
+                        (click)="toggleAsiento(asiento)"
+                      >
+                        {{ asiento.numero }}
+                      </div>
+                      <div *ngIf="i % 4 === 1" class="pasillo-separator">PASILLO</div>
+                    </ng-container>
+                  </div>
+                </div>
+
+                <!-- Planta Baja -->
+                <div class="asientos-planta">
+                  <h4 class="planta-title">🔻 Planta Baja</h4>
+                  <div class="asientos-grid">
+                    <ng-container *ngFor="let asiento of asientosPlantaBaja; let i = index">
+                      <div
+                        class="asiento"
+                        [class.disponible]="asiento.disponible"
+                        [class.ocupado]="!asiento.disponible"
+                        [class.seleccionado]="asiento.seleccionado"
+                        (click)="toggleAsiento(asiento)"
+                      >
+                        {{ asiento.numero }}
+                      </div>
+                      <div *ngIf="i % 4 === 1" class="pasillo-separator">PASILLO</div>
+                    </ng-container>
+                  </div>
                 </div>
               </div>
 
@@ -272,7 +364,20 @@
                     type="text"
                     formControlName="nombreContacto"
                     placeholder="Juan Pérez"
+                    [class.input-error]="
+                      checkoutForm.get('nombreContacto')?.invalid &&
+                      checkoutForm.get('nombreContacto')?.touched
+                    "
                   />
+                  <span
+                    class="error-message"
+                    *ngIf="
+                      checkoutForm.get('nombreContacto')?.invalid &&
+                      checkoutForm.get('nombreContacto')?.touched
+                    "
+                  >
+                    El nombre completo es requerido
+                  </span>
                 </div>
               </div>
 
@@ -284,7 +389,20 @@
                     type="email"
                     formControlName="emailContacto"
                     placeholder="tu@email.com"
+                    [class.input-error]="
+                      checkoutForm.get('emailContacto')?.invalid &&
+                      checkoutForm.get('emailContacto')?.touched
+                    "
                   />
+                  <span
+                    class="error-message"
+                    *ngIf="
+                      checkoutForm.get('emailContacto')?.invalid &&
+                      checkoutForm.get('emailContacto')?.touched
+                    "
+                  >
+                    El email es requerido y debe ser válido
+                  </span>
                 </div>
 
                 <div class="form-group">
@@ -294,7 +412,20 @@
                     type="tel"
                     formControlName="telefonoContacto"
                     placeholder="+54 11 1234-5678"
+                    [class.input-error]="
+                      checkoutForm.get('telefonoContacto')?.invalid &&
+                      checkoutForm.get('telefonoContacto')?.touched
+                    "
                   />
+                  <span
+                    class="error-message"
+                    *ngIf="
+                      checkoutForm.get('telefonoContacto')?.invalid &&
+                      checkoutForm.get('telefonoContacto')?.touched
+                    "
+                  >
+                    El teléfono es requerido
+                  </span>
                 </div>
               </div>
 
@@ -306,7 +437,20 @@
                     type="text"
                     formControlName="documentoIdentidad"
                     placeholder="DNI, Pasaporte, etc."
+                    [class.input-error]="
+                      checkoutForm.get('documentoIdentidad')?.invalid &&
+                      checkoutForm.get('documentoIdentidad')?.touched
+                    "
                   />
+                  <span
+                    class="error-message"
+                    *ngIf="
+                      checkoutForm.get('documentoIdentidad')?.invalid &&
+                      checkoutForm.get('documentoIdentidad')?.touched
+                    "
+                  >
+                    El documento de identidad es requerido
+                  </span>
                 </div>
               </div>
 
@@ -318,7 +462,20 @@
                     type="text"
                     formControlName="paisResidencia"
                     placeholder="Argentina"
+                    [class.input-error]="
+                      checkoutForm.get('paisResidencia')?.invalid &&
+                      checkoutForm.get('paisResidencia')?.touched
+                    "
                   />
+                  <span
+                    class="error-message"
+                    *ngIf="
+                      checkoutForm.get('paisResidencia')?.invalid &&
+                      checkoutForm.get('paisResidencia')?.touched
+                    "
+                  >
+                    El país de residencia es requerido
+                  </span>
                 </div>
 
                 <div class="form-group">
@@ -328,7 +485,20 @@
                     type="text"
                     formControlName="ciudadResidencia"
                     placeholder="Buenos Aires"
+                    [class.input-error]="
+                      checkoutForm.get('ciudadResidencia')?.invalid &&
+                      checkoutForm.get('ciudadResidencia')?.touched
+                    "
                   />
+                  <span
+                    class="error-message"
+                    *ngIf="
+                      checkoutForm.get('ciudadResidencia')?.invalid &&
+                      checkoutForm.get('ciudadResidencia')?.touched
+                    "
+                  >
+                    La ciudad de residencia es requerida
+                  </span>
                 </div>
               </div>
 

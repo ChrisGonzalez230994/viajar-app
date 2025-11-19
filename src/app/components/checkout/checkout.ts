@@ -38,12 +38,14 @@ export class Checkout implements OnInit {
   // UI State
   showLogin: boolean = true;
   currentStep: number = 1;
+  asientosValidationAttempted: boolean = false;
 
   // Checkout data
   numeroPasajeros: number = 1;
   fechaInicio: string = '';
   fechaFin: string = '';
-  asientos: Asiento[] = [];
+  asientos: Asiento[] = []; // Planta Alta
+  asientosPlantaBaja: Asiento[] = [];
   asientosSeleccionados: string[] = [];
 
   // Amenities disponibles
@@ -109,6 +111,26 @@ export class Checkout implements OnInit {
     this.isAuthenticated = this.authService.isAuthenticated();
     if (this.isAuthenticated) {
       this.currentStep = 2;
+      this.loadUserData();
+    }
+  }
+
+  loadUserData(): void {
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+      try {
+        const user = JSON.parse(userStr);
+        this.checkoutForm.patchValue({
+          nombreContacto: user.nombre || '',
+          emailContacto: user.email || '',
+          telefonoContacto: user.phone || '',
+          documentoIdentidad: user.identificacion || '',
+          paisResidencia: user.nacionalidad || '',
+          ciudadResidencia: user.ciudad || '',
+        });
+      } catch (error) {
+        console.error('Error al cargar datos del usuario:', error);
+      }
     }
   }
 
@@ -133,14 +155,27 @@ export class Checkout implements OnInit {
   }
 
   generarAsientos(): void {
-    const filas = ['A', 'B', 'C', 'D', 'E', 'F'];
-    const columnas = [1, 2, 3, 4, 5, 6];
+    const filas = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
+    const columnas = [1, 2, 3, 4]; // 2-2 layout
 
+    // Planta Alta
     this.asientos = [];
     filas.forEach((fila) => {
       columnas.forEach((col) => {
         this.asientos.push({
-          numero: `${fila}${col}`,
+          numero: `PA-${fila}${col}`,
+          disponible: Math.random() > 0.3, // 70% disponibles
+          seleccionado: false,
+        });
+      });
+    });
+
+    // Planta Baja
+    this.asientosPlantaBaja = [];
+    filas.forEach((fila) => {
+      columnas.forEach((col) => {
+        this.asientosPlantaBaja.push({
+          numero: `PB-${fila}${col}`,
           disponible: Math.random() > 0.3, // 70% disponibles
           seleccionado: false,
         });
@@ -197,6 +232,11 @@ export class Checkout implements OnInit {
       if (this.asientosSeleccionados.length < maxAsientos) {
         asiento.seleccionado = true;
         this.asientosSeleccionados.push(asiento.numero);
+
+        // Si se completan todos los asientos, ocultar mensaje de error
+        if (this.asientosSeleccionados.length === maxAsientos) {
+          this.asientosValidationAttempted = false;
+        }
       } else {
         alert(`Solo puedes seleccionar ${maxAsientos} asiento(s)`);
       }
@@ -268,18 +308,31 @@ export class Checkout implements OnInit {
     }
 
     if (this.currentStep === 2) {
+      // Validar asientos primero
+      const numeroPasajeros = this.checkoutForm.get('numeroPasajeros')?.value;
+      const asientosFaltantes = this.asientosSeleccionados.length !== numeroPasajeros;
+
       // Validar formulario de checkout
-      if (this.checkoutForm.invalid) {
-        alert('Por favor completa todos los campos requeridos');
+      const formularioInvalido = this.checkoutForm.invalid;
+
+      if (formularioInvalido) {
+        // Marcar todos los campos como touched para mostrar errores
+        Object.keys(this.checkoutForm.controls).forEach((key) => {
+          this.checkoutForm.get(key)?.markAsTouched();
+        });
+      }
+
+      if (asientosFaltantes) {
+        this.asientosValidationAttempted = true;
+      }
+
+      // Si hay errores, mostrar alert y detener
+      if (formularioInvalido || asientosFaltantes) {
         return;
       }
 
-      // Validar asientos
-      const numeroPasajeros = this.checkoutForm.get('numeroPasajeros')?.value;
-      if (this.asientosSeleccionados.length !== numeroPasajeros) {
-        alert(`Debes seleccionar ${numeroPasajeros} asiento(s)`);
-        return;
-      }
+      // Reset validation flag on successful validation
+      this.asientosValidationAttempted = false;
     }
 
     this.currentStep++;

@@ -33,9 +33,25 @@ export class Navbar implements OnInit, OnDestroy {
       this.auth.autenticado$.subscribe((v) => {
         this.isAuthenticated = !!v;
         this.checkUserRole();
+        this.loadUserName();
       })
     );
     this.subs.push(this.auth.userName$.subscribe((n) => (this.userName = n)));
+
+    // Cargar nombre del usuario al iniciar
+    this.loadUserName();
+  }
+
+  loadUserName(): void {
+    const userString = localStorage.getItem('user');
+    if (userString) {
+      try {
+        const user = JSON.parse(userString);
+        this.userName = user.nombre || user.name || user.username || null;
+      } catch (e) {
+        this.userName = null;
+      }
+    }
   }
 
   ngOnDestroy(): void {

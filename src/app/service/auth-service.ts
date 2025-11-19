@@ -49,6 +49,9 @@ export class AuthService {
               rol: userData.rol || userData.role || 'user',
               fechaNacimiento: userData.fechaNacimiento || null,
               nacionalidad: userData.nacionalidad || '',
+              phone: userData.phone || '',
+              ciudad: userData.ciudad || '',
+              identificacion: userData.identificacion || '',
             };
 
             localStorage.setItem('user', JSON.stringify(usuarioAlmacenado));
@@ -88,6 +91,9 @@ export class AuthService {
                     rol: usuario.rol || usuario.role || 'user',
                     fechaNacimiento: usuario.fechaNacimiento || null,
                     nacionalidad: usuario.nacionalidad || '',
+                    phone: usuario.phone || '',
+                    ciudad: usuario.ciudad || '',
+                    identificacion: usuario.identificacion || '',
                   };
                   localStorage.setItem('user', JSON.stringify(usuarioAlmacenado));
                   this.autenticado.next(true);
@@ -117,6 +123,9 @@ export class AuthService {
                             rol: usuario2.rol || usuario2.role || 'user',
                             fechaNacimiento: usuario2.fechaNacimiento || null,
                             nacionalidad: usuario2.nacionalidad || '',
+                            phone: usuario2.phone || '',
+                            ciudad: usuario2.ciudad || '',
+                            identificacion: usuario2.identificacion || '',
                           };
                           localStorage.setItem('user', JSON.stringify(usuarioAlmacenado));
                           this.autenticado.next(true);
