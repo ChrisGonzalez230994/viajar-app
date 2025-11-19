@@ -1,0 +1,43 @@
+<div class="container">
+  <header>
+    <a href="/">Volver al inicio</a>
+    <h2>Detalles del Destino</h2>
+  </header>
+
+  <section class="main-content">
+    <div class="info">
+      <h1>{{ destination.name }}</h1>
+      <p class="location">{{ destination.location }} ⭐ {{ destination.rating }} ({{ destination.reviews }} reseñas)</p>
+      <p class="price">${{ destination.price }} por persona</p>
+      <div class="tags">
+        <span *ngFor="let tag of destination.tags" class="tag">{{ tag }}</span>
+      </div>
+
+      <div class="about">
+        <h3>Sobre este destino</h3>
+        <p>Descubre el romántico pueblo blanco de Santorini, con sus espectaculares atardeceres, playas de arena volcánica y deliciosa gastronomía griega. Un destino perfecto para parejas y viajeros en busca de un paraíso mediterráneo.</p>
+      </div>
+
+      <div class="highlights">
+        <h3>Lo que hace especial este destino</h3>
+        <ul>
+          <li *ngFor="let item of highlights">
+            <strong>{{ item.icon }} {{ item.title }}</strong> - {{ item.description }}
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="availability">
+      <h3>Consultar disponibilidad</h3>
+      <form>
+        <label>Fecha de inicio</label>
+        <input type="date" name="startDate" />
+        <label>Fecha de fin</label>
+        <input type="date" name="endDate" />
+        <button type="submit">Consultar disponibilidad</button>
+        <p class="tip">Tip: Las fechas de disponibilidad pueden ser ajustadas e integradas directamente en tu sistema de gestión de destino.</p>
+      </form>
+    </div>
+  </section>
+</div>

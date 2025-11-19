@@ -28,6 +28,7 @@ import { PanelAdmin } from './components/admin/panel-admin/panel-admin';
 import { Reservas } from './components/admin/reservas/reservas';
 import { Usuarios } from './components/admin/usuarios/usuarios';
 import { ListaDestinos as ListaDestinosAdmin } from './components/admin/lista-destinos/lista-destinos';
+import { DestinationDetail } from './components/destination-detail/destination-detail';
 
 @NgModule({
   declarations: [
@@ -43,6 +44,7 @@ import { ListaDestinos as ListaDestinosAdmin } from './components/admin/lista-de
     Reservas,
     Usuarios,
     ListaDestinosAdmin,
+    DestinationDetail,
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,104 @@
+.container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 20px;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+header a {
+  text-decoration: none;
+  color: #0077cc;
+}
+
+.main-content {
+  display: flex;
+  gap: 40px;
+}
+
+.info {
+  flex: 2;
+}
+
+.availability {
+  flex: 1;
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.location {
+  font-size: 1.1em;
+  color: #666;
+}
+
+.price {
+  font-size: 1.3em;
+  font-weight: bold;
+  margin: 10px 0;
+}
+
+.tags {
+  margin-bottom: 20px;
+}
+
+.tag {
+  background-color: #e0f0ff;
+  color: #0077cc;
+  padding: 5px 10px;
+  margin-right: 8px;
+  border-radius: 12px;
+  font-size: 0.9em;
+}
+
+.about, .highlights {
+  margin-top: 20px;
+}
+
+.highlights ul {
+  list-style: none;
+  padding: 0;
+}
+
+.highlights li {
+  margin-bottom: 10px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+form label {
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+form input {
+  padding: 8px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+form button {
+  margin-top: 15px;
+  padding: 10px;
+  background-color: #0077cc;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+form .tip {
+  margin-top: 10px;
+  font-size: 0.85em;
+  color: #555;
+}
