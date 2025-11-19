@@ -29,6 +29,9 @@ import { Reservas } from './components/admin/reservas/reservas';
 import { Usuarios } from './components/admin/usuarios/usuarios';
 import { ListaDestinos as ListaDestinosAdmin } from './components/admin/lista-destinos/lista-destinos';
 import { DestinationDetail } from './components/destination-detail/destination-detail';
+import { DestinationInfo } from './components/destination-detail/destination-info/destination-info';
+import { DestinationCheker } from './components/destination-detail/destination-cheker/destination-cheker';
+import { DestinationHighlights } from './components/destination-detail/destination-highlights/destination-highlights';
 
 @NgModule({
   declarations: [
@@ -45,6 +48,9 @@ import { DestinationDetail } from './components/destination-detail/destination-d
     Usuarios,
     ListaDestinosAdmin,
     DestinationDetail,
+    DestinationInfo,
+    DestinationCheker,
+    DestinationHighlights,
   ],
   imports: [
     BrowserModule,
