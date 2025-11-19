@@ -9,22 +9,9 @@ import { Registro } from './components/registro/registro';
 import { Navbar } from './components/navbar/navbar';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { LandingComponent } from './components/landing-page/landing-page';
-<<<<<<< HEAD
+import { ListaDestinos } from './components/lista-destinos/lista-destinos';
 import { PaqueteDetalleComponent } from './components/paquete-detalle-component/paquete-detalle-component';
 import { ReservaForm } from './components/reserva-form/reserva-form';
-
-@NgModule({
-  declarations: [
-    App,
-    Login,
-    Registro,
-    Home,
-    PaqueteDetalleComponent,
-    ReservaForm,
-    
-  ],
-=======
-import { ListaDestinos } from './components/lista-destinos/lista-destinos';
 
 // Shadcn UI Components
 import { UbButtonDirective } from '@/components/ui/button';
@@ -37,8 +24,7 @@ import { UbSkeletonDirective } from '@/components/ui/skeleton';
 import { UbSelectDirective } from '@/components/ui/select';
 
 @NgModule({
-  declarations: [App, Login, Registro, ListaDestinos],
->>>>>>> 053e9b49fe2ed289363e7a0112da62c20c5a9fca
+  declarations: [App, Login, Registro, ListaDestinos, PaqueteDetalleComponent, ReservaForm],
   imports: [
     BrowserModule,
     HttpClientModule,

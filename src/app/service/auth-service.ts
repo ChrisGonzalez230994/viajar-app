@@ -5,13 +5,14 @@ import { switchMap, catchError } from 'rxjs/operators';
 import { tap } from 'rxjs/operators';
 import { Usuario } from '../models/usuario';
 import { Router } from '@angular/router';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   // Base URL de la API Express (endpoints: /api/auth/login, /api/auth/register)
-  private apiUrl = 'http://localhost:3000/api/auth';
+  private apiUrl = `${environment.apiUrl}/auth`;
   private userKey = 'user';
   private timeoutId: any;
   private inactivityTime = 60000;
@@ -63,7 +64,9 @@ export class AuthService {
           const e = encodeURIComponent(email || '');
           const p = encodeURIComponent(password || '');
           this.http
-            .get<any[]>(`http://localhost:3000/usuarios?email=${e}&password=${p}`)
+            .get<any[]>(
+              `${environment.apiUrl.replace('/api', '')}/usuarios?email=${e}&password=${p}`
+            )
             .subscribe({
               next: (res2) => {
                 const usuario = res2 && res2[0];
@@ -83,7 +86,12 @@ export class AuthService {
                 } else {
                   // Probar por username
                   this.http
-                    .get<any[]>(`http://localhost:3000/usuarios?username=${e}&password=${p}`)
+                    .get<any[]>(
+                      `${environment.apiUrl.replace(
+                        '/api',
+                        ''
+                      )}/usuarios?username=${e}&password=${p}`
+                    )
                     .subscribe({
                       next: (res3) => {
                         const usuario2 = res3 && res3[0];
@@ -279,20 +287,22 @@ export class AuthService {
           reservas: [],
         };
 
-        return this.http.post<any>('http://localhost:3000/usuarios', fallbackUsuario).pipe(
-          tap((res2) => console.log('Registro fallback json-server:', res2)),
-          switchMap(
-            (res2) =>
-              new Observable((obs) => {
-                obs.next(res2);
-                obs.complete();
-              })
-          ),
-          catchError((err2) => {
-            console.error('Error en fallback registro json-server:', err2);
-            return throwError(() => err2);
-          })
-        );
+        return this.http
+          .post<any>(`${environment.apiUrl.replace('/api', '')}/usuarios`, fallbackUsuario)
+          .pipe(
+            tap((res2) => console.log('Registro fallback json-server:', res2)),
+            switchMap(
+              (res2) =>
+                new Observable((obs) => {
+                  obs.next(res2);
+                  obs.complete();
+                })
+            ),
+            catchError((err2) => {
+              console.error('Error en fallback registro json-server:', err2);
+              return throwError(() => err2);
+            })
+          );
       })
     );
   }
