@@ -15,6 +15,7 @@ import { UbButtonDirective } from '@/components/ui/button';
 export class Navbar implements OnInit, OnDestroy {
   isAuthenticated = false;
   userName: string | null = null;
+  isAdmin = false;
   private subs: Subscription[] = [];
   isScrolled = false;
 
@@ -28,12 +29,31 @@ export class Navbar implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.subs.push(this.auth.autenticado$.subscribe((v) => (this.isAuthenticated = !!v)));
+    this.subs.push(
+      this.auth.autenticado$.subscribe((v) => {
+        this.isAuthenticated = !!v;
+        this.checkUserRole();
+      })
+    );
     this.subs.push(this.auth.userName$.subscribe((n) => (this.userName = n)));
   }
 
   ngOnDestroy(): void {
     this.subs.forEach((s) => s.unsubscribe());
+  }
+
+  checkUserRole(): void {
+    const userString = localStorage.getItem('user');
+    if (userString) {
+      try {
+        const user = JSON.parse(userString);
+        this.isAdmin = user.rol === 'admin' || user.role === 'admin';
+      } catch (e) {
+        this.isAdmin = false;
+      }
+    } else {
+      this.isAdmin = false;
+    }
   }
 
   goToLogin() {
@@ -42,6 +62,14 @@ export class Navbar implements OnInit, OnDestroy {
 
   goToRegister() {
     this.router.navigate(['/registro']);
+  }
+
+  goToAdmin() {
+    this.router.navigate(['/admin/panel']);
+  }
+
+  goToPerfil() {
+    this.router.navigate(['/perfil']);
   }
 
   logout() {

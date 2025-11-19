@@ -11,6 +11,12 @@
   <div class="auth-actions">
     <ng-container *ngIf="isAuthenticated; else loggedOut">
       <span class="welcome">Hola, {{ userName }}</span>
+      <button *ngIf="isAdmin" ubButton variant="default" size="sm" (click)="goToAdmin()">
+        Panel Admin
+      </button>
+      <button *ngIf="!isAdmin" ubButton variant="default" size="sm" (click)="goToPerfil()">
+        Mi Perfil
+      </button>
       <button ubButton variant="ghost" size="sm" (click)="logout()">Cerrar sesión</button>
     </ng-container>
     <ng-template #loggedOut>

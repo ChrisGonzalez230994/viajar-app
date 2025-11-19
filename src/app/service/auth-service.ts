@@ -34,19 +34,27 @@ export class AuthService {
       this.http.post<any>(`${this.apiUrl}/login`, { email, password }).subscribe({
         next: (res) => {
           if (res && res.status === 'success') {
+            // Guardar el token JWT
+            if (res.token) {
+              localStorage.setItem('token', res.token);
+            }
+
             const userData = res.userData || res.user || {};
             const usuarioAlmacenado: any = {
               nombre: userData.name || userData.nombre || userData.username || '',
+              apellido: userData.apellido || '',
               email: userData.email,
               idUsuario: userData.idUsuario || userData.id || userData._id || Date.now(),
               reservas: userData.reservas || [],
+              rol: userData.rol || userData.role || 'user',
+              fechaNacimiento: userData.fechaNacimiento || null,
+              nacionalidad: userData.nacionalidad || '',
             };
 
             localStorage.setItem('user', JSON.stringify(usuarioAlmacenado));
             this.autenticado.next(true);
             this.setUserName(usuarioAlmacenado.nombre);
             this.actualizarCantidadReservas();
-            console.log('Usuario logueado (api):', usuarioAlmacenado);
             observer.next(usuarioAlmacenado as Usuario);
             this.setupInactivityListener();
           } else {
@@ -73,9 +81,13 @@ export class AuthService {
                 if (usuario) {
                   const usuarioAlmacenado: any = {
                     nombre: usuario.nombre || usuario.name || usuario.username || '',
+                    apellido: usuario.apellido || '',
                     email: usuario.email,
                     idUsuario: usuario.idUsuario || usuario.id || Date.now(),
                     reservas: usuario.reservas || [],
+                    rol: usuario.rol || usuario.role || 'user',
+                    fechaNacimiento: usuario.fechaNacimiento || null,
+                    nacionalidad: usuario.nacionalidad || '',
                   };
                   localStorage.setItem('user', JSON.stringify(usuarioAlmacenado));
                   this.autenticado.next(true);
@@ -98,9 +110,13 @@ export class AuthService {
                         if (usuario2) {
                           const usuarioAlmacenado: any = {
                             nombre: usuario2.nombre || usuario2.name || usuario2.username || '',
+                            apellido: usuario2.apellido || '',
                             email: usuario2.email,
                             idUsuario: usuario2.idUsuario || usuario2.id || Date.now(),
                             reservas: usuario2.reservas || [],
+                            rol: usuario2.rol || usuario2.role || 'user',
+                            fechaNacimiento: usuario2.fechaNacimiento || null,
+                            nacionalidad: usuario2.nacionalidad || '',
                           };
                           localStorage.setItem('user', JSON.stringify(usuarioAlmacenado));
                           this.autenticado.next(true);
@@ -196,6 +212,7 @@ export class AuthService {
 
   logout() {
     localStorage.removeItem('user');
+    localStorage.removeItem('token');
     this.autenticado.next(false);
     this.clearUserName();
     this.reservasSubject.next(0);
