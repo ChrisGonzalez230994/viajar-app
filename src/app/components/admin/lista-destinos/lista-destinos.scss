@@ -1,0 +1,187 @@
+.admin-container {
+  min-height: 100vh;
+  background: linear-gradient(
+    180deg,
+    var(--sun-100) 0%,
+    var(--sun-200) 25%,
+    var(--sun-300) 50%,
+    var(--sun-400) 75%,
+    var(--sun-600) 100%
+  );
+  padding: 40px 20px;
+}
+
+.admin-header {
+  max-width: 1400px;
+  margin: 0 auto 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  h1 {
+    font-size: 2rem;
+    color: var(--sun-900);
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .header-actions {
+    display: flex;
+    gap: 12px;
+  }
+}
+
+.destinos-grid {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 24px;
+}
+
+.destino-card {
+  overflow: hidden;
+  transition: all 0.3s ease;
+  cursor: pointer;
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+  }
+
+  .card-image {
+    height: 200px;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+
+    .card-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    &:hover .card-overlay {
+      opacity: 1;
+    }
+  }
+
+  .card-content {
+    padding: 16px;
+  }
+
+  .destino-nombre {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #333;
+    margin: 0 0 8px 0;
+  }
+
+  .destino-ubicacion {
+    color: #666;
+    font-size: 0.9rem;
+    margin: 0 0 12px 0;
+  }
+
+  .destino-info {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+  }
+
+  .destino-descripcion {
+    color: #555;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    margin: 0;
+  }
+}
+
+.destino-card-create {
+  border: 3px dashed hsl(var(--border));
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-height: 350px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    border-color: var(--sun-500);
+    background: rgba(255, 255, 255, 0.5);
+    transform: translateY(-4px);
+  }
+
+  .create-content {
+    text-align: center;
+
+    .create-icon {
+      font-size: 4rem;
+      color: var(--sun-500);
+      margin-bottom: 16px;
+    }
+
+    .create-text {
+      font-size: 1.1rem;
+      color: #666;
+      font-weight: 600;
+    }
+  }
+}
+
+.destino-card-skeleton {
+  height: 350px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: white;
+
+  .card-image-skeleton {
+    height: 200px;
+    width: 100%;
+  }
+}
+
+.empty-state {
+  text-align: center;
+  padding: 80px 20px;
+  max-width: 600px;
+  margin: 0 auto;
+
+  p {
+    font-size: 1.5rem;
+    color: #666;
+    margin-bottom: 24px;
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-header {
+    flex-direction: column;
+    gap: 16px;
+
+    h1 {
+      font-size: 1.5rem;
+      text-align: center;
+    }
+
+    .header-actions {
+      flex-direction: column;
+      width: 100%;
+
+      button {
+        width: 100%;
+      }
+    }
+  }
+
+  .destinos-grid {
+    grid-template-columns: 1fr;
+  }
+}

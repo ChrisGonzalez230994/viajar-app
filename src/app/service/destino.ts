@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Destino } from '../models/destino';
 import { FiltrosBusqueda, RespuestaBusqueda, ResultadoBusqueda } from '../models/busqueda';
@@ -35,6 +35,15 @@ export class DestinoService {
   private apiUrl = environment.apiUrl;
 
   constructor(private http: HttpClient) {}
+
+  private getHeaders(): HttpHeaders {
+    const token = localStorage.getItem('token');
+    let headers = new HttpHeaders();
+    if (token) {
+      headers = headers.set('token', token);
+    }
+    return headers;
+  }
 
   //********************
   //* ENDPOINTS DESTINOS
@@ -85,7 +94,10 @@ export class DestinoService {
    * Crear un nuevo destino (solo admin)
    */
   createDestino(destino: Partial<Destino>): Observable<{ status: string; data: Destino }> {
-    return this.http.post<{ status: string; data: Destino }>(`${this.apiUrl}/destinos`, destino);
+    const headers = this.getHeaders();
+    return this.http.post<{ status: string; data: Destino }>(`${this.apiUrl}/destinos`, destino, {
+      headers,
+    });
   }
 
   /**
@@ -95,9 +107,11 @@ export class DestinoService {
     id: string,
     destino: Partial<Destino>
   ): Observable<{ status: string; data: Destino }> {
+    const headers = this.getHeaders();
     return this.http.put<{ status: string; data: Destino }>(
       `${this.apiUrl}/destinos/${id}`,
-      destino
+      destino,
+      { headers }
     );
   }
 
@@ -105,7 +119,10 @@ export class DestinoService {
    * Eliminar un destino (solo admin)
    */
   deleteDestino(id: string): Observable<{ status: string; message: string }> {
-    return this.http.delete<{ status: string; message: string }>(`${this.apiUrl}/destinos/${id}`);
+    const headers = this.getHeaders();
+    return this.http.delete<{ status: string; message: string }>(`${this.apiUrl}/destinos/${id}`, {
+      headers,
+    });
   }
 
   /**

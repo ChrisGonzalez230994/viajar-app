@@ -20,11 +20,14 @@ export class App {
           '/login',
           '/registro',
           '/admin/panel',
+          '/admin/lista-destinos',
           '/admin/destinos',
           '/admin/reservas',
           '/admin/usuarios',
         ];
-        this.showLayout = !hiddenLayoutRoutes.includes(event.urlAfterRedirects);
+        this.showLayout = !hiddenLayoutRoutes.some((route) =>
+          event.urlAfterRedirects.startsWith(route)
+        );
       });
   }
 }
