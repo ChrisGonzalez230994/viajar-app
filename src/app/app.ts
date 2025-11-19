@@ -19,6 +19,7 @@ export class App {
         const hiddenLayoutRoutes = [
           '/login',
           '/registro',
+          '/perfil',
           '/admin/panel',
           '/admin/lista-destinos',
           '/admin/destinos',

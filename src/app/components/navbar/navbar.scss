@@ -32,6 +32,7 @@
 .logo {
   display: flex;
   align-items: center;
+  gap: 10px;
   transition: transform 0.3s ease;
 }
 
@@ -40,14 +41,34 @@
 }
 
 .logo-img {
-  height: 45px;
+  height: 70px;
   width: auto;
   filter: drop-shadow(0 2px 8px rgba(255, 122, 24, 0.3));
-  transition: filter 0.3s ease;
+  transition: all 0.6s ease;
 }
 
 .navbar.scrolled .logo-img {
   filter: drop-shadow(0 2px 8px rgba(255, 122, 24, 0.2));
+}
+
+.logo-text {
+  font-family: 'Timmana', sans-serif;
+  font-size: 2rem;
+  font-weight: 400;
+  color: white;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  letter-spacing: 0.00025em;
+  transition: all 0.6s ease;
+  display: flex;
+  padding-top: 12px;
+  align-items: center;
+  opacity: 0;
+}
+
+.navbar.scrolled .logo-text {
+  opacity: 1;
+  color: var(--sun-900);
+  text-shadow: none;
 }
 
 .nav-links {
@@ -151,7 +172,7 @@
 .navbar.scrolled .auth-actions button[ubButton]:not([variant='outline']):not([variant='ghost']) {
   background: linear-gradient(135deg, var(--sun-500), var(--sun-600)) !important;
   color: white !important;
-  border: none !important;
+  border: 2px solid var(--sun-500) !important;
   box-shadow: 0 4px 15px rgba(255, 122, 24, 0.3) !important;
 }
 

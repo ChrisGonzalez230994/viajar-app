@@ -12,6 +12,7 @@ import { Reservas } from './components/admin/reservas/reservas';
 import { Usuarios } from './components/admin/usuarios/usuarios';
 import { ListaDestinos as ListaDestinosAdmin } from './components/admin/lista-destinos/lista-destinos';
 import { DestinationDetail } from './components/destination-detail/destination-detail';
+import { Checkout } from './components/checkout/checkout';
 
 const routes: Routes = [
   { path: '', component: LandingComponent },
@@ -19,6 +20,7 @@ const routes: Routes = [
   { path: 'registro', component: Registro },
   { path: 'destinos', component: ListaDestinos },
   { path: 'paquete/:id', component: PaqueteDetalleComponent },
+  { path: 'checkout/:id', component: Checkout },
   { path: 'perfil', component: Perfil },
   { path: 'admin/panel', component: PanelAdmin },
   { path: 'admin/lista-destinos', component: ListaDestinosAdmin },
@@ -26,7 +28,7 @@ const routes: Routes = [
   { path: 'admin/destinos/:id', component: FormDestino },
   { path: 'admin/reservas', component: Reservas },
   { path: 'admin/usuarios', component: Usuarios },
-  { path: 'detalle-destino', component: DestinationDetail},
+  { path: 'detalle-destino', component: DestinationDetail },
   { path: '**', redirectTo: '', pathMatch: 'full' }, // ruta por defecto si no se especifica ninguna
 ];
 

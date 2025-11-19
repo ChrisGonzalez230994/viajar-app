@@ -1,0 +1,411 @@
+<div class="checkout-container">
+  <!-- Loading state -->
+  <div *ngIf="isLoading" class="loading-overlay">
+    <div ubSkeleton class="skeleton-large"></div>
+  </div>
+
+  <!-- Checkout content -->
+  <div *ngIf="!isLoading && destino" class="checkout-content">
+    <!-- Columna izquierda: Resumen con fondo de imagen -->
+    <div class="summary-column" [style.background-image]="'url(' + destino.imagenPrincipal + ')'">
+      <div class="summary-overlay">
+        <div ubCard class="summary-card">
+          <h2 class="summary-title">Resumen de tu reserva</h2>
+
+          <div class="summary-details">
+            <div class="detail-item">
+              <span class="detail-icon">📍</span>
+              <div class="detail-info">
+                <p class="detail-label">Destino</p>
+                <p class="detail-value">{{ destino.nombre }}</p>
+                <p class="detail-location">{{ destino.ciudad }}, {{ destino.pais }}</p>
+              </div>
+            </div>
+
+            <div ubSeparator class="my-4"></div>
+
+            <div class="detail-item" *ngIf="checkoutForm.get('fechaInicio')?.value">
+              <span class="detail-icon">📅</span>
+              <div class="detail-info">
+                <p class="detail-label">Fechas</p>
+                <p class="detail-value">
+                  {{ checkoutForm.get('fechaInicio')?.value | date : 'dd/MM/yyyy' }} -
+                  {{ checkoutForm.get('fechaFin')?.value | date : 'dd/MM/yyyy' }}
+                </p>
+                <p class="detail-days">{{ calcularDiasEstancia() }} días</p>
+              </div>
+            </div>
+
+            <div ubSeparator class="my-4"></div>
+
+            <div class="detail-item">
+              <span class="detail-icon">👥</span>
+              <div class="detail-info">
+                <p class="detail-label">Pasajeros</p>
+                <p class="detail-value">
+                  {{ checkoutForm.get('numeroPasajeros')?.value || 1 }} persona(s)
+                </p>
+              </div>
+            </div>
+
+            <div ubSeparator class="my-4"></div>
+
+            <!-- Precio breakdown -->
+            <div class="price-breakdown">
+              <div class="price-item">
+                <span>Precio base (x{{ checkoutForm.get('numeroPasajeros')?.value || 1 }})</span>
+                <span>{{
+                  formatPrice(destino.precio * (checkoutForm.get('numeroPasajeros')?.value || 1))
+                }}</span>
+              </div>
+              <div class="price-item" *ngIf="amenitiesSeleccionadas.length > 0">
+                <span>Amenities</span>
+                <span>{{ formatPrice(calcularPrecioAmenities()) }}</span>
+              </div>
+              <div ubSeparator class="my-2"></div>
+              <div class="price-total">
+                <span>Total</span>
+                <span>{{ formatPrice(calcularPrecioTotal()) }}</span>
+              </div>
+            </div>
+          </div>
+
+          <button
+            ubButton
+            class="btn-confirmar"
+            [disabled]="currentStep !== 3"
+            (click)="confirmarReserva()"
+          >
+            Confirmar reserva
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Columna derecha: Formulario -->
+    <div class="form-column">
+      <div class="form-content">
+        <!-- Stepper -->
+        <div class="stepper">
+          <div class="step" [class.active]="currentStep === 1" [class.completed]="currentStep > 1">
+            <div class="step-number">1</div>
+            <span class="step-label">Autenticación</span>
+          </div>
+          <div class="step" [class.active]="currentStep === 2" [class.completed]="currentStep > 2">
+            <div class="step-number">2</div>
+            <span class="step-label">Detalles</span>
+          </div>
+          <div class="step" [class.active]="currentStep === 3">
+            <div class="step-number">3</div>
+            <span class="step-label">Confirmación</span>
+          </div>
+        </div>
+
+        <!-- Step 1: Login/Register -->
+        <div *ngIf="currentStep === 1 && !isAuthenticated" class="step-content">
+          <h2 class="step-title">{{ showLogin ? 'Iniciar sesión' : 'Crear cuenta' }}</h2>
+
+          <!-- Login Form -->
+          <form *ngIf="showLogin" [formGroup]="loginForm" (ngSubmit)="onLogin()" class="auth-form">
+            <div class="form-group">
+              <label ubLabel>Email</label>
+              <input ubInput type="email" formControlName="email" placeholder="tu@email.com" />
+            </div>
+
+            <div class="form-group">
+              <label ubLabel>Contraseña</label>
+              <input ubInput type="password" formControlName="password" placeholder="••••••••" />
+            </div>
+
+            <button ubButton type="submit" class="btn-submit">Iniciar sesión</button>
+
+            <p class="auth-toggle">
+              ¿No tienes cuenta?
+              <a (click)="toggleAuthMode()">Regístrate aquí</a>
+            </p>
+          </form>
+
+          <!-- Register Form -->
+          <form
+            *ngIf="!showLogin"
+            [formGroup]="registerForm"
+            (ngSubmit)="onRegister()"
+            class="auth-form"
+          >
+            <div class="form-row">
+              <div class="form-group">
+                <label ubLabel>Nombre</label>
+                <input ubInput type="text" formControlName="nombre" placeholder="Juan" />
+              </div>
+
+              <div class="form-group">
+                <label ubLabel>Apellido</label>
+                <input ubInput type="text" formControlName="apellido" placeholder="Pérez" />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label ubLabel>Email</label>
+              <input ubInput type="email" formControlName="email" placeholder="tu@email.com" />
+            </div>
+
+            <div class="form-group">
+              <label ubLabel>Teléfono</label>
+              <input ubInput type="tel" formControlName="telefono" placeholder="+54 11 1234-5678" />
+            </div>
+
+            <div class="form-group">
+              <label ubLabel>Contraseña</label>
+              <input ubInput type="password" formControlName="password" placeholder="••••••••" />
+            </div>
+
+            <button ubButton type="submit" class="btn-submit">Registrarse</button>
+
+            <p class="auth-toggle">
+              ¿Ya tienes cuenta?
+              <a (click)="toggleAuthMode()">Inicia sesión aquí</a>
+            </p>
+          </form>
+        </div>
+
+        <!-- Step 2: Checkout Details -->
+        <div *ngIf="currentStep === 2" class="step-content">
+          <h2 class="step-title">Detalles de la reserva</h2>
+
+          <form [formGroup]="checkoutForm" class="checkout-form">
+            <!-- Fechas y pasajeros -->
+            <section class="form-section">
+              <h3 class="section-title">Información del viaje</h3>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label ubLabel>Número de pasajeros</label>
+                  <input
+                    ubInput
+                    type="number"
+                    formControlName="numeroPasajeros"
+                    min="1"
+                    (change)="onNumeroPasajerosChange()"
+                  />
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label ubLabel>Fecha de inicio</label>
+                  <input ubInput type="date" formControlName="fechaInicio" />
+                </div>
+
+                <div class="form-group">
+                  <label ubLabel>Fecha de fin</label>
+                  <input ubInput type="date" formControlName="fechaFin" />
+                </div>
+              </div>
+            </section>
+
+            <!-- Selección de asientos -->
+            <section class="form-section">
+              <h3 class="section-title">Selecciona tus asientos</h3>
+              <p class="section-subtitle">
+                Selecciona {{ checkoutForm.get('numeroPasajeros')?.value }} asiento(s)
+              </p>
+
+              <div class="asientos-grid">
+                <div
+                  *ngFor="let asiento of asientos"
+                  class="asiento"
+                  [class.disponible]="asiento.disponible"
+                  [class.ocupado]="!asiento.disponible"
+                  [class.seleccionado]="asiento.seleccionado"
+                  (click)="toggleAsiento(asiento)"
+                >
+                  {{ asiento.numero }}
+                </div>
+              </div>
+
+              <div class="asientos-legend">
+                <span class="legend-item">
+                  <span class="legend-dot disponible"></span> Disponible
+                </span>
+                <span class="legend-item">
+                  <span class="legend-dot seleccionado"></span> Seleccionado
+                </span>
+                <span class="legend-item"> <span class="legend-dot ocupado"></span> Ocupado </span>
+              </div>
+            </section>
+
+            <!-- Amenities -->
+            <section class="form-section">
+              <h3 class="section-title">Amenities del hotel</h3>
+              <p class="section-subtitle">Selecciona los servicios adicionales que desees</p>
+
+              <div class="amenities-grid">
+                <div
+                  *ngFor="let amenity of amenities"
+                  class="amenity-card"
+                  [class.selected]="isAmenitySelected(amenity.id)"
+                  (click)="toggleAmenity(amenity.id)"
+                >
+                  <div class="amenity-icon">{{ amenity.icon }}</div>
+                  <h4 class="amenity-name">{{ amenity.nombre }}</h4>
+                  <p class="amenity-price">{{ formatPrice(amenity.precio) }}</p>
+                  <div class="amenity-checkbox">
+                    <input
+                      type="checkbox"
+                      [checked]="isAmenitySelected(amenity.id)"
+                      (click)="$event.stopPropagation()"
+                    />
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Datos de contacto -->
+            <section class="form-section">
+              <h3 class="section-title">Datos de contacto</h3>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label ubLabel>Nombre completo</label>
+                  <input
+                    ubInput
+                    type="text"
+                    formControlName="nombreContacto"
+                    placeholder="Juan Pérez"
+                  />
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label ubLabel>Email</label>
+                  <input
+                    ubInput
+                    type="email"
+                    formControlName="emailContacto"
+                    placeholder="tu@email.com"
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label ubLabel>Teléfono</label>
+                  <input
+                    ubInput
+                    type="tel"
+                    formControlName="telefonoContacto"
+                    placeholder="+54 11 1234-5678"
+                  />
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label ubLabel>Documento de identidad</label>
+                  <input
+                    ubInput
+                    type="text"
+                    formControlName="documentoIdentidad"
+                    placeholder="DNI, Pasaporte, etc."
+                  />
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label ubLabel>País de residencia</label>
+                  <input
+                    ubInput
+                    type="text"
+                    formControlName="paisResidencia"
+                    placeholder="Argentina"
+                  />
+                </div>
+
+                <div class="form-group">
+                  <label ubLabel>Ciudad de residencia</label>
+                  <input
+                    ubInput
+                    type="text"
+                    formControlName="ciudadResidencia"
+                    placeholder="Buenos Aires"
+                  />
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label ubLabel>Solicitudes especiales (opcional)</label>
+                <textarea
+                  ubInput
+                  type="text"
+                  formControlName="solicitudesEspeciales"
+                  placeholder="Alergias, dietas especiales, necesidades de accesibilidad, etc."
+                  rows="4"
+                ></textarea>
+              </div>
+            </section>
+
+            <div class="form-actions">
+              <button ubButton type="button" variant="outline" (click)="prevStep()">Atrás</button>
+              <button ubButton type="button" (click)="nextStep()">Continuar</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Step 3: Confirmation -->
+        <div *ngIf="currentStep === 3" class="step-content">
+          <h2 class="step-title">Confirma tu reserva</h2>
+
+          <div class="confirmation-summary">
+            <div ubCard class="confirmation-card">
+              <h3>Resumen final</h3>
+
+              <div class="confirmation-item">
+                <strong>Destino:</strong>
+                <span>{{ destino.nombre }} - {{ destino.ciudad }}, {{ destino.pais }}</span>
+              </div>
+
+              <div class="confirmation-item">
+                <strong>Fechas:</strong>
+                <span>
+                  {{ checkoutForm.get('fechaInicio')?.value | date : 'dd/MM/yyyy' }} -
+                  {{ checkoutForm.get('fechaFin')?.value | date : 'dd/MM/yyyy' }}
+                </span>
+              </div>
+
+              <div class="confirmation-item">
+                <strong>Pasajeros:</strong>
+                <span>{{ checkoutForm.get('numeroPasajeros')?.value }}</span>
+              </div>
+
+              <div class="confirmation-item">
+                <strong>Asientos seleccionados:</strong>
+                <span>{{ asientosSeleccionados.join(', ') }}</span>
+              </div>
+
+              <div class="confirmation-item" *ngIf="amenitiesSeleccionadas.length > 0">
+                <strong>Amenities:</strong>
+                <span>{{ amenitiesSeleccionadas.join(', ') }}</span>
+              </div>
+
+              <div ubSeparator class="my-4"></div>
+
+              <div class="confirmation-item total">
+                <strong>Total a pagar:</strong>
+                <strong class="total-amount">{{ formatPrice(calcularPrecioTotal()) }}</strong>
+              </div>
+            </div>
+
+            <p class="confirmation-note">
+              Al confirmar la reserva, recibirás un email de confirmación con todos los detalles.
+            </p>
+
+            <div class="form-actions">
+              <button ubButton type="button" variant="outline" (click)="prevStep()">Atrás</button>
+              <button ubButton type="button" (click)="confirmarReserva()">Confirmar y pagar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

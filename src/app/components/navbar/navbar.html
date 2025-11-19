@@ -1,6 +1,11 @@
 <nav class="navbar" [class.scrolled]="isScrolled">
   <div class="logo">
-    <img src="/assets/VIAJAR-APP.png" alt="ViaJAR APP" class="logo-img" />
+    <img
+      [src]="isScrolled ? '/assets/LogoViajarApp_Color.webp' : '/assets/LogoViajarApp_Blanco.webp'"
+      alt="ViaJAR APP"
+      class="logo-img"
+    />
+    <span class="logo-text">ViajarAPP</span>
   </div>
   <ul class="nav-links">
     <li><a routerLink="/">Inicio</a></li>

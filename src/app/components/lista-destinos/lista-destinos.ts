@@ -18,7 +18,7 @@ export class ListaDestinos implements OnInit {
 
   // Filtros activos
   searchQuery: string = '';
-  selectedTipoViaje: string = '';
+  ubicacionQuery: string = '';
   precioMax: number | null = null;
   precioMin: number | null = null;
   selectedPais: string = '';
@@ -57,7 +57,7 @@ export class ListaDestinos implements OnInit {
     if (lastSearch) {
       const filters = JSON.parse(lastSearch);
       this.searchQuery = filters.query || '';
-      this.selectedTipoViaje = filters.tipoViaje || '';
+      this.ubicacionQuery = filters.ubicacion || '';
       this.precioMax = filters.precioMax || null;
       this.selectedPais = filters.pais || '';
       this.selectedCiudad = filters.ciudad || '';
@@ -99,11 +99,10 @@ export class ListaDestinos implements OnInit {
 
     const filtros = {
       query: this.searchQuery,
-      tipoViaje: this.selectedTipoViaje || undefined,
       precioMin: this.precioMin || undefined,
       precioMax: this.precioMax || undefined,
-      pais: this.selectedPais || undefined,
-      ciudad: this.selectedCiudad || undefined,
+      pais: this.ubicacionQuery || this.selectedPais || undefined,
+      ciudad: this.ubicacionQuery || this.selectedCiudad || undefined,
       calificacionMin: this.calificacionMin || undefined,
       limit: 50,
     };
@@ -159,7 +158,7 @@ export class ListaDestinos implements OnInit {
    */
   limpiarFiltros(): void {
     this.searchQuery = '';
-    this.selectedTipoViaje = '';
+    this.ubicacionQuery = '';
     this.precioMin = null;
     this.precioMax = null;
     this.selectedPais = '';

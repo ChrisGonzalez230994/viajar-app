@@ -28,15 +28,16 @@
           />
         </div>
 
-        <!-- Tipo de viaje -->
+        <!-- Ubicación -->
         <div class="filter-group">
-          <label ubLabel class="filter-label">Tipo de viaje</label>
-          <select [(ngModel)]="selectedTipoViaje" class="filter-select">
-            <option value="">Todos</option>
-            <option *ngFor="let tipo of tiposViaje" [value]="tipo.id">
-              {{ tipo.nombre }}
-            </option>
-          </select>
+          <label ubLabel class="filter-label">Ubicación</label>
+          <input
+            ubInput
+            type="text"
+            [(ngModel)]="ubicacionQuery"
+            placeholder="País o ciudad"
+            class="filter-input"
+          />
         </div>
 
         <!-- Precio -->

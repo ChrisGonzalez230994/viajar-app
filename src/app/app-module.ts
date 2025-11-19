@@ -32,6 +32,7 @@ import { DestinationDetail } from './components/destination-detail/destination-d
 import { DestinationInfo } from './components/destination-detail/destination-info/destination-info';
 import { DestinationCheker } from './components/destination-detail/destination-cheker/destination-cheker';
 import { DestinationHighlights } from './components/destination-detail/destination-highlights/destination-highlights';
+import { Checkout } from './components/checkout/checkout';
 
 @NgModule({
   declarations: [
@@ -51,6 +52,7 @@ import { DestinationHighlights } from './components/destination-detail/destinati
     DestinationInfo,
     DestinationCheker,
     DestinationHighlights,
+    Checkout,
   ],
   imports: [
     BrowserModule,
