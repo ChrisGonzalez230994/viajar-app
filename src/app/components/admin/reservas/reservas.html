@@ -1,46 +1,150 @@
 <div class="admin-container">
   <div class="admin-header">
-    <h1>Gestión de Reservas</h1>
-    <button class="btn-volver" (click)="volverPanel()">← Volver al Panel</button>
+    <h1>📅 Gestión de Reservas</h1>
+    <button ubButton size="sm" variant="outline" (click)="volverPanel()">← Volver al Panel</button>
   </div>
 
-  <div class="reservas-content">
-    <div class="reservas-table">
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Usuario</th>
-            <th>Destino</th>
-            <th>Fecha</th>
-            <th>Personas</th>
-            <th>Estado</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr *ngFor="let reserva of reservas">
-            <td>{{ reserva.id }}</td>
-            <td>{{ reserva.usuario }}</td>
-            <td>{{ reserva.destino }}</td>
-            <td>{{ reserva.fecha }}</td>
-            <td>{{ reserva.personas }}</td>
-            <td>
-              <span class="estado-badge" [class]="'estado-' + reserva.estado">
-                {{ reserva.estado }}
-              </span>
-            </td>
-            <td>
-              <button class="btn-action btn-edit">Editar</button>
-              <button class="btn-action btn-delete">Eliminar</button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+  <!-- Filtros -->
+  <div ubCard class="filtros-card">
+    <div ubCardContent>
+      <div class="filtros">
+        <div class="filtro-group">
+          <label ubLabel>Filtrar por Estado</label>
+          <select ubSelect [(ngModel)]="filtroEstado" (change)="filtrarPorEstado()">
+            <option value="">Todos</option>
+            <option value="pendiente">⏳ Pendiente</option>
+            <option value="confirmada">✅ Confirmada</option>
+            <option value="cancelada">❌ Cancelada</option>
+            <option value="completada">✓ Completada</option>
+          </select>
+        </div>
+      </div>
     </div>
+  </div>
 
-    <div class="empty-state" *ngIf="reservas.length === 0">
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-container">
+    <div ubCard *ngFor="let i of [1, 2, 3]">
+      <div ubCardContent>
+        <div ubSkeleton class="skeleton-line"></div>
+        <div ubSkeleton class="skeleton-line-short"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabla de Reservas -->
+  <div *ngIf="!loading && reservas.length > 0" ubCard class="reservas-table-card">
+    <div ubCardContent>
+      <div ubTable class="reservas-table">
+        <table>
+          <thead>
+            <tr>
+              <th>Usuario</th>
+              <th>Destino</th>
+              <th>Fecha Inicio</th>
+              <th>Fecha Fin</th>
+              <th>Personas</th>
+              <th>Precio Total</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let reserva of reservas">
+              <td>{{ getNombreUsuario(reserva) }}</td>
+              <td>{{ getNombreDestino(reserva) }}</td>
+              <td>{{ formatearFecha(reserva.fechaInicio) }}</td>
+              <td>{{ formatearFecha(reserva.fechaFin) }}</td>
+              <td>{{ reserva.numeroPersonas }}</td>
+              <td>${{ reserva.precioTotal }}</td>
+              <td>
+                <span ubBadge [variant]="getEstadoBadgeVariant(reserva.estado)">
+                  {{ getEstadoTexto(reserva.estado) }}
+                </span>
+              </td>
+              <td>
+                <div class="acciones">
+                  <button ubButton size="sm" variant="outline" (click)="abrirModalEditar(reserva)">
+                    ✏️
+                  </button>
+                  <button
+                    ubButton
+                    size="sm"
+                    variant="destructive"
+                    *ngIf="reserva.estado !== 'cancelada' && reserva.estado !== 'completada'"
+                    (click)="cancelarReserva(reserva)"
+                  >
+                    ❌
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!loading && reservas.length === 0" ubCard class="empty-state">
+    <div ubCardContent>
       <p>📅 No hay reservas registradas</p>
+      <p class="empty-subtitle">
+        Las reservas aparecerán aquí cuando los usuarios realicen reservas
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Editar Estado -->
+<div class="modal-overlay" *ngIf="mostrarModalEditar" (click)="cerrarModal()">
+  <div ubCard class="modal-content" (click)="$event.stopPropagation()">
+    <div ubCardHeader>
+      <h3 ubCardTitle>✏️ Editar Estado de Reserva</h3>
+    </div>
+    <div ubCardContent class="modal-body">
+      <div class="form-group">
+        <label ubLabel>Usuario</label>
+        <p class="info-text">{{ getNombreUsuario(reservaSeleccionada!) }}</p>
+      </div>
+
+      <div class="form-group">
+        <label ubLabel>Destino</label>
+        <p class="info-text">{{ getNombreDestino(reservaSeleccionada!) }}</p>
+      </div>
+
+      <div class="form-group">
+        <label ubLabel>Fechas</label>
+        <p class="info-text">
+          {{ formatearFecha(reservaSeleccionada?.fechaInicio) }} -
+          {{ formatearFecha(reservaSeleccionada?.fechaFin) }}
+        </p>
+      </div>
+
+      <div class="form-group">
+        <label ubLabel>Nuevo Estado *</label>
+        <select ubSelect [(ngModel)]="nuevoEstado">
+          <option value="pendiente">⏳ Pendiente</option>
+          <option value="confirmada">✅ Confirmada</option>
+          <option value="cancelada">❌ Cancelada</option>
+          <option value="completada">✓ Completada</option>
+        </select>
+      </div>
+
+      <div class="form-group" *ngIf="nuevoEstado === 'cancelada'">
+        <label ubLabel>Motivo de Cancelación</label>
+        <textarea
+          ubInput
+          type="text"
+          [(ngModel)]="motivoCancelacion"
+          rows="3"
+          placeholder="Opcional: Indica el motivo de la cancelación"
+        ></textarea>
+      </div>
+    </div>
+    <div ubCardFooter class="modal-footer">
+      <button ubButton variant="outline" (click)="cerrarModal()">Cancelar</button>
+      <button ubButton (click)="actualizarEstado()">💾 Guardar Cambios</button>
     </div>
   </div>
 </div>
