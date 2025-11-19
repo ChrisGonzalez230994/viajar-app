@@ -2,12 +2,12 @@
 .login-container {
 	display: flex;
 	flex-direction: column; /* apilar form y párrafos verticalmente */
-	justify-content: flex-start; /* colocar contenido hacia arriba */
+	justify-content: center; /* centrar verticalmente */
 	align-items: center;
 	gap: 12px;
 	min-height: 100vh;
-	background-color: #f5f5f5;
-	padding: 40px 20px 60px 20px; /* movido un poco más abajo */
+	background: linear-gradient(180deg, var(--sun-100) 0%, var(--sun-200) 25%, var(--sun-300) 50%, var(--sun-400) 75%, var(--sun-600) 100%);
+	padding: 40px 20px 60px 20px;
 }
 
 /* Título principal (está fuera del form en el template) */
