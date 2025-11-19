@@ -10,6 +10,7 @@ import { Perfil } from './components/perfil/perfil';
 import { PanelAdmin } from './components/admin/panel-admin/panel-admin';
 import { Reservas } from './components/admin/reservas/reservas';
 import { Usuarios } from './components/admin/usuarios/usuarios';
+import { ListaDestinos as ListaDestinosAdmin } from './components/admin/lista-destinos/lista-destinos';
 
 const routes: Routes = [
   { path: '', component: LandingComponent },
@@ -19,7 +20,9 @@ const routes: Routes = [
   { path: 'paquete/:id', component: PaqueteDetalleComponent },
   { path: 'perfil', component: Perfil },
   { path: 'admin/panel', component: PanelAdmin },
+  { path: 'admin/lista-destinos', component: ListaDestinosAdmin },
   { path: 'admin/destinos', component: FormDestino },
+  { path: 'admin/destinos/:id', component: FormDestino },
   { path: 'admin/reservas', component: Reservas },
   { path: 'admin/usuarios', component: Usuarios },
   { path: '**', redirectTo: '', pathMatch: 'full' }, // ruta por defecto si no se especifica ninguna

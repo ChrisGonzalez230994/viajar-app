@@ -27,9 +27,23 @@ import { Perfil } from './components/perfil/perfil';
 import { PanelAdmin } from './components/admin/panel-admin/panel-admin';
 import { Reservas } from './components/admin/reservas/reservas';
 import { Usuarios } from './components/admin/usuarios/usuarios';
+import { ListaDestinos as ListaDestinosAdmin } from './components/admin/lista-destinos/lista-destinos';
 
 @NgModule({
-  declarations: [App, Login, Registro, ListaDestinos, PaqueteDetalleComponent, ReservaForm, FormDestino, Perfil, PanelAdmin, Reservas, Usuarios],
+  declarations: [
+    App,
+    Login,
+    Registro,
+    ListaDestinos,
+    PaqueteDetalleComponent,
+    ReservaForm,
+    FormDestino,
+    Perfil,
+    PanelAdmin,
+    Reservas,
+    Usuarios,
+    ListaDestinosAdmin,
+  ],
   imports: [
     BrowserModule,
     HttpClientModule,

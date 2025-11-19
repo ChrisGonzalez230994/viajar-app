@@ -1,1 +1,63 @@
-<p>lista-destinos works!</p>
+<div class="admin-container">
+  <div class="admin-header">
+    <h1>🌍 Gestión de Destinos</h1>
+    <div class="header-actions">
+      <button ubButton variant="default" (click)="abrirModalCrear()">➕ Crear Destino</button>
+      <button ubButton variant="outline" (click)="volverPanel()">← Volver al Panel</button>
+    </div>
+  </div>
+
+  <div class="destinos-grid">
+    <!-- Loading skeleton -->
+    <ng-container *ngIf="loading">
+      <div class="destino-card-skeleton" *ngFor="let item of [1, 2, 3, 4, 5, 6]">
+        <div ubSkeleton class="card-image-skeleton"></div>
+        <div ubSkeleton class="h-6 w-3/4 mt-4"></div>
+        <div ubSkeleton class="h-4 w-1/2 mt-2"></div>
+      </div>
+    </ng-container>
+
+    <!-- Destinos existentes -->
+    <div ubCard class="destino-card" *ngFor="let destino of destinos">
+      <div class="card-image" [style.background-image]="'url(' + destino.imagenPrincipal + ')'">
+        <div class="card-overlay">
+          <button ubButton size="sm" variant="secondary" (click)="abrirModalEditar(destino)">
+            ✏️ Editar
+          </button>
+          <button ubButton size="sm" variant="destructive" (click)="eliminarDestino(destino)">
+            🗑️
+          </button>
+        </div>
+      </div>
+      <div ubCardContent class="card-content">
+        <h3 class="destino-nombre">{{ destino.nombre }}</h3>
+        <p class="destino-ubicacion">📍 {{ destino.ciudad }}, {{ destino.pais }}</p>
+        <div class="destino-info">
+          <span ubBadge variant="secondary">💰 ${{ destino.precio }}</span>
+          <span ubBadge *ngIf="destino.disponibilidad" variant="default">✅ Disponible</span>
+          <span ubBadge *ngIf="!destino.disponibilidad" variant="destructive"
+            >❌ No disponible</span
+          >
+        </div>
+        <p class="destino-descripcion">
+          {{ destino.descripcion?.substring(0, 100)
+          }}{{ (destino.descripcion?.length || 0) > 100 ? '...' : '' }}
+        </p>
+      </div>
+    </div>
+
+    <!-- Card para crear nuevo destino -->
+    <div ubCard class="destino-card-create" (click)="abrirModalCrear()">
+      <div class="create-content">
+        <div class="create-icon">➕</div>
+        <p class="create-text">Crear Nuevo Destino</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Estado vacío -->
+  <div class="empty-state" *ngIf="!loading && destinos.length === 0">
+    <p>🏝️ No hay destinos creados aún</p>
+    <button ubButton (click)="abrirModalCrear()">Crear el primero</button>
+  </div>
+</div>

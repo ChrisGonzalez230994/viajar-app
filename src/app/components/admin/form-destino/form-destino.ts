@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { DestinoService } from '../../../service/destino';
 import { Destino } from '../../../models/destino';
 
@@ -18,11 +18,13 @@ export class FormDestino implements OnInit {
   nuevaActividad: string = '';
   modoEdicion: boolean = false;
   destinoId: string | null = null;
+  cargando: boolean = false;
 
   constructor(
     private fb: FormBuilder,
     private destinoService: DestinoService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {
     this.destinoForm = this.fb.group({
       nombre: ['', [Validators.required, Validators.minLength(3)]],
@@ -41,7 +43,49 @@ export class FormDestino implements OnInit {
     });
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    // Detectar si estamos en modo edición
+    this.route.paramMap.subscribe((params) => {
+      const id = params.get('id');
+      if (id) {
+        this.modoEdicion = true;
+        this.destinoId = id;
+        this.cargarDestino(id);
+      }
+    });
+  }
+
+  cargarDestino(id: string): void {
+    this.cargando = true;
+    this.destinoService.getDestinoById(id).subscribe({
+      next: (response) => {
+        const destino = response.data;
+        this.destinoForm.patchValue({
+          nombre: destino.nombre,
+          ciudad: destino.ciudad,
+          pais: destino.pais,
+          descripcion: destino.descripcion,
+          precio: destino.precio,
+          imagenPrincipal: destino.imagenPrincipal,
+          capacidadMaxima: destino.capacidadMaxima || 10,
+          disponibilidad: destino.disponibilidad,
+          ubicacion: {
+            latitud: destino.ubicacion?.latitud || 0,
+            longitud: destino.ubicacion?.longitud || 0,
+            direccion: destino.ubicacion?.direccion || '',
+          },
+        });
+        this.imagenes = destino.imagenes || [];
+        this.actividades = destino.actividades || [];
+        this.cargando = false;
+      },
+      error: (error) => {
+        console.error('Error al cargar destino:', error);
+        this.cargando = false;
+        this.router.navigate(['/admin/lista-destinos']);
+      },
+    });
+  }
 
   get nombre() {
     return this.destinoForm.get('nombre');
@@ -102,24 +146,20 @@ export class FormDestino implements OnInit {
       this.destinoService.updateDestino(this.destinoId, destinoData).subscribe({
         next: (response) => {
           console.log('Destino actualizado:', response);
-          alert('Destino actualizado exitosamente');
-          this.router.navigate(['/']);
+          this.router.navigate(['/admin/lista-destinos']);
         },
         error: (error) => {
           console.error('Error al actualizar destino:', error);
-          alert('Error al actualizar el destino');
         },
       });
     } else {
       this.destinoService.createDestino(destinoData).subscribe({
         next: (response) => {
           console.log('Destino creado:', response);
-          alert('Destino creado exitosamente');
-          this.limpiarFormulario();
+          this.router.navigate(['/admin/lista-destinos']);
         },
         error: (error) => {
           console.error('Error al crear destino:', error);
-          alert('Error al crear el destino');
         },
       });
     }
@@ -137,6 +177,6 @@ export class FormDestino implements OnInit {
   }
 
   volverInicio(): void {
-    this.router.navigate(['/']);
+    this.router.navigate(['/admin/lista-destinos']);
   }
 }

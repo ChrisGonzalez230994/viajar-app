@@ -22,7 +22,7 @@ export class PanelAdmin implements OnInit {
       title: 'Gestión de Destinos',
       description: 'Crear, editar y eliminar destinos turísticos',
       icon: '🌍',
-      route: '/admin/destinos',
+      route: '/admin/lista-destinos',
       color: 'blue',
     },
     {
