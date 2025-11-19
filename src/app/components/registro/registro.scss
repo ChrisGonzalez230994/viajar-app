@@ -3,7 +3,14 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: linear-gradient(180deg, var(--sun-100) 0%, var(--sun-200) 25%, var(--sun-300) 50%, var(--sun-400) 75%, var(--sun-600) 100%);
+  background: linear-gradient(
+    180deg,
+    var(--sun-100) 0%,
+    var(--sun-200) 25%,
+    var(--sun-300) 50%,
+    var(--sun-400) 75%,
+    var(--sun-600) 100%
+  );
   padding: 20px;
 }
 
@@ -82,7 +89,7 @@
       color: #dc3545;
       font-size: 0.875rem;
       margin-top: 5px;
-      
+
       span {
         display: block;
         margin-top: 2px;
