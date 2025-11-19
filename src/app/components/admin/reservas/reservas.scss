@@ -65,6 +65,10 @@
 .reservas-table-card {
   max-width: 1400px;
   margin: 0 auto;
+  background: hsl(var(--card));
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .reservas-table {
@@ -73,6 +77,7 @@
   table {
     width: 100%;
     border-collapse: collapse;
+    background: hsl(var(--card));
 
     thead {
       background: hsl(var(--muted));
@@ -149,6 +154,9 @@
   width: 100%;
   max-height: 90vh;
   overflow-y: auto;
+  background: hsl(var(--card));
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
 
 .modal-body {

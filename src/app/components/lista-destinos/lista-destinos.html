@@ -97,9 +97,7 @@
 
         <!-- Botones -->
         <div class="filter-actions">
-          <button ubButton (click)="aplicarFiltros()" class="apply-filters-btn">
-            Aplicar filtros
-          </button>
+          <button ubButton (click)="aplicarFiltros()" class="apply-filters-btn">Buscar</button>
           <button ubButton (click)="limpiarFiltros()" class="clear-filters-btn">Limpiar</button>
         </div>
       </div>
@@ -130,7 +128,7 @@
       <div *ngIf="!isLoading && !searchError && destinos.length > 0" class="results-container">
         <div class="results-header">
           <h3 class="results-count">{{ destinos.length }} destinos encontrados</h3>
-          <p class="search-query">"{{ searchQuery }}"</p>
+          <p class="search-query" *ngIf="searchQuery">"{{ searchQuery }}"</p>
         </div>
 
         <div class="destinos-grid">

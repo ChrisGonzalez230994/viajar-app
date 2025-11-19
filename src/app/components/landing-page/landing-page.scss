@@ -210,7 +210,7 @@ body {
   font-size: clamp(6rem, 15vw, 14rem);
   font-weight: 900;
   color: white;
-  opacity: 0.12;
+  opacity: 0.08;
   line-height: 0.85;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -269,19 +269,19 @@ body {
   text-shadow: 3px 3px 12px rgba(0, 0, 0, 0.7);
   letter-spacing: 0.05em;
   margin: 0;
-  line-height: 1;
+  line-height: 1.2;
   font-family: 'Timmana', sans-serif;
 }
 
 /* Subtítulo */
 .hero-subtitle {
-  font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+  font-size: clamp(2rem, 3rem, 3.2rem);
   color: white;
   font-weight: 400;
   text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
   margin: 0.5rem 0 0;
-  max-width: 500px;
-  font-family: 'Kings', serif;
+  max-width: 600px;
+  font-family: 'Ms Madi', serif;
   line-height: 1.4;
 }
 
