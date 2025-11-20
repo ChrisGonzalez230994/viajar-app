@@ -153,6 +153,7 @@ class VectorRepository {
         tipoViaje = null,
         precioMin = null,
         precioMax = null,
+        ubicacion = null,
         pais = null,
         ciudad = null,
         calificacionMin = null,
@@ -184,18 +185,35 @@ class VectorRepository {
         });
       }
 
-      if (pais) {
+      // Si hay ubicacion, usar lógica OR para pais y ciudad
+      if (ubicacion) {
         filter.must.push({
-          key: 'pais',
-          match: { value: pais },
+          should: [
+            {
+              key: 'pais',
+              match: { text: ubicacion },
+            },
+            {
+              key: 'ciudad',
+              match: { text: ubicacion },
+            },
+          ],
         });
-      }
+      } else {
+        // Si no hay ubicacion, usar pais y ciudad individuales
+        if (pais) {
+          filter.must.push({
+            key: 'pais',
+            match: { value: pais },
+          });
+        }
 
-      if (ciudad) {
-        filter.must.push({
-          key: 'ciudad',
-          match: { value: ciudad },
-        });
+        if (ciudad) {
+          filter.must.push({
+            key: 'ciudad',
+            match: { value: ciudad },
+          });
+        }
       }
 
       if (precioMin !== null || precioMax !== null) {

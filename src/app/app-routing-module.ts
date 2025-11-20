@@ -28,7 +28,7 @@ const routes: Routes = [
   { path: 'admin/destinos/:id', component: FormDestino },
   { path: 'admin/reservas', component: Reservas },
   { path: 'admin/usuarios', component: Usuarios },
-  { path: 'detalle-destino', component: DestinationDetail },
+  { path: 'detalle-destino/:id', component: DestinationDetail },
   { path: '**', redirectTo: '', pathMatch: 'full' }, // ruta por defecto si no se especifica ninguna
 ];
 

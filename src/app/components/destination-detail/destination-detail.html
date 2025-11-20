@@ -4,7 +4,18 @@
     <h2>Detalles del Destino</h2>
   </header>
 
-  <section class="main-content">
+  <!-- Loading state -->
+  <div *ngIf="isLoading" class="loading-container">
+    <p>Cargando destino...</p>
+  </div>
+
+  <!-- Error state -->
+  <div *ngIf="error && !isLoading" class="error-container">
+    <p>{{ error }}</p>
+  </div>
+
+  <!-- Content -->
+  <section class="main-content" *ngIf="!isLoading && !error && destination">
     <div class="info">
       <app-destination-info [destination]="destination"></app-destination-info>
       <app-destination-highlights [highlights]="highlights"></app-destination-highlights>

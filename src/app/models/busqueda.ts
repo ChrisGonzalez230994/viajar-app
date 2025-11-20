@@ -31,6 +31,7 @@ export interface RespuestaBusqueda {
 export interface FiltrosBusqueda {
   query: string;
   tipoViaje?: string;
+  ubicacion?: string; // Busca en pais OR ciudad
   pais?: string;
   ciudad?: string;
   precioMin?: number;

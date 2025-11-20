@@ -57,7 +57,8 @@ header a {
   font-size: 0.9em;
 }
 
-.about, .highlights {
+.about,
+.highlights {
   margin-top: 20px;
 }
 
@@ -101,4 +102,21 @@ form .tip {
   margin-top: 10px;
   font-size: 0.85em;
   color: #555;
+}
+
+.loading-container,
+.error-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  font-size: 1.2em;
+}
+
+.loading-container {
+  color: #0077cc;
+}
+
+.error-container {
+  color: #cc0000;
 }

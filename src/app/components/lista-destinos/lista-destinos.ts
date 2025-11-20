@@ -24,6 +24,7 @@ export class ListaDestinos implements OnInit {
   selectedPais: string = '';
   selectedCiudad: string = '';
   calificacionMin: number | null = null;
+  selectedTipoViaje: string = '';
 
   // Tipos de viaje
   tiposViaje: Array<{ id: string; nombre: string; descripcion: string; keywords: string[] }> = [];
@@ -31,18 +32,9 @@ export class ListaDestinos implements OnInit {
   // Sidebar
   isSidebarOpen: boolean = true;
 
-  constructor(private destinoService: DestinoService, private router: Router) {
-    // Detectar cuando se navega a /destinos desde el navbar
-    this.router.events
-      .pipe(filter((event) => event instanceof NavigationEnd))
-      .subscribe((event: any) => {
-        if (event.url === '/destinos') {
-          // Si venimos de otra ruta, limpiar búsqueda y mostrar todos
-          localStorage.removeItem('lastSearch');
-          this.limpiarFiltros();
-        }
-      });
-  }
+  private isFirstLoad: boolean = true;
+
+  constructor(private destinoService: DestinoService, private router: Router) {}
 
   ngOnInit(): void {
     this.loadTiposViaje();
@@ -54,16 +46,26 @@ export class ListaDestinos implements OnInit {
    */
   checkLastSearch(): void {
     const lastSearch = localStorage.getItem('lastSearch');
+
     if (lastSearch) {
       const filters = JSON.parse(lastSearch);
+
       this.searchQuery = filters.query || '';
       this.ubicacionQuery = filters.ubicacion || '';
       this.precioMax = filters.precioMax || null;
       this.selectedPais = filters.pais || '';
       this.selectedCiudad = filters.ciudad || '';
+      this.selectedTipoViaje = filters.tipoViaje || '';
 
-      // Ejecutar búsqueda automáticamente
-      this.buscarDestinos();
+      // Limpiar localStorage después de leer para evitar que se aplique en futuras navegaciones
+      localStorage.removeItem('lastSearch');
+
+      // Ejecutar búsqueda automáticamente si hay filtro de tipo de viaje
+      if (this.selectedTipoViaje) {
+        this.filtrarPorTipoViaje();
+      } else {
+        this.buscarDestinos();
+      }
     } else {
       // Si no hay búsqueda previa, mostrar todos los destinos
       this.cargarTodosLosDestinos();
@@ -125,6 +127,49 @@ export class ListaDestinos implements OnInit {
   }
 
   /**
+   * Filtrar destinos por tipo de viaje
+   */
+  filtrarPorTipoViaje(): void {
+    this.isLoading = true;
+    this.searchError = '';
+
+    this.destinoService.getDestinos({ limit: 50 }).subscribe({
+      next: (response: any) => {
+        // Filtrar destinos que tengan el tipo de viaje seleccionado
+        const destinosFiltrados = response.data.filter((destino: any) => {
+          const tieneTipo = destino.tipoViaje && destino.tipoViaje.includes(this.selectedTipoViaje);
+
+          return tieneTipo;
+        });
+
+        this.destinos = destinosFiltrados.map((destino: any) => ({
+          destinoId: destino._id,
+          nombre: destino.nombre,
+          ciudad: destino.ciudad,
+          pais: destino.pais,
+          precio: destino.precio,
+          tipoViaje: destino.tipoViaje || [],
+          calificacionPromedio: destino.calificacionPromedio || 0,
+          imagenPrincipal: destino.imagenPrincipal,
+          score: 1,
+          relevance: 100,
+        }));
+
+        this.isLoading = false;
+
+        if (this.destinos.length === 0) {
+          this.searchError = `No se encontraron destinos de tipo "${this.selectedTipoViaje}"`;
+        }
+      },
+      error: (error: any) => {
+        console.error('❌ Error filtrando destinos:', error);
+        this.searchError = 'Error al filtrar los destinos';
+        this.isLoading = false;
+      },
+    });
+  }
+
+  /**
    * Cargar todos los destinos disponibles
    */
   cargarTodosLosDestinos(): void {
@@ -135,9 +180,16 @@ export class ListaDestinos implements OnInit {
       next: (response: any) => {
         // Convertir destinos normales a formato ResultadoBusqueda
         this.destinos = response.data.map((destino: any) => ({
-          ...destino,
-          relevancia: 100,
-          motivoRelevancia: 'Todos los destinos disponibles',
+          destinoId: destino._id,
+          nombre: destino.nombre,
+          ciudad: destino.ciudad,
+          pais: destino.pais,
+          precio: destino.precio,
+          tipoViaje: destino.tipoViaje || [],
+          calificacionPromedio: destino.calificacionPromedio || 0,
+          imagenPrincipal: destino.imagenPrincipal,
+          score: 1,
+          relevance: 100,
         }));
         this.isLoading = false;
 
@@ -164,6 +216,7 @@ export class ListaDestinos implements OnInit {
     this.selectedPais = '';
     this.selectedCiudad = '';
     this.calificacionMin = null;
+    this.selectedTipoViaje = '';
 
     // Cargar todos los destinos al limpiar filtros
     this.cargarTodosLosDestinos();
@@ -187,8 +240,7 @@ export class ListaDestinos implements OnInit {
    * Ver detalle de destino
    */
   verDetalle(destinoId: string): void {
-    // Implementar navegación al detalle
-    console.log('Ver detalle:', destinoId);
+    this.router.navigate(['/detalle-destino', destinoId]);
   }
 
   /**

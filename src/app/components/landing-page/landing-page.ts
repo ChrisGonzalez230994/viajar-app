@@ -11,8 +11,6 @@ import { ZardButtonComponent } from '@shared/components/button/button.component'
 import { ZardCardComponent } from '@shared/components/card/card.component';
 import { ZardInputDirective } from '@shared/components/input/input.directive';
 import { ZardBadgeComponent } from '@shared/components/badge/badge.component';
-import { ZardSelectComponent } from '@shared/components/select/select.component';
-import { ZardSelectItemComponent } from '@shared/components/select/select-item.component';
 import { DestinationCard } from '../destination-card/destination-card';
 
 @Component({
@@ -24,8 +22,6 @@ import { DestinationCard } from '../destination-card/destination-card';
     FormsModule,
     ZardButtonComponent,
     ZardInputDirective,
-    ZardSelectComponent,
-    ZardSelectItemComponent,
     DestinationCard,
   ],
   templateUrl: './landing-page.html',
@@ -43,7 +39,7 @@ export class LandingComponent implements OnInit, OnDestroy {
   showResults: boolean = false;
 
   // Filtros
-  selectedTipoViaje: string = '';
+  ubicacion: string = '';
   precioMax: number | null = null;
 
   // Destinos destacados
@@ -137,13 +133,21 @@ export class LandingComponent implements OnInit, OnDestroy {
 
     const filtros = {
       query: this.searchQuery,
-      tipoViaje: this.selectedTipoViaje || undefined,
+      ubicacion: this.ubicacion || undefined,
       precioMax: this.precioMax || undefined,
-      limit: 10,
+      limit: 20,
     };
+
+    console.log('🔍 Landing - Buscando con filtros:', filtros);
+    console.log('  📍 Ubicación ingresada (busca en pais OR ciudad):', this.ubicacion);
+    console.log('  💰 Precio máximo:', this.precioMax);
+    console.log('  📋 Query:', this.searchQuery);
 
     this.destinoService.busquedaSemantica(filtros).subscribe({
       next: (response) => {
+        console.log('✅ Landing - Resultados recibidos:', response.data.length);
+        console.log('  📦 Primeros 3 resultados:', response.data.slice(0, 3));
+
         this.searchResults = response.data;
         this.isSearching = false;
         this.showResults = true;
@@ -165,7 +169,7 @@ export class LandingComponent implements OnInit, OnDestroy {
       'lastSearch',
       JSON.stringify({
         query: this.searchQuery,
-        tipoViaje: this.selectedTipoViaje,
+        ubicacion: this.ubicacion,
         precioMax: this.precioMax,
       })
     );
@@ -174,7 +178,7 @@ export class LandingComponent implements OnInit, OnDestroy {
 
   limpiarFiltros(): void {
     this.searchQuery = '';
-    this.selectedTipoViaje = '';
+    this.ubicacion = '';
     this.precioMax = null;
     this.searchResults = [];
     this.searchError = '';
@@ -183,6 +187,7 @@ export class LandingComponent implements OnInit, OnDestroy {
 
   verDetalle(destinoId: string): void {
     console.log('Ver detalle:', destinoId);
+    this.router.navigate(['/detalle-destino', destinoId]);
   }
 
   formatPrice(price: number): string {

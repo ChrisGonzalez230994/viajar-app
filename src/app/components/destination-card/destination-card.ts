@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { UbButtonDirective } from '@/components/ui/button';
 import { UbCardDirective, UbCardContentDirective } from '@/components/ui/card';
 
@@ -17,6 +18,9 @@ export class DestinationCard {
   @Input() title: string = '';
   @Input() description: string = '';
   @Input() ctaText: string = 'Explorar';
+  @Input() destinoId: string = '';
+
+  constructor(private router: Router) {}
 
   get cardConfig() {
     const configs = {
@@ -49,6 +53,38 @@ export class DestinationCard {
   }
 
   onExplore() {
-    console.log(`Exploring ${this.type}`);
+    if (this.destinoId) {
+      // Si tiene ID, navegar al detalle del destino
+      this.router.navigate(['/detalle-destino', this.destinoId]);
+    } else {
+      // Si no tiene ID, es un card de categoría, navegar a destinos con filtro por tipo de viaje
+      const tipoViaje = this.getTipoViajeByType();
+
+      // Guardar búsqueda en localStorage
+      localStorage.setItem(
+        'lastSearch',
+        JSON.stringify({
+          query: '',
+          ubicacion: '',
+          precioMax: null,
+          pais: '',
+          ciudad: '',
+          tipoViaje: tipoViaje,
+        })
+      );
+
+      // Navegar a la página de destinos
+      this.router.navigate(['/destinos']);
+    }
+  }
+
+  private getTipoViajeByType(): string {
+    const typeMapping: Record<DestinationType, string> = {
+      montañas: 'naturaleza',
+      playas: 'playa',
+      ciudades: 'ciudad',
+      selvas: 'naturaleza',
+    };
+    return typeMapping[this.type] || '';
   }
 }

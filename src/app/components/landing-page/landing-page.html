@@ -66,17 +66,14 @@
 
         <div class="search-filters">
           <div class="filter-group">
-            <label class="filter-label">Tipo de viaje</label>
-            <z-select
-              [(ngModel)]="selectedTipoViaje"
-              zPlaceholder="Todos los tipos"
-              class="filter-select-small"
-            >
-              <z-select-item zValue="">Todos los tipos</z-select-item>
-              <z-select-item *ngFor="let tipo of tiposViaje" [zValue]="tipo.id">
-                {{ tipo.nombre }}
-              </z-select-item>
-            </z-select>
+            <label class="filter-label">Ubicación</label>
+            <input
+              z-input
+              type="text"
+              [(ngModel)]="ubicacion"
+              placeholder="País o ciudad"
+              class="filter-input-small"
+            />
           </div>
 
           <div class="filter-group">
@@ -94,7 +91,7 @@
             z-button
             zType="outline"
             (click)="limpiarFiltros()"
-            *ngIf="searchQuery || selectedTipoViaje || precioMax"
+            *ngIf="searchQuery || ubicacion || precioMax"
             class="clear-button-small"
           >
             ✕ Limpiar filtros
