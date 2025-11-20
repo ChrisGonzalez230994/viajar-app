@@ -774,27 +774,12 @@ body {
   transition: all 0.4s ease;
   position: relative;
 
-  &::before {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(0);
-    width: 100%;
-    height: 100%;
-    background: white;
-    border-radius: 20px;
-    box-shadow: 0 10px 40px rgba(255, 122, 24, 0.15);
-    transition: transform 0.4s ease;
-    z-index: -1;
-  }
-
-  &:hover::before {
-    transform: translate(-50%, -50%) scale(1.05);
-  }
-
   &:hover {
     transform: translateY(-10px);
+  }
+
+  &:hover .servicio-icon::before {
+    transform: translate(-50%, -50%) scale(1);
   }
 
   &:hover .servicio-icon svg {
@@ -808,11 +793,33 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin-left: auto;
+  margin-right: auto;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    width: 120px;
+    height: 120px;
+    background: white;
+    border-radius: 50%;
+    box-shadow: 0 10px 40px rgba(255, 122, 24, 0.15);
+    transition: transform 0.4s ease;
+    z-index: -1;
+  }
 
   svg {
     stroke: var(--sun-500);
     transition: all 0.4s ease;
     filter: drop-shadow(0 4px 12px rgba(255, 122, 24, 0.2));
+    position: relative;
+    z-index: 1;
   }
 }
 

@@ -2,7 +2,7 @@
   <div class="comments-header">
     <h2>Reseñas de viajeros</h2>
     <div class="rating-summary" *ngIf="averageRating > 0">
-      <span class="rating-number">{{ averageRating  }}</span>
+      <span class="rating-number">{{ averageRating }}</span>
       <div class="stars">
         <span *ngFor="let star of getStars(averageRating)" [class]="star"></span>
       </div>
@@ -25,9 +25,9 @@
     <div class="comment-card" *ngFor="let comment of comments">
       <div class="comment-header">
         <div class="user-info">
-          <div class="avatar">{{ getInitials(comment.usuario?.nombre || 'Usuario') }}</div>
+          <div class="avatar">{{ getInitials(comment.usuario.nombre || 'Usuario') }}</div>
           <div class="user-details">
-            <h4>{{ comment.usuario?.nombre || 'Usuario Anónimo' }}</h4>
+            <h4>{{ comment.usuario.nombre || 'Usuario Anónimo' }}</h4>
             <span class="date">{{ formatDate(comment.createdAt) }}</span>
           </div>
         </div>
@@ -35,13 +35,18 @@
           <span *ngFor="let star of getStars(comment.calificacion)" [class]="star"></span>
         </div>
       </div>
-      
+
       <p class="comment-text">{{ comment.comentario }}</p>
-      
+
       <div class="comment-images" *ngIf="comment.imagenes && comment.imagenes.length > 0">
-        <img *ngFor="let img of comment.imagenes" [src]="img" alt="Imagen de reseña" class="review-image" />
+        <img
+          *ngFor="let img of comment.imagenes"
+          [src]="img"
+          alt="Imagen de reseña"
+          class="review-image"
+        />
       </div>
-      
+
       <div class="comment-footer">
         <button class="like-btn" (click)="likeComment(comment)">
           <span>👍</span>
