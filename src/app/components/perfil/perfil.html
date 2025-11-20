@@ -73,27 +73,57 @@
         >
           <div class="reservas-header-message">
             <h3>¡Ya tenés tus pasajes reservados! ✈️</h3>
-            <p class="reservas-subtitle">{{ reservas.length }} {{ reservas.length === 1 ? 'viaje reservado' : 'viajes reservados' }}</p>
+            <p class="reservas-subtitle">
+              {{ reservas.length }}
+              {{ reservas.length === 1 ? 'viaje reservado' : 'viajes reservados' }}
+            </p>
           </div>
 
-          <div class="reserva-card" *ngFor="let reserva of reservas">
-            <div class="reserva-header">
-              <span class="reserva-badge" [ngClass]="getEstadoBadgeClass(reserva.estado)">
-                {{ getEstadoTexto(reserva.estado) }}
-              </span>
-              <span class="reserva-fecha">Reservado el {{ reserva.createdAt | date : 'dd/MM/yyyy' }}</span>
+          <div
+            class="reserva-card"
+            *ngFor="let reserva of reservas"
+            [ngClass]="{ 'reserva-pendiente': reserva.estado === 'pendiente' }"
+          >
+            <!-- Header con imagen de fondo -->
+            <div
+              class="reserva-header"
+              [style.background-image]="
+                reserva.idDestino && reserva.idDestino.imagenes && reserva.idDestino.imagenes[0]
+                  ? 'linear-gradient(135deg, rgba(251, 146, 60, 0.9), rgba(249, 115, 22, 0.85)), url(' +
+                    reserva.idDestino.imagenes[0] +
+                    ')'
+                  : 'linear-gradient(135deg, var(--sun-500), var(--sun-600))'
+              "
+            >
+              <div class="header-content">
+                <span class="reserva-badge" [ngClass]="getEstadoBadgeClass(reserva.estado)">
+                  {{ getEstadoTexto(reserva.estado) }}
+                </span>
+                <span class="reserva-fecha"
+                  >Reservado el {{ reserva.createdAt | date : 'dd/MM/yyyy' }}</span
+                >
+              </div>
             </div>
 
             <!-- Información del destino -->
             <div class="reserva-destino" *ngIf="reserva.idDestino">
-              <div class="destino-imagen" *ngIf="reserva.idDestino.imagenes && reserva.idDestino.imagenes.length > 0">
+              <div
+                class="destino-imagen"
+                *ngIf="reserva.idDestino.imagenes && reserva.idDestino.imagenes.length > 0"
+              >
                 <img [src]="reserva.idDestino.imagenes[0]" [alt]="reserva.idDestino.nombre" />
               </div>
               <div class="destino-info">
                 <h4>{{ reserva.idDestino.nombre }}</h4>
-                <p class="destino-ubicacion">📍 {{ reserva.idDestino.ciudad }}, {{ reserva.idDestino.pais }}</p>
+                <p class="destino-ubicacion">
+                  📍 {{ reserva.idDestino.ciudad }}, {{ reserva.idDestino.pais }}
+                </p>
                 <p class="destino-descripcion" *ngIf="reserva.idDestino.descripcion">
-                  {{ reserva.idDestino.descripcion.length > 150 ? (reserva.idDestino.descripcion.substring(0, 150) + '...') : reserva.idDestino.descripcion }}
+                  {{
+                    reserva.idDestino.descripcion.length > 150
+                      ? reserva.idDestino.descripcion.substring(0, 150) + '...'
+                      : reserva.idDestino.descripcion
+                  }}
                 </p>
               </div>
             </div>
@@ -116,10 +146,6 @@
                   <span class="info-label">💰 Precio total</span>
                   <span class="info-value">${{ reserva.precioTotal.toLocaleString() }}</span>
                 </div>
-              </div>
-
-              <div class="reserva-mensaje-estado" *ngIf="reserva.estado === 'pendiente'">
-                <p>⏳ Tu reserva está en proceso de confirmación. Recibirás un correo cuando sea aprobada por nuestro equipo.</p>
               </div>
 
               <div class="reserva-notas" *ngIf="reserva.notas">

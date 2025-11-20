@@ -59,6 +59,32 @@ export class Checkout implements OnInit {
   ];
   amenitiesSeleccionadas: string[] = [];
 
+  // Servicio Completo
+  servicioCompletoActivado: boolean = false;
+  private readonly PRECIO_SERVICIO_COMPLETO = 29;
+
+  // Mock data para proveedores externos
+  private mockFlightProviders = [
+    { name: 'Despegar.com', url: 'https://www.despegar.com/vuelos' },
+    { name: 'Booking.com Flights', url: 'https://www.booking.com/flights' },
+    { name: 'Kayak', url: 'https://www.kayak.com' },
+    { name: 'Skyscanner', url: 'https://www.skyscanner.com' },
+  ];
+
+  private mockHotelProviders = [
+    { name: 'Booking.com', url: 'https://www.booking.com' },
+    { name: 'Hotels.com', url: 'https://www.hotels.com' },
+    { name: 'Expedia', url: 'https://www.expedia.com' },
+    { name: 'Airbnb', url: 'https://www.airbnb.com' },
+  ];
+
+  private mockActivityProviders = [
+    { name: 'GetYourGuide', url: 'https://www.getyourguide.com' },
+    { name: 'Viator', url: 'https://www.viator.com' },
+    { name: 'TripAdvisor Experiences', url: 'https://www.tripadvisor.com' },
+    { name: 'Klook', url: 'https://www.klook.com' },
+  ];
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -93,18 +119,21 @@ export class Checkout implements OnInit {
     });
 
     // Checkout form
-    this.checkoutForm = this.fb.group({
-      numeroPasajeros: [1, [Validators.required, Validators.min(1)]],
-      fechaInicio: ['', Validators.required],
-      fechaFin: ['', Validators.required],
-      nombreContacto: ['', Validators.required],
-      emailContacto: ['', [Validators.required, Validators.email]],
-      telefonoContacto: ['', Validators.required],
-      documentoIdentidad: ['', Validators.required],
-      paisResidencia: ['', Validators.required],
-      ciudadResidencia: ['', Validators.required],
-      solicitudesEspeciales: [''],
-    });
+    this.checkoutForm = this.fb.group(
+      {
+        numeroPasajeros: [1, [Validators.required, Validators.min(1)]],
+        fechaInicio: ['', [Validators.required, this.validarFechaFutura.bind(this)]],
+        fechaFin: ['', [Validators.required, this.validarFechaFutura.bind(this)]],
+        nombreContacto: ['', Validators.required],
+        emailContacto: ['', [Validators.required, Validators.email]],
+        telefonoContacto: ['', Validators.required],
+        documentoIdentidad: ['', Validators.required],
+        paisResidencia: ['', Validators.required],
+        ciudadResidencia: ['', Validators.required],
+        solicitudesEspeciales: [''],
+      },
+      { validators: this.validarFechaFinPosterior.bind(this) }
+    );
   }
 
   checkAuthentication(): void {
@@ -271,6 +300,37 @@ export class Checkout implements OnInit {
   }
 
   // Cálculos
+  // Validadores personalizados
+  validarFechaFutura(control: any): { [key: string]: boolean } | null {
+    if (!control.value) return null;
+
+    const fechaSeleccionada = new Date(control.value);
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0); // Resetear horas para comparar solo la fecha
+
+    if (fechaSeleccionada < hoy) {
+      return { fechaPasada: true };
+    }
+
+    return null;
+  }
+
+  validarFechaFinPosterior(group: any): { [key: string]: boolean } | null {
+    const fechaInicio = group.get('fechaInicio')?.value;
+    const fechaFin = group.get('fechaFin')?.value;
+
+    if (!fechaInicio || !fechaFin) return null;
+
+    const inicio = new Date(fechaInicio);
+    const fin = new Date(fechaFin);
+
+    if (fin <= inicio) {
+      return { fechaFinInvalida: true };
+    }
+
+    return null;
+  }
+
   calcularPrecioAmenities(): number {
     return this.amenitiesSeleccionadas.reduce((total, amenityId) => {
       const amenity = this.amenities.find((a) => a.id === amenityId);
@@ -284,8 +344,9 @@ export class Checkout implements OnInit {
     const numeroPasajeros = this.checkoutForm.get('numeroPasajeros')?.value || 1;
     const precioBase = this.destino.precio * numeroPasajeros;
     const precioAmenities = this.calcularPrecioAmenities();
+    const precioServicio = this.servicioCompletoActivado ? this.PRECIO_SERVICIO_COMPLETO : 0;
 
-    return precioBase + precioAmenities;
+    return precioBase + precioAmenities + precioServicio;
   }
 
   calcularDiasEstancia(): number {
@@ -378,6 +439,58 @@ export class Checkout implements OnInit {
         alert('Error al confirmar la reserva. Intenta nuevamente.');
       },
     });
+  }
+
+  // Métodos para Servicio Completo
+  onServicioCompletoChange(): void {
+    // Recalcular precio total automáticamente
+    console.log('Servicio completo:', this.servicioCompletoActivado ? 'Activado' : 'Desactivado');
+  }
+
+  // Mock data methods - generan datos aleatorios cada vez
+  getMockFlightProvider(): string {
+    const randomIndex = Math.floor(Math.random() * this.mockFlightProviders.length);
+    return this.mockFlightProviders[randomIndex].name;
+  }
+
+  getMockFlightLink(): string {
+    const randomIndex = Math.floor(Math.random() * this.mockFlightProviders.length);
+    const provider = this.mockFlightProviders[randomIndex];
+    const destino = this.destino?.ciudad || 'destination';
+    return `${provider.url}?destination=${encodeURIComponent(destino)}`;
+  }
+
+  getMockHotelProvider(): string {
+    const randomIndex = Math.floor(Math.random() * this.mockHotelProviders.length);
+    return this.mockHotelProviders[randomIndex].name;
+  }
+
+  getMockHotelLink(): string {
+    const randomIndex = Math.floor(Math.random() * this.mockHotelProviders.length);
+    const provider = this.mockHotelProviders[randomIndex];
+    const destino = this.destino?.ciudad || 'destination';
+    return `${provider.url}?dest=${encodeURIComponent(destino)}`;
+  }
+
+  getMockActivityProvider(): string {
+    const randomIndex = Math.floor(Math.random() * this.mockActivityProviders.length);
+    return this.mockActivityProviders[randomIndex].name;
+  }
+
+  getMockActivityLink(): string {
+    const randomIndex = Math.floor(Math.random() * this.mockActivityProviders.length);
+    const provider = this.mockActivityProviders[randomIndex];
+    const destino = this.destino?.ciudad || 'destination';
+    return `${provider.url}?location=${encodeURIComponent(destino)}`;
+  }
+
+  getMockPhoneNumber(): string {
+    // Genera un número de teléfono aleatorio con formato internacional
+    const countryCode = ['+1', '+34', '+52', '+54', '+57'][Math.floor(Math.random() * 5)];
+    const areaCode = Math.floor(Math.random() * 900) + 100;
+    const firstPart = Math.floor(Math.random() * 900) + 100;
+    const secondPart = Math.floor(Math.random() * 9000) + 1000;
+    return `${countryCode} ${areaCode} ${firstPart} ${secondPart}`;
   }
 
   formatPrice(price: number): string {

@@ -67,6 +67,10 @@
                 <span>Amenities</span>
                 <span>{{ formatPrice(calcularPrecioAmenities()) }}</span>
               </div>
+              <div class="price-item" *ngIf="servicioCompletoActivado">
+                <span>🌟 Servicio ViaJAR Completo</span>
+                <span>$29</span>
+              </div>
               <div ubSeparator class="my-2"></div>
               <div class="price-total">
                 <span>Total</span>
@@ -223,11 +227,20 @@
                   <span
                     class="error-message"
                     *ngIf="
-                      checkoutForm.get('fechaInicio')?.invalid &&
+                      checkoutForm.get('fechaInicio')?.hasError('required') &&
                       checkoutForm.get('fechaInicio')?.touched
                     "
                   >
                     La fecha de inicio es requerida
+                  </span>
+                  <span
+                    class="error-message"
+                    *ngIf="
+                      checkoutForm.get('fechaInicio')?.hasError('fechaPasada') &&
+                      checkoutForm.get('fechaInicio')?.touched
+                    "
+                  >
+                    La fecha de inicio debe ser futura
                   </span>
                 </div>
 
@@ -244,10 +257,29 @@
                   <span
                     class="error-message"
                     *ngIf="
-                      checkoutForm.get('fechaFin')?.invalid && checkoutForm.get('fechaFin')?.touched
+                      checkoutForm.get('fechaFin')?.hasError('required') &&
+                      checkoutForm.get('fechaFin')?.touched
                     "
                   >
                     La fecha de fin es requerida
+                  </span>
+                  <span
+                    class="error-message"
+                    *ngIf="
+                      checkoutForm.get('fechaFin')?.hasError('fechaPasada') &&
+                      checkoutForm.get('fechaFin')?.touched
+                    "
+                  >
+                    La fecha de fin debe ser futura
+                  </span>
+                  <span
+                    class="error-message"
+                    *ngIf="
+                      checkoutForm.hasError('fechaFinInvalida') &&
+                      checkoutForm.get('fechaFin')?.touched
+                    "
+                  >
+                    La fecha de fin debe ser posterior a la fecha de inicio
                   </span>
                 </div>
               </div>
@@ -526,6 +558,139 @@
           <h2 class="step-title">Confirma tu reserva</h2>
 
           <div class="confirmation-summary">
+            <!-- Card de Servicio Completo -->
+            <div ubCard class="servicio-completo-card">
+              <div class="servicio-header">
+                <div class="servicio-badge">RECOMENDADO</div>
+                <h3>Servicio ViaJAR</h3>
+                <p class="servicio-subtitle">Nosotros nos encargamos de todo</p>
+              </div>
+
+              <div class="servicio-toggle">
+                <label class="toggle-container">
+                  <input
+                    type="checkbox"
+                    [(ngModel)]="servicioCompletoActivado"
+                    (change)="onServicioCompletoChange()"
+                  />
+                  <span class="toggle-slider"></span>
+                  <span class="toggle-label">
+                    {{ servicioCompletoActivado ? 'Activado' : 'Desactivado' }}
+                  </span>
+                </label>
+                <span class="servicio-precio">+ $29 USD</span>
+              </div>
+
+              <div class="servicio-features">
+                <div class="feature-item">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                    <path d="M9 12l2 2 4-4" />
+                  </svg>
+                  <span>Garantía del Viajero</span>
+                </div>
+                <div class="feature-item">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path
+                      d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"
+                    />
+                  </svg>
+                  <span>Customer Service 24/7</span>
+                </div>
+                <div class="feature-item">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
+                    <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+                  </svg>
+                  <span>Todas las reservaciones incluidas</span>
+                </div>
+                <div class="feature-item">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                    <polyline points="22 4 12 14.01 9 11.01" />
+                  </svg>
+                  <span>Post-venta y soporte durante el viaje</span>
+                </div>
+              </div>
+
+              <!-- Info adicional cuando está desactivado -->
+              <div *ngIf="!servicioCompletoActivado" class="servicio-info-alternativa">
+                <div class="info-header">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                  >
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" y1="16" x2="12" y2="12" />
+                    <line x1="12" y1="8" x2="12.01" y2="8" />
+                  </svg>
+                  <span
+                    >Si prefieres gestionar por tu cuenta, te proporcionaremos contactos y/o webs de
+                    calidad/precio:</span
+                  >
+                </div>
+                <div class="info-links">
+                  <div class="link-item">
+                    <strong>✈️ Vuelos:</strong>
+                    <a [href]="getMockFlightLink()" target="_blank">{{
+                      getMockFlightProvider()
+                    }}</a>
+                  </div>
+                  <div class="link-item">
+                    <strong>🏨 Alojamiento:</strong>
+                    <a [href]="getMockHotelLink()" target="_blank">{{ getMockHotelProvider() }}</a>
+                  </div>
+                  <div class="link-item">
+                    <strong>🎯 Actividades:</strong>
+                    <a [href]="getMockActivityLink()" target="_blank">{{
+                      getMockActivityProvider()
+                    }}</a>
+                  </div>
+                  <div class="link-item">
+                    <strong>📞 Contacto directo:</strong>
+                    <span>{{ getMockPhoneNumber() }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <div ubCard class="confirmation-card">
               <h3>Resumen final</h3>
 

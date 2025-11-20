@@ -201,25 +201,38 @@
     }
 
     .reserva-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 15px 20px;
+      position: relative;
+      padding: 20px;
       background: var(--sun-50);
+      background-size: cover;
+      background-position: center;
       border-bottom: 1px solid var(--sun-200);
+      min-height: 80px;
+      display: flex;
+      align-items: center;
+
+      .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        position: relative;
+        z-index: 1;
+      }
 
       .reserva-badge {
-        padding: 6px 14px;
+        padding: 8px 16px;
         border-radius: 20px;
-        font-size: 0.85rem;
+        font-size: 0.9rem;
         font-weight: 700;
         text-transform: uppercase;
         letter-spacing: 0.5px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 
         &.badge-pendiente {
-          background: #fff3cd;
-          color: #856404;
-          border: 2px solid #ffc107;
+          background: white;
+          color: var(--sun-700);
+          border: 2px solid white;
         }
 
         &.badge-confirmada {
@@ -243,8 +256,27 @@
 
       .reserva-fecha {
         font-size: 0.85rem;
-        color: #666;
-        font-weight: 500;
+        color: white;
+        font-weight: 600;
+        text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+        background: rgba(0, 0, 0, 0.2);
+        padding: 6px 12px;
+        border-radius: 12px;
+      }
+    }
+
+    &.reserva-pendiente {
+      border-color: var(--sun-500);
+      box-shadow: 0 4px 20px rgba(251, 146, 60, 0.3);
+
+      .reserva-header {
+        background-size: cover;
+        background-position: center;
+      }
+
+      &:hover {
+        border-color: var(--sun-600);
+        box-shadow: 0 8px 30px rgba(251, 146, 60, 0.4);
       }
     }
 

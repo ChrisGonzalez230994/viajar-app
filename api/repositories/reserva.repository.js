@@ -15,10 +15,10 @@ class ReservaRepository extends MongooseRepository {
    */
   async findByUser(userId, options = {}) {
     try {
-      const filters = { idUsuario: userId };
+      const filters = { usuario: userId };
       return await this.findAll(filters, {
         ...options,
-        populate: ['idDestino'],
+        populate: ['destino'],
       });
     } catch (error) {
       throw new Error(`Error finding by user: ${error.message}`);
@@ -30,10 +30,10 @@ class ReservaRepository extends MongooseRepository {
    */
   async findByDestination(destinoId, options = {}) {
     try {
-      const filters = { idDestino: destinoId };
+      const filters = { destino: destinoId };
       return await this.findAll(filters, {
         ...options,
-        populate: ['idUsuario'],
+        populate: ['usuario'],
       });
     } catch (error) {
       throw new Error(`Error finding by destination: ${error.message}`);
@@ -48,7 +48,7 @@ class ReservaRepository extends MongooseRepository {
       const filters = { estado };
       return await this.findAll(filters, {
         ...options,
-        populate: ['idDestino', 'idUsuario'],
+        populate: ['destino', 'usuario'],
       });
     } catch (error) {
       throw new Error(`Error finding by status: ${error.message}`);
@@ -61,12 +61,12 @@ class ReservaRepository extends MongooseRepository {
   async findPendingByUser(userId, options = {}) {
     try {
       const filters = {
-        idUsuario: userId,
+        usuario: userId,
         estado: 'pendiente',
       };
       return await this.findAll(filters, {
         ...options,
-        populate: ['idDestino'],
+        populate: ['destino'],
       });
     } catch (error) {
       throw new Error(`Error finding pending by user: ${error.message}`);
@@ -84,7 +84,7 @@ class ReservaRepository extends MongooseRepository {
       };
       return await this.findAll(filters, {
         ...options,
-        populate: ['idDestino', 'idUsuario'],
+        populate: ['destino', 'usuario'],
       });
     } catch (error) {
       throw new Error(`Error finding by date range: ${error.message}`);
@@ -97,7 +97,7 @@ class ReservaRepository extends MongooseRepository {
   async checkAvailability(destinoId, fechaInicio, fechaFin) {
     try {
       const conflictingReservations = await this.model.countDocuments({
-        idDestino: destinoId,
+        destino: destinoId,
         estado: { $in: ['confirmada', 'pendiente'] },
         $or: [
           {
@@ -163,13 +163,13 @@ class ReservaRepository extends MongooseRepository {
       futureDate.setDate(today.getDate() + days);
 
       const filters = {
-        idUsuario: userId,
+        usuario: userId,
         estado: 'confirmada',
         fechaInicio: { $gte: today, $lte: futureDate },
       };
 
       return await this.findAll(filters, {
-        populate: ['idDestino'],
+        populate: ['destino'],
         sortBy: 'fechaInicio',
         sortOrder: 'asc',
       });
@@ -185,13 +185,13 @@ class ReservaRepository extends MongooseRepository {
     try {
       const today = new Date();
       const filters = {
-        idUsuario: userId,
+        usuario: userId,
         fechaFin: { $lt: today },
       };
 
       return await this.findAll(filters, {
         ...options,
-        populate: ['idDestino'],
+        populate: ['destino'],
         sortBy: 'fechaFin',
         sortOrder: 'desc',
       });
@@ -208,7 +208,7 @@ class ReservaRepository extends MongooseRepository {
       const result = await this.model.aggregate([
         {
           $match: {
-            idDestino: destinoId,
+            destino: destinoId,
             estado: 'confirmada',
             fechaInicio: { $gte: new Date(startDate), $lte: new Date(endDate) },
           },
@@ -235,11 +235,11 @@ class ReservaRepository extends MongooseRepository {
     const filters = {};
 
     if (criteria.userId) {
-      filters.idUsuario = criteria.userId;
+      filters.usuario = criteria.userId;
     }
 
     if (criteria.destinoId) {
-      filters.idDestino = criteria.destinoId;
+      filters.destino = criteria.destinoId;
     }
 
     if (criteria.estado) {

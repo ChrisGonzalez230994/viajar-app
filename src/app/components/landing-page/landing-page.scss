@@ -736,6 +736,141 @@ body {
   }
 }
 
+/* Servicios */
+.servicios {
+  background: linear-gradient(180deg, rgba(255, 241, 224, 0.4) 0%, rgba(255, 216, 168, 0.3) 100%);
+  padding: 5rem 2rem;
+  position: relative;
+
+  h2 {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--sun-900);
+    font-family: 'Timmana', sans-serif;
+  }
+
+  .servicios-subtitle {
+    text-align: center;
+    font-size: 1.2rem;
+    color: var(--sun-700);
+    margin-bottom: 3rem;
+    font-weight: 500;
+  }
+}
+
+.servicios-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 3rem;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 2rem;
+}
+
+.servicio-card {
+  text-align: center;
+  padding: 2.5rem 2rem;
+  transition: all 0.4s ease;
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    width: 100%;
+    height: 100%;
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(255, 122, 24, 0.15);
+    transition: transform 0.4s ease;
+    z-index: -1;
+  }
+
+  &:hover::before {
+    transform: translate(-50%, -50%) scale(1.05);
+  }
+
+  &:hover {
+    transform: translateY(-10px);
+  }
+
+  &:hover .servicio-icon svg {
+    transform: scale(1.1) rotate(5deg);
+    stroke: var(--sun-600);
+  }
+}
+
+.servicio-icon {
+  margin-bottom: 1.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  svg {
+    stroke: var(--sun-500);
+    transition: all 0.4s ease;
+    filter: drop-shadow(0 4px 12px rgba(255, 122, 24, 0.2));
+  }
+}
+
+.servicio-card h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--sun-900);
+  margin-bottom: 0.5rem;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.servicio-card h4 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--sun-600);
+  margin-bottom: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.servicio-card p {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--sun-700);
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+@media (max-width: 1024px) {
+  .servicios-grid {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+    max-width: 600px;
+  }
+
+  .servicio-card {
+    padding: 3rem 2rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .servicios {
+    padding: 3rem 1rem;
+
+    h2 {
+      font-size: 2rem;
+    }
+
+    .servicios-subtitle {
+      font-size: 1rem;
+    }
+  }
+
+  .servicio-card {
+    padding: 2rem 1.5rem;
+  }
+}
+
 /* Nosotros */
 .nosotros {
   background: linear-gradient(180deg, rgba(255, 241, 224, 0.2) 0%, rgba(255, 154, 60, 0.1) 100%);

@@ -20,7 +20,9 @@ router.get('/mis-reservas', checkAuth, async (req, res) => {
   try {
     const { estado, page = 1, limit = 10 } = req.query;
     const userId = req.userId;
-
+    console.log('estado: ', estado);
+    console.log('userId: ', userId);
+    console.log('userData: ', req.userData);
     let result;
     if (estado) {
       result = await reservaRepository.search(
@@ -35,6 +37,8 @@ router.get('/mis-reservas', checkAuth, async (req, res) => {
         sortOrder: 'desc',
       });
     }
+
+    console.log(result);
 
     return res.status(200).json({
       status: 'success',

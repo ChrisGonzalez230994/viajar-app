@@ -1,4 +1,4 @@
 export const environment = {
   production: false,
-  apiUrl: 'http://confiplant.cloud:4050/api',
+  apiUrl: 'http://localhost:3001/api',
 };

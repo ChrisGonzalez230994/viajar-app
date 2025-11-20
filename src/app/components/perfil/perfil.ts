@@ -63,7 +63,7 @@ export class Perfil implements OnInit {
 
   getEstadoTexto(estado: string): string {
     const textos: Record<string, string> = {
-      pendiente: 'Pendiente',
+      pendiente: 'Próximo viaje',
       confirmada: 'Confirmada',
       cancelada: 'Cancelada',
       completada: 'Completada',
