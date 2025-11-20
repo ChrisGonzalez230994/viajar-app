@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 
 import { AppRoutingModule } from './app-routing-module';
 import { App } from './app';
@@ -11,7 +11,6 @@ import { Navbar } from './components/navbar/navbar';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { LandingComponent } from './components/landing-page/landing-page';
 import { ListaDestinos } from './components/lista-destinos/lista-destinos';
-import { PaqueteDetalleComponent } from './components/paquete-detalle-component/paquete-detalle-component';
 import { ReservaForm } from './components/reserva-form/reserva-form';
 
 // Shadcn UI Components
@@ -30,22 +29,24 @@ import { Reservas } from './components/admin/reservas/reservas';
 import { Usuarios } from './components/admin/usuarios/usuarios';
 import { ListaDestinos as ListaDestinosAdmin } from './components/admin/lista-destinos/lista-destinos';
 import { DestinationDetail } from './components/destination-detail/destination-detail';
-import { DestinationInfo } from './components/destination-detail/destination-info/destination-info';
-import { DestinationCheker } from './components/destination-detail/destination-cheker/destination-cheker';
-import { DestinationHighlights } from './components/destination-detail/destination-highlights/destination-highlights';
 import { Checkout } from './components/checkout/checkout';
 import { Footer } from './components/footer/footer';
 import { AboutUs } from './components/about-us/about-us';
 import { ModalResena } from './components/modal-resena/modal-resena';
 import { ReservaSuccess } from './components/reserva-success/reserva-success';
 import { Comments } from './components/comments/comments';
+
+// Ngzard Carousel
+import { ZardCarouselComponent } from '@shared/components/carousel/carousel.component';
+import { ZardCarouselContentComponent } from '@shared/components/carousel/carousel-content.component';
+import { ZardCarouselItemComponent } from '@shared/components/carousel/carousel-item.component';
+
 @NgModule({
   declarations: [
     App,
     Login,
     Registro,
     ListaDestinos,
-    PaqueteDetalleComponent,
     ReservaForm,
     FormDestino,
     Perfil,
@@ -54,12 +55,9 @@ import { Comments } from './components/comments/comments';
     Usuarios,
     ListaDestinosAdmin,
     DestinationDetail,
-    DestinationInfo,
-    DestinationCheker,
-    DestinationHighlights,
     Checkout,
     Footer,
-     AboutUs,
+    AboutUs,
     ModalResena,
     ReservaSuccess,
     Comments,
@@ -71,6 +69,7 @@ import { Comments } from './components/comments/comments';
     ReactiveFormsModule,
     FormsModule,
     AppRoutingModule,
+    DatePipe,
     // Standalone Components
     LandingComponent,
     Navbar,
@@ -84,6 +83,10 @@ import { Comments } from './components/comments/comments';
     UbSeparatorDirective,
     UbSkeletonDirective,
     UbSelectDirective,
+    // Ngzard Carousel - Standalone Components
+    ZardCarouselComponent,
+    ZardCarouselContentComponent,
+    ZardCarouselItemComponent,
   ],
   providers: [],
   bootstrap: [App],

@@ -4,7 +4,6 @@ import { Login } from './components/login/login';
 import { LandingComponent } from './components/landing-page/landing-page';
 import { Registro } from './components/registro/registro';
 import { ListaDestinos } from './components/lista-destinos/lista-destinos';
-import { PaqueteDetalleComponent } from './components/paquete-detalle-component/paquete-detalle-component';
 import { FormDestino } from './components/admin/form-destino/form-destino';
 import { Perfil } from './components/perfil/perfil';
 import { PanelAdmin } from './components/admin/panel-admin/panel-admin';
@@ -21,7 +20,6 @@ const routes: Routes = [
   { path: 'login', component: Login },
   { path: 'registro', component: Registro },
   { path: 'destinos', component: ListaDestinos },
-  { path: 'paquete/:id', component: PaqueteDetalleComponent },
   { path: 'checkout/:id', component: Checkout },
   { path: 'reserva-success', component: ReservaSuccess },
   { path: 'perfil', component: Perfil },

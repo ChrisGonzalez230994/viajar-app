@@ -1,7 +1,7 @@
 <div class="container">
   <div class="page-header">
     <button ubButton (click)="volverAlHome()" class="back-button">← Volver al inicio</button>
-    <h1 class="page-title">Detalles del destino</h1>
+    <h1 class="page-title">Detalles del Destino</h1>
   </div>
 
   <!-- Loading state -->
@@ -16,25 +16,116 @@
 
   <!-- Content -->
   <section class="main-content" *ngIf="!isLoading && !error && destination">
-    <div class="content-grid">
-      <div class="info">
-        <app-destination-info [destination]="destination"></app-destination-info>
-        <app-destination-highlights [highlights]="highlights"></app-destination-highlights>
-        
-        <!-- Botón de reserva -->
-        <div class="booking-action">
-          <button ubButton (click)="irAlCheckout()" class="checkout-button">
-            Reservar ahora
-          </button>
+    <!-- SLIDER DE IMÁGENES -->
+    <div class="slider-container">
+      <z-carousel [zOptions]="{ loop: true }" [zControls]="'dot'" class="destination-carousel">
+        <z-carousel-content>
+          <z-carousel-item *ngFor="let img of imagenes">
+            <img [src]="img" [alt]="destination.name" class="slider-image" />
+          </z-carousel-item>
+        </z-carousel-content>
+      </z-carousel>
+    </div>
+
+    <!-- DOS COLUMNAS: INFO Y RESERVA -->
+    <div class="details-columns">
+      <!-- COLUMNA IZQUIERDA: INFORMACIÓN -->
+      <div class="details-main">
+        <h2 class="destino-nombre">{{ destination.name }}</h2>
+        <div class="destino-meta">
+          <span class="destino-ubicacion">📍 {{ destination.ubicacion }}</span>
+          <span class="destino-rating">
+            ⭐ {{ destination.rating }}
+            <span class="resenas-count">({{ destination.reviews }} reseñas)</span>
+          </span>
+        </div>
+
+        <div class="destino-precio-row">
+          <span class="precio-simbolo">$</span>
+          <span class="precio-valor">{{ destination.precio }}</span>
+          <span class="precio-texto">por persona</span>
+        </div>
+
+        <div class="destino-tags">
+          <span *ngFor="let tag of destination.tags" class="tag">{{ tag }}</span>
+        </div>
+
+        <div class="destino-section">
+          <h3 class="section-title">Sobre este destino</h3>
+          <p class="section-text">{{ destination.descripcion }}</p>
+        </div>
+
+        <div class="destino-section">
+          <h3 class="section-title">Lo que hace especial este destino</h3>
+          <div class="highlights-grid">
+            <div class="highlight-card" *ngFor="let h of highlights">
+              <div class="highlight-icon">{{ h.icono }}</div>
+              <div class="highlight-content">
+                <div class="highlight-title">{{ h.titulo }}</div>
+                <div class="highlight-desc">{{ h.descripcion }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="destino-section">
+          <h3 class="section-title">Disponibilidad por fecha:</h3>
+          <div class="disponibilidad-info">
+            <p>
+              Consulta la disponibilidad del destino seleccionando las fechas en el panel lateral.
+            </p>
+          </div>
         </div>
       </div>
 
-      <!-- Imagen principal del destino -->
-      <div class="destination-image-container" *ngIf="destination.imagenPrincipal">
-        <img [src]="destination.imagenPrincipal" [alt]="destination.name" class="destination-main-image" />
-      </div>
-      <div class="destination-image-container image-placeholder" *ngIf="!destination.imagenPrincipal">
-        <div class="placeholder-icon">📍</div>
+      <!-- COLUMNA DERECHA: RESERVA -->
+      <div class="details-sidebar">
+        <div class="reserva-card">
+          <h3 class="reserva-title">📅 Consultar disponibilidad</h3>
+
+          <form [formGroup]="consultaForm" (ngSubmit)="consultarDisponibilidad()">
+            <div class="form-group">
+              <label class="form-label">Fecha de inicio</label>
+              <input type="date" formControlName="fechaInicio" class="form-input" />
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Fecha de fin</label>
+              <input type="date" formControlName="fechaFin" class="form-input" />
+            </div>
+
+            <button type="submit" class="btn-consultar" [disabled]="consultaForm.invalid">
+              Consultar disponibilidad
+            </button>
+          </form>
+
+          <div *ngIf="disponibilidad === false" class="disponibilidad-result no-disponible">
+            <div class="result-icon">✖</div>
+            <div class="result-text">
+              <strong>No disponible</strong>
+              <span class="result-subtext">Sin lugares en estas fechas</span>
+            </div>
+          </div>
+
+          <div *ngIf="disponibilidad === true" class="disponibilidad-result si-disponible">
+            <div class="result-content">
+              <div class="result-icon">✓</div>
+              <span class="result-text">¡Disponible!</span>
+            </div>
+          </div>
+
+          <div *ngIf="disponibilidad !== null" class="disponibilidad-footer">
+            <button class="btn-reservar-final" (click)="irACheckout()">Reservar!</button>
+
+            <div class="tip-box">
+              <span class="tip-icon">💡</span>
+              <span class="tip-text">
+                Tip: Los datos de disponibilidad pueden ser exportados e integrados directamente en
+                tu sistema de gestión de destinos.
+              </span>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -43,4 +134,4 @@
       <app-comments [destinoId]="destination.id"></app-comments>
     </div>
   </section>
-</div>  
+</div>

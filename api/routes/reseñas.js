@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const mongoose = require('mongoose');
 const { checkAuth, checkAdmin } = require('../middlewares/authentication.js');
 
 // Models import
@@ -15,6 +16,7 @@ const Reserva = require('../models/reserva.js');
 router.get('/destino/:destinoId', async (req, res) => {
   try {
     const { destinoId } = req.params;
+    console.log(destinoId);
     const {
       page = 1,
       limit = 10,
@@ -44,7 +46,7 @@ router.get('/destino/:destinoId', async (req, res) => {
 
     // Calcular estadísticas
     const stats = await Reseña.aggregate([
-      { $match: { destino: require('mongoose').Types.ObjectId(destinoId) } },
+      { $match: { destino: new mongoose.Types.ObjectId(destinoId) } },
       {
         $group: {
           _id: null,

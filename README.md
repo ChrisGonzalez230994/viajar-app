@@ -6,7 +6,7 @@
 ![MongoDB](https://img.shields.io/badge/MongoDB-7.0-green.svg)
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 
-Plataforma web integral para la planificación y exploración de viajes que revoluciona la experiencia del usuario mediante **búsqueda semántica con inteligencia artificial** (base de datos vectorial), permitiendo descubrir destinos turísticos de manera natural, realizar reservas inteligentes y compartir experiencias a través de reseñas verificadas.
+Plataforma web integral para la planificación y exploración de viajes que revoluciona la experiencia del viajero. Un nueov modelo de negocio que permite al viajero armar paquetes turisticos como desee y con ayuda de la **búsqueda semántica con inteligencia artificial** (base de datos vectorial), permite descubrir destinos turísticos de manera natural e intuitiva, realizar reservas automaticamente (si es que quiere) y compartir experiencias a través de reseñas verificadas.
 
 ---
 
@@ -30,7 +30,7 @@ cd viajar-app
 npm install
 
 # Iniciar el servidor de desarrollo
-npm start
+npm run start
 
 # La aplicación estará disponible en http://localhost:4200
 ```
@@ -42,11 +42,11 @@ Crear el archivo `src/environments/environment.ts`:
 ```typescript
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:3000/api',
+  apiUrl: 'http://xaviergalarreta.pro:4050/api',
 };
 ```
 
-> **Nota**: Para el correcto funcionamiento, necesitarás tener el backend corriendo en `http://localhost:3000`. Consulta la documentación del API en `/api/README.md`.
+> **Nota**: Para el correcto funcionamiento, necesitarás tener el backend corriendo en el servidor de Xavi. O corriendo la api en manera local.
 
 ---
 
