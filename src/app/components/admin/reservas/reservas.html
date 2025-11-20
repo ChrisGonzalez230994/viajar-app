@@ -4,19 +4,75 @@
     <button ubButton size="sm" variant="outline" (click)="volverPanel()">← Volver al Panel</button>
   </div>
 
+  <!-- Estadísticas -->
+  <div class="estadisticas-container" *ngIf="!loading">
+    <div ubCard class="stat-card stat-total">
+      <div ubCardContent>
+        <div class="stat-icon">📊</div>
+        <div class="stat-info">
+          <div class="stat-value">{{ getTotalReservas() }}</div>
+          <div class="stat-label">Total Reservas</div>
+        </div>
+      </div>
+    </div>
+    <div ubCard class="stat-card stat-pendiente">
+      <div ubCardContent>
+        <div class="stat-icon">⏳</div>
+        <div class="stat-info">
+          <div class="stat-value">{{ getReservasPorEstado('pendiente') }}</div>
+          <div class="stat-label">Pendientes</div>
+        </div>
+      </div>
+    </div>
+    <div ubCard class="stat-card stat-confirmada">
+      <div ubCardContent>
+        <div class="stat-icon">✅</div>
+        <div class="stat-info">
+          <div class="stat-value">{{ getReservasPorEstado('confirmada') }}</div>
+          <div class="stat-label">Confirmadas</div>
+        </div>
+      </div>
+    </div>
+    <div ubCard class="stat-card stat-completada">
+      <div ubCardContent>
+        <div class="stat-icon">✓</div>
+        <div class="stat-info">
+          <div class="stat-value">{{ getReservasPorEstado('completada') }}</div>
+          <div class="stat-label">Completadas</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Filtros -->
   <div ubCard class="filtros-card">
     <div ubCardContent>
       <div class="filtros">
         <div class="filtro-group">
-          <label ubLabel>Filtrar por Estado</label>
-          <select ubSelect [(ngModel)]="filtroEstado" (change)="filtrarPorEstado()">
-            <option value="">Todos</option>
+          <label ubLabel>🔍 Buscar Usuario/Destino</label>
+          <input ubInput type="text" [(ngModel)]="busquedaTexto" (input)="filtrar()" placeholder="Buscar por nombre..." />
+        </div>
+        <div class="filtro-group">
+          <label ubLabel>Estado</label>
+          <select ubSelect [(ngModel)]="filtroEstado" (change)="filtrar()">
+            <option value="">Todos los estados</option>
             <option value="pendiente">⏳ Pendiente</option>
             <option value="confirmada">✅ Confirmada</option>
             <option value="cancelada">❌ Cancelada</option>
             <option value="completada">✓ Completada</option>
           </select>
+        </div>
+        <div class="filtro-group">
+          <label ubLabel>Ordenar por</label>
+          <select ubSelect [(ngModel)]="ordenamiento" (change)="filtrar()">
+            <option value="fecha-desc">Más reciente primero</option>
+            <option value="fecha-asc">Más antigua primero</option>
+            <option value="precio-desc">Mayor precio</option>
+            <option value="precio-asc">Menor precio</option>
+          </select>
+        </div>
+        <div class="filtro-actions">
+          <button ubButton variant="outline" size="sm" (click)="limpiarFiltros()">🔄 Limpiar Filtros</button>
         </div>
       </div>
     </div>
@@ -33,38 +89,86 @@
   </div>
 
   <!-- Tabla de Reservas -->
-  <div *ngIf="!loading && reservas.length > 0" ubCard class="reservas-table-card">
+  <div *ngIf="!loading && reservasFiltradas.length > 0" ubCard class="reservas-table-card">
+    <div ubCardHeader>
+      <div class="table-header">
+        <h3 ubCardTitle>📋 Reservas ({{ reservasFiltradas.length }})</h3>
+      </div>
+    </div>
     <div ubCardContent>
-      <div ubTable class="reservas-table">
+      <div class="reservas-table">
         <table>
           <thead>
             <tr>
+              <th>ID</th>
               <th>Usuario</th>
+              <th>Email</th>
               <th>Destino</th>
-              <th>Fecha Inicio</th>
-              <th>Fecha Fin</th>
+              <th>Fechas del Viaje</th>
+              <th>Días</th>
               <th>Personas</th>
               <th>Precio Total</th>
               <th>Estado</th>
+              <th>Fecha Reserva</th>
               <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let reserva of reservas">
-              <td>{{ getNombreUsuario(reserva) }}</td>
-              <td>{{ getNombreDestino(reserva) }}</td>
-              <td>{{ formatearFecha(reserva.fechaInicio) }}</td>
-              <td>{{ formatearFecha(reserva.fechaFin) }}</td>
-              <td>{{ reserva.numeroPersonas }}</td>
-              <td>${{ reserva.precioTotal }}</td>
-              <td>
-                <span ubBadge [variant]="getEstadoBadgeVariant(reserva.estado)">
+            <tr *ngFor="let reserva of reservasFiltradas; let i = index">
+              <td class="td-id">#{{ reservasFiltradas.length - i }}</td>
+              <td class="td-usuario">
+                <div class="user-info">
+                  <div class="user-avatar">{{ getIniciales(reserva) }}</div>
+                  <span>{{ getNombreUsuario(reserva) }}</span>
+                </div>
+              </td>
+              <td class="td-email">{{ getEmailUsuario(reserva) }}</td>
+              <td class="td-destino">
+                <div class="destino-info">
+                  <strong>{{ getNombreDestino(reserva) }}</strong>
+                </div>
+              </td>
+              <td class="td-fechas">
+                <div class="fecha-rango">
+                  <div>📅 {{ formatearFecha(reserva.fechaInicio) }}</div>
+                  <div class="fecha-separador">→</div>
+                  <div>📅 {{ formatearFecha(reserva.fechaFin) }}</div>
+                </div>
+              </td>
+              <td class="td-dias">{{ getDiasEstadia(reserva) }} días</td>
+              <td class="td-personas">
+                <span class="personas-badge">👥 {{ reserva.numeroPersonas }}</span>
+              </td>
+              <td class="td-precio">
+                <strong class="precio-total">{{ formatearPrecio(reserva.precioTotal) }}</strong>
+              </td>
+              <td class="td-estado">
+                <span ubBadge [variant]="getEstadoBadgeVariant(reserva.estado)" class="estado-badge">
                   {{ getEstadoTexto(reserva.estado) }}
                 </span>
               </td>
-              <td>
+              <td class="td-fecha-creacion">
+                <div class="fecha-small">{{ formatearFechaCreacion(reserva.createdAt) }}</div>
+              </td>
+              <td class="td-acciones">
                 <div class="acciones">
-                  <button ubButton size="sm" variant="outline" (click)="abrirModalEditar(reserva)">
+                  <button
+                    ubButton
+                    size="sm"
+                    variant="default"
+                    *ngIf="reserva.estado === 'pendiente'"
+                    (click)="confirmarReservaRapida(reserva)"
+                    title="Confirmar reserva"
+                  >
+                    ✅
+                  </button>
+                  <button
+                    ubButton
+                    size="sm"
+                    variant="outline"
+                    (click)="abrirModalEditar(reserva)"
+                    title="Editar estado"
+                  >
                     ✏️
                   </button>
                   <button
@@ -73,8 +177,18 @@
                     variant="destructive"
                     *ngIf="reserva.estado !== 'cancelada' && reserva.estado !== 'completada'"
                     (click)="cancelarReserva(reserva)"
+                    title="Cancelar reserva"
                   >
                     ❌
+                  </button>
+                  <button
+                    ubButton
+                    size="sm"
+                    variant="secondary"
+                    (click)="verDetalles(reserva)"
+                    title="Ver detalles completos"
+                  >
+                    👁️
                   </button>
                 </div>
               </td>
@@ -86,7 +200,7 @@
   </div>
 
   <!-- Empty State -->
-  <div *ngIf="!loading && reservas.length === 0" ubCard class="empty-state">
+  <div *ngIf="!loading && reservasFiltradas.length === 0 && reservas.length === 0" ubCard class="empty-state">
     <div ubCardContent>
       <p>📅 No hay reservas registradas</p>
       <p class="empty-subtitle">
@@ -94,57 +208,140 @@
       </p>
     </div>
   </div>
+
+  <!-- Empty State - Sin resultados de filtro -->
+  <div *ngIf="!loading && reservasFiltradas.length === 0 && reservas.length > 0" ubCard class="empty-state">
+    <div ubCardContent>
+      <p>🔍 No se encontraron reservas</p>
+      <p class="empty-subtitle">
+        No hay reservas que coincidan con los filtros aplicados
+      </p>
+      <button ubButton variant="outline" (click)="limpiarFiltros()">Limpiar Filtros</button>
+    </div>
+  </div>
 </div>
 
 <!-- Modal Editar Estado -->
-<div class="modal-overlay" *ngIf="mostrarModalEditar" (click)="cerrarModal()">
-  <div ubCard class="modal-content" (click)="$event.stopPropagation()">
-    <div ubCardHeader>
-      <h3 ubCardTitle>✏️ Editar Estado de Reserva</h3>
+<div class="modal-overlay" *ngIf="mostrarModalEditar && reservaSeleccionada" (click)="cerrarModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>✏️ Editar Estado de Reserva</h3>
+      <button class="modal-close" (click)="cerrarModal()">✕</button>
     </div>
-    <div ubCardContent class="modal-body">
-      <div class="form-group">
-        <label ubLabel>Usuario</label>
-        <p class="info-text">{{ getNombreUsuario(reservaSeleccionada!) }}</p>
+    
+    <div class="modal-body">
+      <!-- Información de la Reserva -->
+      <div class="reserva-info-card">
+        <div class="info-row">
+          <div class="info-icon">👤</div>
+          <div class="info-content">
+            <label class="info-label">Usuario</label>
+            <p class="info-value">{{ getNombreUsuario(reservaSeleccionada) }}</p>
+            <p class="info-secondary">{{ getEmailUsuario(reservaSeleccionada) }}</p>
+          </div>
+        </div>
+
+        <div class="info-row">
+          <div class="info-icon">🏖️</div>
+          <div class="info-content">
+            <label class="info-label">Destino</label>
+            <p class="info-value">{{ getNombreDestino(reservaSeleccionada) }}</p>
+          </div>
+        </div>
+
+        <div class="info-row">
+          <div class="info-icon">📅</div>
+          <div class="info-content">
+            <label class="info-label">Fechas del Viaje</label>
+            <p class="info-value">
+              {{ formatearFecha(reservaSeleccionada.fechaInicio) }} → {{ formatearFecha(reservaSeleccionada.fechaFin) }}
+            </p>
+            <p class="info-secondary">{{ getDiasEstadia(reservaSeleccionada) }} días de estadía</p>
+          </div>
+        </div>
+
+        <div class="info-row">
+          <div class="info-icon">👥</div>
+          <div class="info-content">
+            <label class="info-label">Personas</label>
+            <p class="info-value">{{ reservaSeleccionada.numeroPersonas }} pasajeros</p>
+          </div>
+        </div>
+
+        <div class="info-row">
+          <div class="info-icon">💰</div>
+          <div class="info-content">
+            <label class="info-label">Precio Total</label>
+            <p class="info-value precio-destacado">{{ formatearPrecio(reservaSeleccionada.precioTotal) }}</p>
+          </div>
+        </div>
+
+        <div class="info-row">
+          <div class="info-icon">📊</div>
+          <div class="info-content">
+            <label class="info-label">Estado Actual</label>
+            <span ubBadge [variant]="getEstadoBadgeVariant(reservaSeleccionada.estado)">
+              {{ getEstadoTexto(reservaSeleccionada.estado) }}
+            </span>
+          </div>
+        </div>
       </div>
 
-      <div class="form-group">
-        <label ubLabel>Destino</label>
-        <p class="info-text">{{ getNombreDestino(reservaSeleccionada!) }}</p>
-      </div>
+      <!-- Separador -->
+      <div class="modal-divider"></div>
 
-      <div class="form-group">
-        <label ubLabel>Fechas</label>
-        <p class="info-text">
-          {{ formatearFecha(reservaSeleccionada?.fechaInicio) }} -
-          {{ formatearFecha(reservaSeleccionada?.fechaFin) }}
-        </p>
-      </div>
+      <!-- Formulario de Edición -->
+      <div class="form-section">
+        <h4 class="section-title">Actualizar Estado</h4>
+        
+        <div class="form-group">
+          <label ubLabel class="form-label">
+            <span class="label-icon">🔄</span>
+            Nuevo Estado *
+          </label>
+          <select ubSelect [(ngModel)]="nuevoEstado" class="estado-select">
+            <option value="pendiente">⏳ Pendiente - En espera de confirmación</option>
+            <option value="confirmada">✅ Confirmada - Reserva aprobada</option>
+            <option value="cancelada">❌ Cancelada - Reserva cancelada</option>
+            <option value="completada">✓ Completada - Viaje finalizado</option>
+          </select>
+        </div>
 
-      <div class="form-group">
-        <label ubLabel>Nuevo Estado *</label>
-        <select ubSelect [(ngModel)]="nuevoEstado">
-          <option value="pendiente">⏳ Pendiente</option>
-          <option value="confirmada">✅ Confirmada</option>
-          <option value="cancelada">❌ Cancelada</option>
-          <option value="completada">✓ Completada</option>
-        </select>
-      </div>
+        <div class="form-group alert-info" *ngIf="nuevoEstado === 'confirmada'">
+          <div class="alert-icon">ℹ️</div>
+          <p>Al confirmar, el usuario recibirá una notificación con los detalles de su reserva.</p>
+        </div>
 
-      <div class="form-group" *ngIf="nuevoEstado === 'cancelada'">
-        <label ubLabel>Motivo de Cancelación</label>
-        <textarea
-          ubInput
-          type="text"
-          [(ngModel)]="motivoCancelacion"
-          rows="3"
-          placeholder="Opcional: Indica el motivo de la cancelación"
-        ></textarea>
+        <div class="form-group" *ngIf="nuevoEstado === 'cancelada'">
+          <label ubLabel class="form-label">
+            <span class="label-icon">📝</span>
+            Motivo de Cancelación
+          </label>
+          <textarea
+            ubInput
+            type="text"
+            [(ngModel)]="motivoCancelacion"
+            rows="3"
+            class="motivo-textarea"
+            placeholder="Ejemplo: No hay disponibilidad en las fechas solicitadas..."
+          ></textarea>
+          <small class="form-hint">Este mensaje será visible para el usuario</small>
+        </div>
+
+        <div class="form-group alert-warning" *ngIf="nuevoEstado === 'cancelada'">
+          <div class="alert-icon">⚠️</div>
+          <p>Esta acción no se puede deshacer. Asegúrate de ingresar un motivo claro.</p>
+        </div>
       </div>
     </div>
-    <div ubCardFooter class="modal-footer">
-      <button ubButton variant="outline" (click)="cerrarModal()">Cancelar</button>
-      <button ubButton (click)="actualizarEstado()">💾 Guardar Cambios</button>
+
+    <div class="modal-footer">
+      <button ubButton variant="outline" (click)="cerrarModal()" class="btn-cancelar">
+        Cancelar
+      </button>
+      <button ubButton (click)="actualizarEstado()" class="btn-guardar">
+        💾 Guardar Cambios
+      </button>
     </div>
   </div>
 </div>

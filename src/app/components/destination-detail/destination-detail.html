@@ -20,6 +20,13 @@
       <div class="info">
         <app-destination-info [destination]="destination"></app-destination-info>
         <app-destination-highlights [highlights]="highlights"></app-destination-highlights>
+        
+        <!-- Botón de reserva -->
+        <div class="booking-action">
+          <button ubButton (click)="irAlCheckout()" class="checkout-button">
+            Reservar ahora
+          </button>
+        </div>
       </div>
 
       <!-- Imagen principal del destino -->
@@ -29,10 +36,6 @@
       <div class="destination-image-container image-placeholder" *ngIf="!destination.imagenPrincipal">
         <div class="placeholder-icon">📍</div>
       </div>
-    </div>
-
-    <div class="availability">
-      <app-destination-cheker></app-destination-cheker>
     </div>
 
     <!-- Comentarios y reseñas -->

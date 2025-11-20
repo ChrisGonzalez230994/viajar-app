@@ -97,6 +97,39 @@
   flex: 1;
 }
 
+.booking-action {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(255, 122, 24, 0.15);
+  border: 2px solid var(--sun-200);
+}
+
+.checkout-button {
+  width: 100%;
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, var(--sun-500) 0%, var(--sun-600) 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 16px rgba(255, 122, 24, 0.3);
+
+  &:hover {
+    background: linear-gradient(135deg, var(--sun-600) 0%, var(--sun-700) 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 122, 24, 0.4);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
 .availability {
   background-color: rgba(255, 255, 255, 0.95);
   padding: 20px;

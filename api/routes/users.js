@@ -98,13 +98,23 @@ router.post('/register', async (req, res) => {
     const name = req.body.name;
     const email = req.body.email;
     const password = req.body.password;
+    const username = req.body.username || email.split('@')[0];
+    const apellido = req.body.apellido || '';
+    const nacionalidad = req.body.nacionalidad || '';
+    const fechaNacimiento = req.body.fechaNacimiento || null;
 
     const encryptedPassword = encryptPass(password);
 
     const newUser = {
+      username: username,
       name: name,
+      nombre: name,
+      apellido: apellido,
       email: email,
       password: encryptedPassword,
+      nacionalidad: nacionalidad,
+      fechaNacimiento: fechaNacimiento,
+      confirmed: true, // Auto-confirmar para permitir login inmediato
     };
 
     var userValidation = await User.findOne({ email: email });

@@ -268,14 +268,26 @@ export class AuthService {
   // Mapea los campos del formulario a lo que espera el backend (name, email, password)
   registro(usuario: Partial<Usuario>): Observable<any> {
     const nombre = (usuario.nombre || usuario.username || '').trim();
+    const apellido = (usuario.apellido || '').trim();
     const email = usuario.email;
     const password = (usuario.password as any) || (usuario as any).contraseña || '';
+    const username = (usuario.username || email?.split('@')[0] || '').trim();
+    const nacionalidad = (usuario as any).nacionalidad || '';
+    const fechaNacimiento = (usuario as any).fechaNacimiento || null;
 
-    if (!nombre || !email || !password) {
+    if (!nombre || !apellido || !email || !password) {
       return throwError(() => new Error('INVALID_DATA'));
     }
 
-    const payload = { name: nombre, email: email, password: password };
+    const payload = { 
+      username: username,
+      name: nombre,
+      apellido: apellido,
+      email: email,
+      password: password,
+      nacionalidad: nacionalidad,
+      fechaNacimiento: fechaNacimiento
+    };
 
     return this.http.post<any>(`${this.apiUrl}/register`, payload).pipe(
       tap((res) => {

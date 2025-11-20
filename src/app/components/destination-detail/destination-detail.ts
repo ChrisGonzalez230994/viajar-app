@@ -128,6 +128,11 @@ export class DestinationDetail implements OnInit {
     return text.charAt(0).toUpperCase() + text.slice(1);
   }
 
+  irAlCheckout(): void {
+    if (this.destination?.id) {
+      this.router.navigate(['/checkout/', this.destination.id]);
+    }
+  }
 
   volverAlHome(): void {
     this.router.navigate(['/home']);
