@@ -53,7 +53,7 @@ app.use('/api/auth', require('./routes/users.js'));
 app.use('/api/usuarios', require('./routes/users.js')); // Admin endpoints for user management
 app.use('/api/destinos', require('./routes/destinos.js'));
 app.use('/api/reservas', require('./routes/reservas.js'));
-app.use('/api/reseñas', require('./routes/reseñas.js'));
+app.use('/api/resenas', require('./routes/reseñas.js'));
 app.use('/api/search', require('./routes/search.js'));
 
 // Health check endpoint

@@ -36,6 +36,8 @@ import { DestinationHighlights } from './components/destination-detail/destinati
 import { Checkout } from './components/checkout/checkout';
 import { Footer } from './components/footer/footer';
 import { AboutUs } from './components/about-us/about-us';
+import { ModalResena } from './components/modal-resena/modal-resena';
+import { ReservaSuccess } from './components/reserva-success/reserva-success';
 
 @NgModule({
   declarations: [
@@ -58,14 +60,17 @@ import { AboutUs } from './components/about-us/about-us';
     Checkout,
     Footer,
     AboutUs,
+    ModalResena,
+    ReservaSuccess,
   ],
   imports: [
     BrowserModule,
     CommonModule,
     HttpClientModule,
-    AppRoutingModule,
     ReactiveFormsModule,
     FormsModule,
+    AppRoutingModule,
+    // Standalone Components
     LandingComponent,
     Navbar,
     // Shadcn UI Directives

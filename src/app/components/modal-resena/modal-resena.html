@@ -1,0 +1,87 @@
+<div class="modal-overlay" (click)="cerrar()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <!-- Header -->
+    <div class="modal-header">
+      <h2>¿Qué te pareció tu último viaje?</h2>
+      <button class="close-btn" (click)="cerrar()">✕</button>
+    </div>
+
+    <!-- Destino -->
+    <div class="destino-info">
+      <p class="destino-nombre">{{ destinoNombre }}</p>
+    </div>
+
+    <!-- Form -->
+    <form [formGroup]="resenaForm" (ngSubmit)="onSubmit()">
+      <!-- Calificación -->
+      <div class="form-group">
+        <label class="form-label">Calificación *</label>
+        <div class="stars-container">
+          <button
+            *ngFor="let star of [1, 2, 3, 4, 5]"
+            type="button"
+            class="star-btn"
+            [ngClass]="getStarClass(star)"
+            (click)="setCalificacion(star)"
+            (mouseenter)="setHover(star)"
+            (mouseleave)="clearHover()"
+          >
+            ★
+          </button>
+        </div>
+        <p class="calificacion-text" *ngIf="calificacionValue > 0">
+          {{
+            calificacionValue === 1
+              ? 'Malo'
+              : calificacionValue === 2
+              ? 'Regular'
+              : calificacionValue === 3
+              ? 'Bueno'
+              : calificacionValue === 4
+              ? 'Muy bueno'
+              : 'Excelente'
+          }}
+        </p>
+        <p
+          class="error-message"
+          *ngIf="resenaForm.get('calificacion')?.touched && resenaForm.get('calificacion')?.invalid"
+        >
+          Por favor selecciona una calificación
+        </p>
+      </div>
+
+      <!-- Comentario -->
+      <div class="form-group">
+        <label class="form-label">Tu experiencia *</label>
+        <textarea
+          formControlName="comentario"
+          placeholder="Cuéntanos sobre tu experiencia en este destino..."
+          rows="5"
+          maxlength="500"
+          [class.input-error]="comentarioInvalid"
+        ></textarea>
+        <div class="input-footer">
+          <p class="error-message" *ngIf="comentarioInvalid">
+            El comentario debe tener al menos 10 caracteres
+          </p>
+          <span class="char-count">{{ comentarioLength }}/500</span>
+        </div>
+      </div>
+
+      <!-- Error general -->
+      <div class="error-banner" *ngIf="error">
+        {{ error }}
+      </div>
+
+      <!-- Actions -->
+      <div class="modal-actions">
+        <button type="button" class="btn-secondary" (click)="cerrar()" [disabled]="isSubmitting">
+          Más tarde
+        </button>
+        <button type="submit" class="btn-primary" [disabled]="isSubmitting || resenaForm.invalid">
+          {{ isSubmitting ? 'Enviando...' : 'Enviar reseña' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -366,8 +366,12 @@ export class Checkout implements OnInit {
 
     this.reservaService.createReserva(reservaData).subscribe({
       next: (response: any) => {
-        alert('¡Reserva confirmada exitosamente!');
-        this.router.navigate(['/perfil']);
+        // Guardar flag en localStorage para no mostrar modal de reseña inmediatamente
+        const now = new Date();
+        localStorage.setItem('modal_resena_cooldown', now.toISOString());
+
+        // Redirigir a página de éxito
+        this.router.navigate(['/reserva-success']);
       },
       error: (error: any) => {
         console.error('Error creando reserva:', error);

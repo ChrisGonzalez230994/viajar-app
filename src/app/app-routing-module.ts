@@ -13,7 +13,7 @@ import { Usuarios } from './components/admin/usuarios/usuarios';
 import { ListaDestinos as ListaDestinosAdmin } from './components/admin/lista-destinos/lista-destinos';
 import { DestinationDetail } from './components/destination-detail/destination-detail';
 import { Checkout } from './components/checkout/checkout';
-
+import { ReservaSuccess } from './components/reserva-success/reserva-success';
 import { AboutUs } from './components/about-us/about-us';
 
 const routes: Routes = [
@@ -23,6 +23,7 @@ const routes: Routes = [
   { path: 'destinos', component: ListaDestinos },
   { path: 'paquete/:id', component: PaqueteDetalleComponent },
   { path: 'checkout/:id', component: Checkout },
+  { path: 'reserva-success', component: ReservaSuccess },
   { path: 'perfil', component: Perfil },
   { path: 'admin/panel', component: PanelAdmin },
   { path: 'admin/lista-destinos', component: ListaDestinosAdmin },
@@ -32,7 +33,7 @@ const routes: Routes = [
   { path: 'admin/usuarios', component: Usuarios },
   { path: 'detalle-destino/:id', component: DestinationDetail },
   { path: 'nosotros', component: AboutUs },
-  { path: '**', redirectTo: '', pathMatch: 'full' } // ruta por defecto si no se especifica ninguna
+  { path: '**', redirectTo: '', pathMatch: 'full' }, // ruta por defecto si no se especifica ninguna
 ];
 
 @NgModule({

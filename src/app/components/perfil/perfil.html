@@ -71,28 +71,60 @@
           *ngIf="!isLoadingReservas && !reservasError && reservas.length > 0"
           class="reservas-lista"
         >
-          <p class="reservas-count">Tienes {{ reservas.length }} reserva(s)</p>
+          <div class="reservas-header-message">
+            <h3>¡Ya tenés tus pasajes reservados! ✈️</h3>
+            <p class="reservas-subtitle">{{ reservas.length }} {{ reservas.length === 1 ? 'viaje reservado' : 'viajes reservados' }}</p>
+          </div>
 
           <div class="reserva-card" *ngFor="let reserva of reservas">
             <div class="reserva-header">
               <span class="reserva-badge" [ngClass]="getEstadoBadgeClass(reserva.estado)">
                 {{ getEstadoTexto(reserva.estado) }}
               </span>
-              <span class="reserva-fecha">{{ reserva.createdAt | date : 'dd/MM/yyyy' }}</span>
+              <span class="reserva-fecha">Reservado el {{ reserva.createdAt | date : 'dd/MM/yyyy' }}</span>
+            </div>
+
+            <!-- Información del destino -->
+            <div class="reserva-destino" *ngIf="reserva.idDestino">
+              <div class="destino-imagen" *ngIf="reserva.idDestino.imagenes && reserva.idDestino.imagenes.length > 0">
+                <img [src]="reserva.idDestino.imagenes[0]" [alt]="reserva.idDestino.nombre" />
+              </div>
+              <div class="destino-info">
+                <h4>{{ reserva.idDestino.nombre }}</h4>
+                <p class="destino-ubicacion">📍 {{ reserva.idDestino.ciudad }}, {{ reserva.idDestino.pais }}</p>
+                <p class="destino-descripcion" *ngIf="reserva.idDestino.descripcion">
+                  {{ reserva.idDestino.descripcion.length > 150 ? (reserva.idDestino.descripcion.substring(0, 150) + '...') : reserva.idDestino.descripcion }}
+                </p>
+              </div>
             </div>
 
             <div class="reserva-body">
-              <div class="reserva-info">
-                <p><strong>Número de personas:</strong> {{ reserva.numeroPersonas }}</p>
-                <p>
-                  <strong>Fecha inicio:</strong> {{ reserva.fechaInicio | date : 'dd/MM/yyyy' }}
-                </p>
-                <p><strong>Fecha fin:</strong> {{ reserva.fechaFin | date : 'dd/MM/yyyy' }}</p>
-                <p><strong>Precio total:</strong> ${{ reserva.precioTotal }}</p>
+              <div class="reserva-info-grid">
+                <div class="info-item">
+                  <span class="info-label">👥 Personas</span>
+                  <span class="info-value">{{ reserva.numeroPersonas }}</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">📅 Fecha inicio</span>
+                  <span class="info-value">{{ reserva.fechaInicio | date : 'dd/MM/yyyy' }}</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">📅 Fecha fin</span>
+                  <span class="info-value">{{ reserva.fechaFin | date : 'dd/MM/yyyy' }}</span>
+                </div>
+                <div class="info-item">
+                  <span class="info-label">💰 Precio total</span>
+                  <span class="info-value">${{ reserva.precioTotal.toLocaleString() }}</span>
+                </div>
+              </div>
+
+              <div class="reserva-mensaje-estado" *ngIf="reserva.estado === 'pendiente'">
+                <p>⏳ Tu reserva está en proceso de confirmación. Recibirás un correo cuando sea aprobada por nuestro equipo.</p>
               </div>
 
               <div class="reserva-notas" *ngIf="reserva.notas">
-                <p><strong>Notas:</strong> {{ reserva.notas }}</p>
+                <p class="notas-titulo"><strong>Detalles adicionales:</strong></p>
+                <p class="notas-contenido">{{ reserva.notas }}</p>
               </div>
             </div>
           </div>

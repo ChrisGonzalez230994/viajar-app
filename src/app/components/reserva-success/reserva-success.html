@@ -1,0 +1,44 @@
+<div class="success-container">
+  <div class="success-card">
+    <div class="success-icon">
+      <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+        <circle cx="40" cy="40" r="36" stroke="#10b981" stroke-width="4" fill="none" />
+        <path
+          d="M25 40L35 50L55 30"
+          stroke="#10b981"
+          stroke-width="4"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        />
+      </svg>
+    </div>
+
+    <h1 class="success-title">¡Reserva Confirmada!</h1>
+    <p class="success-message">
+      Tu reserva ha sido procesada exitosamente. Recibirás un correo electrónico con los detalles de
+      tu viaje.
+    </p>
+
+    <div class="info-box">
+      <p class="info-text">
+        <strong>¿Qué sigue?</strong>
+      </p>
+      <ul class="info-list">
+        <li>Revisa tu correo para confirmar los detalles</li>
+        <li>Puedes ver tu reserva en tu perfil</li>
+        <li>Te notificaremos sobre actualizaciones</li>
+      </ul>
+    </div>
+
+    <div class="countdown-box">
+      <p>
+        Serás redirigido a tu perfil en <strong>{{ countdown }}</strong> segundos...
+      </p>
+    </div>
+
+    <div class="actions">
+      <button class="btn-primary" (click)="irAPerfil()">Ver mis reservas</button>
+      <button class="btn-secondary" (click)="irAInicio()">Volver al inicio</button>
+    </div>
+  </div>
+</div>
