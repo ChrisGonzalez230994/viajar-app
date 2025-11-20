@@ -185,22 +185,12 @@ class VectorRepository {
         });
       }
 
-      // Si hay ubicacion, usar lógica OR para pais y ciudad
-      if (ubicacion) {
-        filter.must.push({
-          should: [
-            {
-              key: 'pais',
-              match: { text: ubicacion },
-            },
-            {
-              key: 'ciudad',
-              match: { text: ubicacion },
-            },
-          ],
-        });
-      } else {
-        // Si no hay ubicacion, usar pais y ciudad individuales
+      // Guardar ubicacion para filtrado post-búsqueda (case-insensitive)
+      const ubicacionLower = ubicacion ? ubicacion.toLowerCase().trim() : null;
+
+      // Si hay ubicacion, NO usar filtros de Qdrant (haremos post-filtrado case-insensitive)
+      // Si no hay ubicacion, usar pais y ciudad individuales
+      if (!ubicacion) {
         if (pais) {
           filter.must.push({
             key: 'pais',
@@ -234,19 +224,53 @@ class VectorRepository {
       const client = this.qdrant.getClient();
       const collectionName = this.qdrant.getCollectionName();
 
+      const finalFilter = filter.must.length > 0 || filter.should ? filter : undefined;
+      console.log('🎯 Filtro final enviado a Qdrant:', JSON.stringify(finalFilter, null, 2));
+
       const searchResult = await client.search(collectionName, {
         vector: queryEmbedding,
-        filter: filter.must.length > 0 ? filter : undefined,
+        filter: finalFilter,
         limit: limit,
         with_payload: true,
       });
 
+      console.log('✅ Resultados recibidos de Qdrant:', searchResult.length);
+      if (searchResult.length > 0) {
+        console.log(
+          '📦 Primeros 3 resultados:',
+          searchResult.slice(0, 3).map((r) => ({
+            nombre: r.payload.nombre,
+            ciudad: r.payload.ciudad,
+            pais: r.payload.pais,
+            score: r.score,
+          }))
+        );
+      }
+
       // Formatear resultados
-      const results = searchResult.map((result) => ({
+      let results = searchResult.map((result) => ({
         ...result.payload,
         score: result.score, // Similaridad (0-1, más alto = más similar)
         relevance: Math.round(result.score * 100), // Porcentaje de relevancia
       }));
+
+      // Aplicar filtro de ubicación case-insensitive (post-filtrado)
+      if (ubicacionLower) {
+        console.log('🔍 Aplicando filtro de ubicación case-insensitive:', ubicacionLower);
+        const beforeFilter = results.length;
+        results = results.filter((result) => {
+          const paisMatch = result.pais && result.pais.toLowerCase().includes(ubicacionLower);
+          const ciudadMatch = result.ciudad && result.ciudad.toLowerCase().includes(ubicacionLower);
+          const match = paisMatch || ciudadMatch;
+
+          if (match) {
+            console.log(`  ✅ Match: ${result.nombre} (${result.ciudad}, ${result.pais})`);
+          }
+
+          return match;
+        });
+        console.log(`📊 Filtrado de ubicación: ${beforeFilter} → ${results.length} resultados`);
+      }
 
       return {
         query: query,
