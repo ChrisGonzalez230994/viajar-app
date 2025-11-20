@@ -143,6 +143,8 @@
   border-radius: 4px;
 }
 
+.loading-reservas,
+.error-reservas,
 .no-reservas {
   font-size: 1rem;
   color: #666;
@@ -151,6 +153,104 @@
   background: #f5f5f5;
   border-radius: 4px;
   text-align: center;
+}
+
+.error-reservas {
+  background: #ffe5e5;
+  color: #dc3545;
+}
+
+.reservas-lista {
+  margin-top: 20px;
+
+  .reserva-card {
+    background: var(--sun-50);
+    border: 1px solid var(--sun-200);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
+
+    &:hover {
+      box-shadow: 0 4px 12px rgba(255, 122, 24, 0.15);
+      transform: translateY(-2px);
+    }
+
+    .reserva-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--sun-200);
+
+      .reserva-badge {
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 0.85rem;
+        font-weight: 600;
+
+        &.badge-pendiente {
+          background: #fff3cd;
+          color: #856404;
+        }
+
+        &.badge-confirmada {
+          background: #d4edda;
+          color: #155724;
+        }
+
+        &.badge-cancelada {
+          background: #f8d7da;
+          color: #721c24;
+        }
+
+        &.badge-completada {
+          background: #d1ecf1;
+          color: #0c5460;
+        }
+      }
+
+      .reserva-fecha {
+        font-size: 0.9rem;
+        color: #666;
+      }
+    }
+
+    .reserva-body {
+      .reserva-info {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 10px;
+
+        p {
+          margin: 5px 0;
+          font-size: 0.95rem;
+          color: #333;
+
+          strong {
+            color: var(--sun-700);
+          }
+        }
+      }
+
+      .reserva-notas {
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid var(--sun-200);
+
+        p {
+          margin: 0;
+          font-size: 0.9rem;
+          color: #666;
+
+          strong {
+            color: var(--sun-700);
+          }
+        }
+      }
+    }
+  }
 }
 
 .error-message {

@@ -45,14 +45,58 @@
         </div>
       </div>
 
-      <div class="info-section" *ngIf="usuario.reservas && usuario.reservas.length > 0">
+      <div class="info-section">
         <h2>Mis Reservas</h2>
-        <p class="reservas-count">Tienes {{ usuario.reservas.length }} reserva(s)</p>
-      </div>
 
-      <div class="info-section" *ngIf="!usuario.reservas || usuario.reservas.length === 0">
-        <h2>Mis Reservas</h2>
-        <p class="no-reservas">Aún no tienes reservas</p>
+        <!-- Loading -->
+        <div *ngIf="isLoadingReservas" class="loading-reservas">
+          <p>Cargando reservas...</p>
+        </div>
+
+        <!-- Error -->
+        <div *ngIf="reservasError && !isLoadingReservas" class="error-reservas">
+          <p>{{ reservasError }}</p>
+        </div>
+
+        <!-- Sin reservas -->
+        <div
+          *ngIf="!isLoadingReservas && !reservasError && reservas.length === 0"
+          class="no-reservas"
+        >
+          <p>Aún no tienes reservas</p>
+        </div>
+
+        <!-- Lista de reservas -->
+        <div
+          *ngIf="!isLoadingReservas && !reservasError && reservas.length > 0"
+          class="reservas-lista"
+        >
+          <p class="reservas-count">Tienes {{ reservas.length }} reserva(s)</p>
+
+          <div class="reserva-card" *ngFor="let reserva of reservas">
+            <div class="reserva-header">
+              <span class="reserva-badge" [ngClass]="getEstadoBadgeClass(reserva.estado)">
+                {{ getEstadoTexto(reserva.estado) }}
+              </span>
+              <span class="reserva-fecha">{{ reserva.createdAt | date : 'dd/MM/yyyy' }}</span>
+            </div>
+
+            <div class="reserva-body">
+              <div class="reserva-info">
+                <p><strong>Número de personas:</strong> {{ reserva.numeroPersonas }}</p>
+                <p>
+                  <strong>Fecha inicio:</strong> {{ reserva.fechaInicio | date : 'dd/MM/yyyy' }}
+                </p>
+                <p><strong>Fecha fin:</strong> {{ reserva.fechaFin | date : 'dd/MM/yyyy' }}</p>
+                <p><strong>Precio total:</strong> ${{ reserva.precioTotal }}</p>
+              </div>
+
+              <div class="reserva-notas" *ngIf="reserva.notas">
+                <p><strong>Notas:</strong> {{ reserva.notas }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
