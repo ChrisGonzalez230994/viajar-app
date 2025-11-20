@@ -36,14 +36,9 @@ import { DestinationHighlights } from './components/destination-detail/destinati
 import { Checkout } from './components/checkout/checkout';
 import { Footer } from './components/footer/footer';
 import { AboutUs } from './components/about-us/about-us';
-<<<<<<< Updated upstream
 import { ModalResena } from './components/modal-resena/modal-resena';
 import { ReservaSuccess } from './components/reserva-success/reserva-success';
-=======
 import { Comments } from './components/comments/comments';
-import { CommentsForm } from './components/comments-form/comments-form';
->>>>>>> Stashed changes
-
 @NgModule({
   declarations: [
     App,
@@ -64,14 +59,10 @@ import { CommentsForm } from './components/comments-form/comments-form';
     DestinationHighlights,
     Checkout,
     Footer,
-    AboutUs,
-<<<<<<< Updated upstream
+     AboutUs,
     ModalResena,
     ReservaSuccess,
-=======
     Comments,
-    CommentsForm,
->>>>>>> Stashed changes
   ],
   imports: [
     BrowserModule,
