@@ -204,6 +204,6 @@ export class DestinationDetail implements OnInit {
   }
 
   volverAlHome(): void {
-    this.router.navigate(['/home']);
+    this.router.navigate(['/destinos']);
   }
 }
