@@ -14,6 +14,8 @@ import { ListaDestinos as ListaDestinosAdmin } from './components/admin/lista-de
 import { DestinationDetail } from './components/destination-detail/destination-detail';
 import { Checkout } from './components/checkout/checkout';
 
+import { AboutUs } from './components/about-us/about-us';
+
 const routes: Routes = [
   { path: '', component: LandingComponent },
   { path: 'login', component: Login },
@@ -29,7 +31,8 @@ const routes: Routes = [
   { path: 'admin/reservas', component: Reservas },
   { path: 'admin/usuarios', component: Usuarios },
   { path: 'detalle-destino/:id', component: DestinationDetail },
-  { path: '**', redirectTo: '', pathMatch: 'full' }, // ruta por defecto si no se especifica ninguna
+  { path: 'nosotros', component: AboutUs },
+  { path: '**', redirectTo: '', pathMatch: 'full' } // ruta por defecto si no se especifica ninguna
 ];
 
 @NgModule({

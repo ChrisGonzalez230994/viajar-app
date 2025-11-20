@@ -7,8 +7,8 @@ Aplicación web completa para la planificación y exploración de viajes, permit
 ### Frontend (Angular)
 
 - Framework: Angular 20.3.7
-- Componentes: Login, Registro, Home, Navbar
-- Modelos: Usuario, Destino, Reserva, Reseña
+- Componentes: about-us, admin, checkout,destination-card, destination-detail, footer, landing-page, lista-destinos, login, navbar, paquete-detalle-component, perfil, registro, reserva-form
+- Modelos: busqueda, destino, reseña, reserva, usuario
 - libreria de componentes: https://zardui.com/docs/installation/angular
 
 ### Backend (Express + MongoDB)
@@ -189,8 +189,9 @@ Después de ejecutar el seed de la base de datos:
 ✅ RF1: Registro de usuarios  
 ✅ RF2: Inicio y cierre de sesión  
 ✅ RF3: Gestión de usuarios por admin  
-✅ RF4: Búsqueda de destinos  
-✅ RF5: Información detallada de destinos  
+✅ RF4: Búsqueda de destinos 
+✅ RF5: Información detallada de destinos 
+✅ RF6: Filtracion efectiva de destinos  
 ✅ RF7: Realizar reservas  
 ✅ RF8: Admin gestiona reservas  
 ✅ RF9: Notificación de estados de reserva  

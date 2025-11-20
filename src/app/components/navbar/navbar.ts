@@ -1,3 +1,4 @@
+  // Eliminar propiedad isLanding y toda la lógica asociada
 import { Component, OnInit, OnDestroy, HostListener } from '@angular/core';
 import { CommonModule, NgIf } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
@@ -13,11 +14,14 @@ import { UbButtonDirective } from '@/components/ui/button';
   styleUrls: ['./navbar.scss'],
 })
 export class Navbar implements OnInit, OnDestroy {
+  isLanding = false;
   isAuthenticated = false;
   userName: string | null = null;
   isAdmin = false;
   private subs: Subscription[] = [];
   isScrolled = false;
+
+
 
   constructor(private auth: AuthService, private router: Router) {}
 

@@ -91,6 +91,9 @@
           <label ubLabel class="filter-label">Calificación mínima</label>
           <select [(ngModel)]="calificacionMin" class="filter-select">
             <option [value]="null">Todas</option>
+            <option [value]="1">1+ estrellas</option>
+            <option [value]="2">2+ estrellas</option>
+            <option [value]="3">3+ estrellas</option>
             <option [value]="4">4+ estrellas</option>
             <option [value]="4.5">4.5+ estrellas</option>
           </select>
