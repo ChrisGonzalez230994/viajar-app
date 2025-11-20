@@ -39,6 +39,13 @@ export class App implements OnInit {
           '/admin/destinos',
           '/admin/reservas',
           '/admin/usuarios',
+          '/destinos',
+          '/destino',
+          '/detalle-destino',
+          '/nosotros',
+
+
+
         ];
         this.showLayout = !hiddenLayoutRoutes.some((route) =>
           event.urlAfterRedirects.startsWith(route)

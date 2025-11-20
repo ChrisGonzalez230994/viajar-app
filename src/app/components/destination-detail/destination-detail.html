@@ -1,8 +1,8 @@
 <div class="container">
-  <header>
-    <a href="/">Volver al inicio</a>
-    <h2>Detalles del Destino</h2>
-  </header>
+  <div class="page-header">
+    <button ubButton (click)="volverAlHome()" class="back-button">← Volver al inicio</button>
+    <h1 class="page-title">Detalles del destino</h1>
+  </div>
 
   <!-- Loading state -->
   <div *ngIf="isLoading" class="loading-container">
@@ -16,13 +16,28 @@
 
   <!-- Content -->
   <section class="main-content" *ngIf="!isLoading && !error && destination">
-    <div class="info">
-      <app-destination-info [destination]="destination"></app-destination-info>
-      <app-destination-highlights [highlights]="highlights"></app-destination-highlights>
+    <div class="content-grid">
+      <div class="info">
+        <app-destination-info [destination]="destination"></app-destination-info>
+        <app-destination-highlights [highlights]="highlights"></app-destination-highlights>
+      </div>
+
+      <!-- Imagen principal del destino -->
+      <div class="destination-image-container" *ngIf="destination.imagenPrincipal">
+        <img [src]="destination.imagenPrincipal" [alt]="destination.name" class="destination-main-image" />
+      </div>
+      <div class="destination-image-container image-placeholder" *ngIf="!destination.imagenPrincipal">
+        <div class="placeholder-icon">📍</div>
+      </div>
     </div>
 
     <div class="availability">
       <app-destination-cheker></app-destination-cheker>
     </div>
+
+    <!-- Comentarios y reseñas -->
+    <div class="reviews-section">
+      <app-comments [destinoId]="destination.id"></app-comments>
+    </div>
   </section>
-</div>
+</div>  

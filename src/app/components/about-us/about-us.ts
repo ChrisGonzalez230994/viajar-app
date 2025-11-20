@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { inject } from '@angular/core';
 
 @Component({
   selector: 'app-about-us',
@@ -7,5 +9,10 @@ import { Component } from '@angular/core';
   styleUrl: './about-us.scss',
 })
 export class AboutUs {
+  router = inject(Router);
+
+  volverAlHome(): void {
+    this.router.navigate(['/home']);
+  }
 
 }

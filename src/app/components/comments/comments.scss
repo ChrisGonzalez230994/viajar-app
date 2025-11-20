@@ -1,0 +1,242 @@
+.comments-section {
+  padding: 2rem 0;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.comments-header {
+  margin-bottom: 2rem;
+  
+  h2 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: var(--sun-900);
+    margin: 0 0 1rem 0;
+  }
+}
+
+.rating-summary {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  
+  .rating-number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--sun-600);
+  }
+  
+  .stars {
+    display: flex;
+    gap: 0.25rem;
+  }
+  
+  .total-reviews {
+    color: var(--sun-700);
+    font-weight: 500;
+  }
+}
+
+.star {
+  font-size: 1.2rem;
+  
+  &.full::before {
+    content: '⭐';
+  }
+  
+  &.half::before {
+    content: '⭐';
+    opacity: 0.5;
+  }
+  
+  &.empty::before {
+    content: '☆';
+    color: var(--sun-300);
+  }
+}
+
+.loading, .empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: var(--sun-700);
+  font-size: 1.1rem;
+}
+
+.comments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.comment-card {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 12px rgba(255, 122, 24, 0.1);
+  border: 1px solid var(--sun-200);
+  transition: all 0.3s ease;
+  
+  &:hover {
+    box-shadow: 0 4px 20px rgba(255, 122, 24, 0.15);
+    transform: translateY(-2px);
+  }
+}
+
+.comment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--sun-400), var(--sun-600));
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+.user-details {
+  h4 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--sun-900);
+  }
+  
+  .date {
+    font-size: 0.9rem;
+    color: var(--sun-600);
+  }
+}
+
+.rating {
+  display: flex;
+  gap: 0.2rem;
+  
+  .star {
+    font-size: 1rem;
+  }
+}
+
+.comment-text {
+  color: var(--foreground);
+  line-height: 1.6;
+  margin: 0 0 1rem 0;
+  font-size: 1rem;
+}
+
+.comment-images {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+  
+  .review-image {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+    
+    &:hover {
+      transform: scale(1.05);
+    }
+  }
+}
+
+.comment-footer {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--sun-100);
+}
+
+.like-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: var(--sun-50);
+  border: 1px solid var(--sun-200);
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  color: var(--sun-800);
+  
+  &:hover {
+    background: var(--sun-100);
+    transform: scale(1.05);
+  }
+  
+  span:first-child {
+    font-size: 1.2rem;
+  }
+}
+
+.verified {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: var(--sun-600);
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 0.25rem 0.75rem;
+  background: var(--sun-50);
+  border-radius: 20px;
+}
+
+.load-more-btn {
+  width: 100%;
+  padding: 1rem;
+  margin-top: 2rem;
+  background: linear-gradient(135deg, var(--sun-500), var(--sun-600));
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  &:hover {
+    background: linear-gradient(135deg, var(--sun-600), var(--sun-700));
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 122, 24, 0.4);
+  }
+}
+
+@media (max-width: 768px) {
+  .comments-section {
+    padding: 1rem 0;
+  }
+  
+  .comment-card {
+    padding: 1rem;
+  }
+  
+  .rating-summary {
+    flex-wrap: wrap;
+  }
+  
+  .comment-header {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
