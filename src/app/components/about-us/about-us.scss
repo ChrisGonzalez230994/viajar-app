@@ -1,0 +1,124 @@
+/* Estilos para About Us, coherentes con la paleta y tipografía global */
+.about-us-bg {
+  min-height: 100vh;
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  background: linear-gradient(180deg, var(--sun-50) 0%, var(--sun-100) 50%, var(--sun-200) 100%);
+  z-index: 0;
+}
+.about-us {
+  position: relative;
+  z-index: 1;
+  color: var(--foreground);
+  font-family: 'DM Sans', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+  padding: 2.5rem 1rem 3rem 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.about-header {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+.about-header h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--primary);
+  margin-bottom: 0.5rem;
+}
+.about-header .subtitle {
+  color: var(--muted-foreground);
+  font-size: 1.2rem;
+}
+
+.about-block {
+  margin-bottom: 2.2rem;
+  background: var(--card);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 2px 8px 0 rgba(0,0,0,0.04);
+  padding: 1.5rem 1.2rem;
+}
+.about-block h2 {
+  color: var(--primary);
+  font-size: 1.4rem;
+  margin-bottom: 0.7rem;
+  font-weight: 700;
+}
+.about-block ul {
+  margin: 0;
+  padding-left: 1.2rem;
+}
+.about-block li {
+  margin-bottom: 0.4rem;
+  color: var(--foreground);
+}
+
+.about-team {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  margin-top: 1.2rem;
+}
+.team-member {
+  background: var(--sun-100);
+  border-radius: var(--radius-md);
+  box-shadow: 0 1px 4px 0 rgba(0,0,0,0.03);
+  padding: 1rem 1.2rem;
+  text-align: center;
+  flex: 1 1 180px;
+  min-width: 160px;
+  max-width: 220px;
+}
+.team-member img {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 0.7rem;
+  background: var(--sun-200);
+}
+.team-member h3 {
+  margin: 0.2rem 0 0.1rem 0;
+  font-size: 1.1rem;
+  color: var(--primary);
+}
+.team-member p {
+  color: var(--muted-foreground);
+  font-size: 0.97rem;
+}
+
+.about-contact ul {
+  list-style: none;
+  padding: 0;
+}
+.about-contact a {
+  color: var(--primary);
+  text-decoration: none;
+}
+.about-contact a:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 700px) {
+  .about-team {
+    flex-direction: column;
+    align-items: center;
+    gap: 1.2rem;
+  }
+  .about-block {
+    padding: 1.2rem 0.7rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .about-header h1 {
+    font-size: 1.7rem;
+  }
+  .about-block h2 {
+    font-size: 1.1rem;
+  }
+}
